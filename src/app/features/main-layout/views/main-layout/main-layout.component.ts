@@ -1,15 +1,23 @@
 import { Component } from '@angular/core';
-import { MainHeaderComponent } from "../../components/main-header/main-header.component";
-import { MainMenuComponent } from "../../components/main-menu/main-menu.component";
+import { MainHeaderComponent } from '../../components/main-header/main-header.component';
+import { MainMenuComponent } from '../../components/main-menu/main-menu.component';
 import { RouterOutlet } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import MainDashboardComponent from '../main-dashboard/main-dashboard.component';
+import HumanMainLayoutComponent from '../../../human-resources/views/human-main-layout/human-main-layout.component';
+
 
 @Component({
   selector: 'app-main-layout',
   standalone: true,
-  imports: [MainHeaderComponent, MainMenuComponent, RouterOutlet],
+  imports: [MainHeaderComponent, RouterOutlet, CommonModule, MainDashboardComponent, MainMenuComponent, HumanMainLayoutComponent],
   templateUrl: './main-layout.component.html',
-  styleUrl: './main-layout.component.scss'
+  styleUrl: './main-layout.component.scss',
 })
-export class MainLayoutComponent {
+export default class MainLayoutComponent {
+  menuOpen: boolean = true;
 
+  toggleMenu() {
+    this.menuOpen = !this.menuOpen;
+  }
 }

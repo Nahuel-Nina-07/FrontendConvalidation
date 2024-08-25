@@ -15,16 +15,20 @@ module.exports = {
       },
       textColor: {
         primary: '#3F4047',
-        secondary: '#868E96',
         accent: '#FF3B30',
-        neutral: '#B0B0B0'
+        enable: '#868E96',
+        neutral: '#B0B0B0',
+        secondary:'#213773',
+        tertiary: '#6FC5CE'
       },
       colors: {
         primary: {
           DEFAULT: '#213773',
           light: '#2A70B9',
-          enableDark:'#868E96',
-          enableLight:'#E9EAEB',
+          200: "#1d3167",
+          400: "#172650",
+          600: "#101b39",
+          800: "#091022",
         },
         secondary: {
           DEFAULT: '#76C7C0',
@@ -35,7 +39,9 @@ module.exports = {
           error: '#FF0000',
           success: '#4CAF50',
           warning: '#FFC107',
-          info: '#2196F3'
+          info: '#2196F3',
+          enableDark:'#868E96',
+          enableLight:'#E9EAEB'
         },
       }
     },
