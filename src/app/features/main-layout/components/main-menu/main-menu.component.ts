@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { BtnSystemComponent } from "../btn-system/btn-system.component";
 import { HttpClientModule } from '@angular/common/http';
 import { SvgIconComponent } from 'angular-svg-icon';
-import { feature } from '../../models/features';
+import { Feature } from '../../models/features';
 
 @Component({
   selector: 'main-menu',
@@ -13,11 +13,11 @@ import { feature } from '../../models/features';
 })
 export class MainMenuComponent {
 
-  public features: feature[]=[
+  public features: Feature[]=[
     {
       name: 'Inicio',
       icon: '/assets/icons/icon-home.svg',
-      route: ''
+      route: 'home'
     },
     {
       name: 'Configuraciones',
@@ -33,7 +33,7 @@ export class MainMenuComponent {
     {
       name: 'Recursos Humanos',
       icon: '/assets/icons/icon-rh.svg',
-      route: '/rh'
+      route: 'rh'
     },
     {
       name: 'Academico',

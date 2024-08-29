@@ -4,7 +4,7 @@ import { MainMenuComponent } from '../../components/main-menu/main-menu.componen
 import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import MainDashboardComponent from '../main-dashboard/main-dashboard.component';
-import HumanMainLayoutComponent from '../../../human-resources/views/human-main-layout/human-main-layout.component';
+import HumanMainLayoutComponent from '../../../human-resources/views/human-resource-layout/human-resource-layout.component';
 
 
 @Component({

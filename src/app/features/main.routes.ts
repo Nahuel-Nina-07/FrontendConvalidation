@@ -1,6 +1,5 @@
 import { Routes } from "@angular/router";
 import MainLayoutComponent from "./main-layout/views/main-layout/main-layout.component";
-import MainDashboardComponent from "./main-layout/views/main-dashboard/main-dashboard.component";
 
 
 export const routes: Routes = [
@@ -9,7 +8,7 @@ export const routes: Routes = [
         component: MainLayoutComponent,
         children:[
             {
-                path: '',
+                path: 'home',
                 loadComponent:() => import('./main-layout/views/main-dashboard/main-dashboard.component')
             },
             {
