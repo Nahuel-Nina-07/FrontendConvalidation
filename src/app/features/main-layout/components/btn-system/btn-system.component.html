@@ -1,0 +1,20 @@
+<div
+  class="relative z-50 flex items-center justify-center w-8 h-8 rounded-md group hover:bg-primary"
+  [routerLink]="[route]"
+>
+  <div
+    class="absolute whitespace-nowrap hidden transition delay-300 left-10 px-4 py-[2px] text-secondary bg-actions-enableLight rounded-xl leading-none group-hover:block z-50"
+  >
+    {{ name }}
+  </div>
+  <div
+    class="w-full p-1 rounded-md group-hover:bg-primary-400"
+    routerLinkActive="active"
+  >
+    <svg-icon
+      class="flex self-start cursor-pointer text-enable group-hover:text-yellow-300"
+      routerLinkActive="actives"
+      src="{{ icon }}"
+    ></svg-icon>
+  </div>
+</div>

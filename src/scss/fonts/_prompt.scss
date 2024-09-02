@@ -1,0 +1,31 @@
+@layer base {
+  @font-face {
+    font-family: "Bold";
+    src: url("/assets/fonts/prompt/Prompt-Bold.ttf") format("truetype");
+  }
+
+  @font-face {
+    font-family: "SemiBold";
+    src: url("/assets/fonts/prompt/Prompt-SemiBold.ttf") format("truetype");
+  }
+
+  @font-face {
+    font-family: "Italic";
+    src: url("/assets/fonts/prompt/Prompt-Italic.ttf") format("truetype");
+  }
+
+  @font-face {
+    font-family: "Light";
+    src: url("/assets/fonts/prompt/Prompt-Light.ttf") format("truetype");
+  }
+
+  @font-face {
+    font-family: "Medium";
+    src: url("/assets/fonts/prompt/Prompt-Medium.ttf") format("truetype");
+  }
+
+  @font-face {
+    font-family: "Regular";
+    src: url("/assets/fonts/prompt/Prompt-Regular.ttf") format("truetype");
+  }
+}

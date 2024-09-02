@@ -1,0 +1,25 @@
+<div class="flex w-full h-screen">
+  <main-menu
+    class="z-30 transition-transform duration-300 transform drop-shadow-sm bg-primary"
+    [ngClass]="{
+      '-translate-x-full': !menuOpen,
+      'translate-x-0 w-10': menuOpen
+    }"
+  >
+  </main-menu>
+  <div
+    class="flex flex-col w-full transition-all duration-300"
+    [ngClass]="{
+      'm-0 -ml-8': !menuOpen,
+      'ml-0': menuOpen
+    }"
+  >
+    <main-header (toggleMenu)="toggleMenu()"> </main-header>
+    <main class="h-full overflow-y-auto main-scrollbar">
+      <router-outlet></router-outlet>
+    </main>
+    <!-- <div class="h-6 p-2 text-[10px] text-enable flex items-center justify-end">
+      &copy; UAB - Desarrollo TI. Todos los derechos reservados..
+    </div> -->
+  </div>
+</div>
