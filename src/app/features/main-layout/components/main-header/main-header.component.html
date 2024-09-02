@@ -1,5 +1,5 @@
 <div
-  class="flex items-center justify-between h-16 px-2 bg-white border-b-[0.5px] md:px-5 drop-shadow-sm border-primary"
+  class="flex items-center justify-between h-16 px-2 bg-white border-b-[0.5px] md:px-5 drop-shadow-sm border-primary relative z-30"
 >
   <div class="flex gap-4">
     <div class="flex items-center gap-5">
@@ -26,13 +26,30 @@
       >
     </div>
   </div>
-  <div class="flex gap-4 md:gap-10">
-    <div
-      class="flex items-center justify-center gap-2 px-3 py-1 border-[1px] rounded-lg cursor-pointer hover:bg-slate-50"
-    >
-      <h1 class="hidden select-none text-secondary md:block">Servicios</h1>
-      <svg-icon class="flex w-4" src="assets/icons/icon-apps.svg"></svg-icon>
+
+  <div class="relative flex gap-4 md:gap-10">
+    <!-- --- -->
+    <div class="relative z-40 dropdown-container">
+      <button
+        class="flex items-center justify-center gap-2 px-3 py-1 border-[1px] rounded-lg cursor-pointer hover:bg-slate-50 dropdown-button"
+        (click)="toggleDropdown()"
+      >
+        <h1 class="hidden select-none text-secondary md:block">Servicios</h1>
+        <svg-icon class="flex w-4" src="assets/icons/icon-apps.svg"></svg-icon>
+      </button>
+      <div
+        class="absolute top-10 right-1 dropdown-menu"
+        [ngClass]="{
+          'transition ease-linear duration-300 transform opacity-100 scale-100':
+            idDropDownServiceOpen,
+          'transition ease-in duration-75 transform opacity-0 scale-95':
+            !idDropDownServiceOpen
+        }"
+      >
+        <shared-modal-services />
+      </div>
     </div>
+    <!-- --- -->
     <div class="flex gap-4">
       <main-btn-notification
         number="2"
