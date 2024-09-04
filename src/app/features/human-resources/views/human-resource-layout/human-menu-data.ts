@@ -15,7 +15,12 @@ export const menu_data: Array<{ title: string, menuItems: MenuItemInterface[] }>
         title: 'GESTION',
         menuItems: [
             { icon: 'assets/icons/icon-estructura.svg', title: 'Personal', url: 'personal' },
+            { icon: 'assets/icons/icon-contrato.svg', title: 'Postulantes', url: 'postulantes' },
+            { icon: 'assets/icons/icon-estructura.svg', title: 'Personal', url: 'personal' },
+            { icon: 'assets/icons/icon-contrato.svg', title: 'Postulantes', url: 'postulantes' },
+            { icon: 'assets/icons/icon-estructura.svg', title: 'Personal', url: 'personal' },
             { icon: 'assets/icons/icon-contrato.svg', title: 'Postulantes', url: 'postulantes' }
         ],
-    },
+    }
+    
 ];

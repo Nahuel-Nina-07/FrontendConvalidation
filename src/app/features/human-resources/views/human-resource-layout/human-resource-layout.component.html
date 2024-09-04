@@ -1,7 +1,8 @@
 <div class="relative flex w-full h-full gap-1">
+  <!-- Botón flotante con posición fija -->
   <button
     (click)="toggleMenu()"
-    class="absolute z-10 flex items-center justify-center w-10 h-10 rounded-full peer md:hidden bottom-1 right-1 bg-primary"
+    class="fixed z-10 flex items-center justify-center w-10 h-10 rounded-full shadow-lg peer md:hidden bottom-16 right-4 bg-primary"
   >
     <svg-icon
       class="flex h-[20px] text-white cursor-pointer"
@@ -35,7 +36,7 @@
       >
       </suint-main-menu>
     </div>
-    <div class="flex-1 flex-grow pl-1 bg-slate-100">
+    <div class="flex-1 flex-grow bg-slate-100">
       <div class="h-full p-1 overflow-y-auto">
         <router-outlet></router-outlet>
       </div>
