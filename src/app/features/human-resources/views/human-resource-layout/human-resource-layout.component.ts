@@ -1,15 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { RouterLinkActive, RouterOutlet } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
 import { SvgIconComponent } from 'angular-svg-icon';
-import { MenuHumanResourceComponent } from "../../components/menu-human-resources/menu-human-resources.component";
 import { SuintMainMenuComponent } from '../../../../shared/components/main-menu/main-menu.component';
-import { menu_data } from './menu-data';
+import { menu_data } from './human-menu-data';
 
 @Component({
   selector: 'human-main-layout',
   standalone: true,
-  imports: [SvgIconComponent, CommonModule, RouterOutlet, MenuHumanResourceComponent, SuintMainMenuComponent],
+  imports: [SvgIconComponent, CommonModule, RouterOutlet,  SuintMainMenuComponent],
   templateUrl: './human-resource-layout.component.html',
   styleUrls: ['./human-resource-layout.component.scss']
 })
