@@ -5,11 +5,10 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class ContratoService {
+export class WorkAreaService {
 
   private readonly _http = inject(HttpClient)
-  getAllContracto(): Observable<any> {
-    return this._http.get('http://soyuab.uab.edu.bo:9092/comidas')
+  getAllWorkArea(): Observable<any> {
+    return this._http.get('http://soyuab.uab.edu.bo:9095/work-area')
   }
-
 }

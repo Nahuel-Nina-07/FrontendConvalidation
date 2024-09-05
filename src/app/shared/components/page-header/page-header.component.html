@@ -3,15 +3,15 @@
 >
   <div class="flex flex-col gap-1">
     <h1 class="leading-none font-primaryBold text-secondary">
-      {{ infoTitle }}
+      {{ title }}
     </h1>
     <span class="text-xs leading-none text-enable">
-      {{ infoDetail }}
+      {{ description }}
     </span>
   </div>
   <button
     class="text-sm text-white rounded-[4px] w-16 lg:w-28 h-[34px] bg-primary-light flex justify-center items-center gap-2 hover:bg-primary-200 cursor-pointer"
-    (click)="onclicked()"
+    (click)="clickButton()"
   >
     <svg-icon
       class="lg:flex hidden lg:w-[12px] text-white cursor-pointer group-hover:text-yellow-300"
