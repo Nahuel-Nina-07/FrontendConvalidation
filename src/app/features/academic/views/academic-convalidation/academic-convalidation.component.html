@@ -1,0 +1,130 @@
+<div class="flex flex-col md:flex-row items-center justify-between px-16 mt-2 space-y-4 md:space-y-0 md:space-x-4">
+    <div class="flex items-center space-x-4 flex-grow">
+      <input type="text" [(ngModel)]="searchName" placeholder="Buscar..." class="rounded border border-gray-400 p-3 text-sm focus:border-indigo-500 focus:ring-indigo-500 flex-grow">
+      
+      <button 
+          (click)="search()"
+          class="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 transition duration-200 ease-in-out">
+          Buscar
+      </button>
+    </div>
+  
+    <label (click)="openCreateModal()"
+       class="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 transition duration-200 ease-in-out">
+  Crear Universidad de Origen
+</label>
+
+  </div>
+  
+  <div class="container mx-auto px-4 mt-6">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Facultad</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">País</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nivel Académico</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Régimen de Estudios</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Teléfono</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fax</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Correo Electrónico</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        <tr *ngFor="let university of universities">
+          <td class="px-6 py-4 whitespace-nowrap">{{ university.name }}</td>
+          <td class="px-6 py-4 whitespace-nowrap">{{ university.faculty }}</td>
+          <td class="px-6 py-4 whitespace-nowrap">{{ university.country }}</td>
+          <td class="px-6 py-4 whitespace-nowrap">{{ university.academicLevel }}</td>
+          <td class="px-6 py-4 whitespace-nowrap">{{ university.studyRegimen }}</td>
+          <td class="px-6 py-4 whitespace-nowrap">{{ university.phone }}</td>
+          <td class="px-6 py-4 whitespace-nowrap">{{ university.fax }}</td>
+          <td class="px-6 py-4 whitespace-nowrap">{{ university.email }}</td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="flex space-x-2">
+            <label (click)="editUniversity(university)"  for="create-university-modal"  class="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 transition duration-200 ease-in-out">
+                        Editar
+            </label>
+            <button (click)="deleteUniversity(university.id)" 
+                    class="px-4 py-2 bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-75 transition duration-200 ease-in-out">
+                Eliminar
+            </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+  <input type="checkbox" id="create-university-modal" class="peer fixed appearance-none opacity-0">
+  
+  <label for="create-university-modal" class="pointer-events-none invisible fixed inset-0 flex cursor-pointer items-center justify-center overflow-hidden bg-slate-700/30 opacity-0 transition-all duration-200 ease-in-out peer-checked:pointer-events-auto peer-checked:visible peer-checked:opacity-100">
+    <div class="relative max-h-[calc(100vh - 5em)] max-w-lg w-full scale-90 overflow-y-auto rounded-md bg-white p-6 text-black shadow-2xl transition">
+      <h3 class="text-lg font-bold">Crear Universidad de Origen</h3>
+      <form class="space-y-4 py-4" [formGroup]="universityForm" (ngSubmit)="onSubmit()">
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div>
+                <label class="block text-sm font-medium">Nombre</label>
+                <input type="text" class="mt-1 w-full rounded border border-gray-400 p-1 text-sm focus:border-indigo-500 focus:ring-indigo-500" formControlName="name">
+            </div>
+            <div>
+                <label class="block text-sm font-medium">Facultad</label>
+                <input type="text" class="mt-1 w-full rounded border border-gray-400 p-1 text-sm focus:border-indigo-500 focus:ring-indigo-500" formControlName="faculty">
+            </div>
+            <div>
+                <label class="block text-sm font-medium">País</label>
+                <input type="text" class="mt-1 w-full rounded border border-gray-400 p-1 text-sm focus:border-indigo-500 focus:ring-indigo-500" formControlName="country">
+            </div>
+            <div>
+                <label class="block text-sm font-medium">Nivel Académico</label>
+                <select formControlName="academicLevel" class="mt-1 w-full rounded border border-gray-400 p-1 text-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    <option value="" disabled selected>Selecciona un nivel académico</option>
+                    <option value="Pregrado">Pregrado</option>
+                    <option value="Postgrado">Postgrado</option>
+                    <option value="Doctorado">Doctorado</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium">Régimen de Estudios</label>
+                <select formControlName="studyRegimen" class="mt-1 w-full rounded border border-gray-400 p-1 text-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    <option value="" disabled selected>Selecciona un régimen de estudio</option>
+                    <option value="Semestral">Semestral</option>
+                    <option value="Anual">Anual</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium">Teléfono</label>
+                <input type="text" class="mt-1 w-full rounded border border-gray-400 p-1 text-sm focus:border-indigo-500 focus:ring-indigo-500" formControlName="phone">
+            </div>
+            <div>
+                <label class="block text-sm font-medium">Fax</label>
+                <input type="text" class="mt-1 w-full rounded border border-gray-400 p-1 text-sm focus:border-indigo-500 focus:ring-indigo-500" formControlName="fax">
+            </div>
+            <div>
+                <label class="block text-sm font-medium">Correo Electrónico</label>
+                <input type="email" class="mt-1 w-full rounded border border-gray-400 p-1 text-sm focus:border-indigo-500 focus:ring-indigo-500" formControlName="email">
+            </div>
+        </div>
+        <div>
+            <label class="block text-sm font-medium">Observaciones</label>
+            <textarea class="mt-1 w-full rounded border border-gray-400 p-1 text-sm focus:border-indigo-500 focus:ring-indigo-500" formControlName="observation"></textarea>
+        </div>
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div>
+                <label class="block text-sm font-medium">Carga Horaria</label>
+                <input type="datetime-local" class="mt-1 w-full rounded border border-gray-400 p-1 text-sm focus:border-indigo-500 focus:ring-indigo-500" formControlName="scheduleLoad">
+            </div>
+            <div>
+                <label class="block text-sm font-medium">Nota de Aprobación</label>
+                <input type="number" step="0.01" class="mt-1 w-full rounded border border-gray-400 p-1 text-sm focus:border-indigo-500 focus:ring-indigo-500" formControlName="approvalNote">
+            </div>
+        </div>
+        <div class="flex justify-end space-x-2">
+            <button type="button" class="px-4 py-2 bg-gray-500 text-white font-semibold rounded-lg shadow-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75 transition duration-200 ease-in-out" (click)="closemodal()">Cancelar</button>
+            <button type="submit" class="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 transition duration-200 ease-in-out">Guardar</button>
+        </div>
+    </form>
+    </div>
+  </label>
+  
