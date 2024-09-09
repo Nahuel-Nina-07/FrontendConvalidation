@@ -16,7 +16,7 @@ export const routes: Routes = [
       },
       {
         path: 'career',
-        loadComponent: () => import('./views/academic-career-origin/academic-career-origin.component').then(m => m.AcademicCareerOriginComponent),
+        loadComponent: () => import('./views/academic-career-origin/academic-career-origin.component').then(m => m.CareerOriginComponent),
       }
     ],
   },

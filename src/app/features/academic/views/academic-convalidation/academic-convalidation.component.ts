@@ -19,7 +19,7 @@ export class AcademicConvalidationComponent implements OnInit {
 
   constructor(private fb: FormBuilder, private universityOriginService: UniversityOriginService) {
     this.universityForm = this.fb.group({
-      id: [''],
+      id: [''], // El campo ID se mantiene en el formulario pero será vacío al crear
       name: ['', Validators.required],
       faculty: ['', Validators.required],
       country: ['', Validators.required],
@@ -51,23 +51,51 @@ export class AcademicConvalidationComponent implements OnInit {
 
   onSubmit() {
     if (this.universityForm.valid) {
-      this.universityOriginService.createUniversityOrigin(this.universityForm.value).subscribe({
-        next: (response) => {
-          console.log('Success:', response);
-          this.loadUniversities();  // Reload the list after creating a new university
-          this.universityForm.reset(); // Reset the form
-        },
-        error: (error) => {
-          console.error('Error:', error);
-        }
-      });
+      let formValue = this.universityForm.value;
+  
+      // Si no hay ID o está vacío, asigna 0
+      if (!formValue.id || formValue.id === '') {
+        formValue.id = 0;
+      }
+  
+      const isEdit = formValue.id && formValue.id !== 0;  // Verifica si es una edición
+  
+      if (isEdit) {
+        // Si hay ID, actualiza
+        this.universityOriginService.updateUniversityOrigin(formValue).subscribe({
+          next: (response) => {
+            console.log('Success:', response);
+            this.loadUniversities();
+            this.selectedUniversity = null;
+            this.universityForm.reset();
+            this.closemodal();
+          },
+          error: (error) => {
+            console.error('Error:', error);
+          }
+        });
+      } else {
+        // Si el ID es 0 o no existe, crea
+        this.universityOriginService.createUniversityOrigin(formValue).subscribe({
+          next: (response) => {
+            console.log('Success:', response);
+            this.loadUniversities();
+            this.universityForm.reset();
+            this.closemodal();
+          },
+          error: (error) => {
+            console.error('Error:', error);
+          }
+        });
+      }
     }
   }
+  
 
   closemodal() {
     const modal = document.getElementById('create-university-modal') as HTMLInputElement;
     if (modal) {
-      modal.checked = false
+      modal.checked = false;
     }
   }
 
@@ -95,7 +123,7 @@ export class AcademicConvalidationComponent implements OnInit {
         }
       });
     } else {
-      this.loadUniversities(); // Reload all universities if searchName is empty
+      this.loadUniversities();
     }
   }
 
@@ -104,34 +132,12 @@ export class AcademicConvalidationComponent implements OnInit {
     this.universityForm.patchValue(university); // Fill the form with the university's data
   }
 
-  updateUniversity() {
-    if (this.universityForm.valid) {
-      this.universityOriginService.updateUniversityOrigin(this.universityForm.value).subscribe({
-        next: (response) => {
-          console.log('Success:', response);
-          this.loadUniversities();  // Reload the list after updating
-          this.selectedUniversity = null; // Clear the selected university
-          this.universityForm.reset(); // Reset the form
-        },
-        error: (error) => {
-          console.error('Error:', error);
-        }
-      });
-    }
-  }
-
   openCreateModal() {
-    // Limpiar el formulario
-    this.universityForm.reset();
-    this.selectedUniversity = null; // Asegurarse de que no haya una universidad seleccionada
-  
-    // Opcional: Puedes establecer valores predeterminados si es necesario
+    this.universityForm.reset(); // Reset the form
     this.universityForm.patchValue({
-      academicLevel: 'Pregrado', // Valor predeterminado para 'academicLevel'
-      studyRegimen: 'Semestral' // Valor predeterminado para 'studyRegimen'
+      academicLevel: 'Pregrado',
+      studyRegimen: 'Semestral'
     });
-  
-    // Abrir el modal
     const modal = document.getElementById('create-university-modal') as HTMLInputElement;
     if (modal) {
       modal.checked = true;
