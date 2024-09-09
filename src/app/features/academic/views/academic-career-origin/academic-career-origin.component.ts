@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { CareerOriginService } from '../../services/career-origin.service';
 import { SuintPageHeaderComponent } from '../../../../shared/components/page-header/page-header.component';
 import { CommonModule } from '@angular/common';
+import { UniversityOriginService } from '../../services/university-origin.service';
 
 @Component({
   selector: 'academic-career-origin',
@@ -14,10 +15,16 @@ import { CommonModule } from '@angular/common';
 export class CareerOriginComponent implements OnInit {
   careerForm: FormGroup;
   careers: any[] = [];
+  universities: any[] = [];
   searchName: string = '';
   selectedCareer: any = null;
 
-  constructor(private fb: FormBuilder, private careerService: CareerOriginService) {
+  constructor(
+    private fb: FormBuilder, 
+    private careerService: CareerOriginService,
+    private universityService: UniversityOriginService
+  ) 
+  {
     this.careerForm = this.fb.group({
       id: [''],
       name: ['', Validators.required],
@@ -31,6 +38,7 @@ export class CareerOriginComponent implements OnInit {
 
   ngOnInit() {
     this.loadCareers();
+    this.loadUniversities();
   }
 
   loadCareers() {
@@ -44,11 +52,21 @@ export class CareerOriginComponent implements OnInit {
     });
   }
 
+  loadUniversities() {
+    this.universityService.getUniversityOrigins().subscribe({
+      next: (response) => {
+        this.universities = response;
+      },
+      error: (error) => {
+        console.error('Error loading universities:', error);
+      }
+    });
+  }
+
   onSubmit() {
     if (this.careerForm.valid) {
       let formValue = this.careerForm.value;
-  
-      // Si no hay ID o está vacío, asigna 0
+
       if (!formValue.id || formValue.id === '') {
         formValue.id = 0;
       }
@@ -70,7 +88,6 @@ export class CareerOriginComponent implements OnInit {
           }
         });
       } else {
-        // Si el ID es 0 o no existe, crea
         this.careerService.createCareer(formValue).subscribe({
           next: (response) => {
             console.log('Success:', response);
@@ -86,6 +103,10 @@ export class CareerOriginComponent implements OnInit {
     }
   }
   
+  getUniversityName(universityId: number): string {
+    const university = this.universities.find(u => u.id === universityId);
+    return university ? university.name : 'N/A';
+  }
 
   closemodal() {
     const modal = document.getElementById('create-career-modal') as HTMLInputElement;

@@ -23,9 +23,11 @@
         <tr *ngFor="let career of careers">
           <td class="px-6 py-4 whitespace-nowrap">{{ career.name }}</td>
           <td class="px-6 py-4 whitespace-nowrap">{{ career.resolutionDate }}</td>
-          <td class="px-6 py-4 whitespace-nowrap">{{ career.state }}</td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            {{ career.state ? 'activo' : 'inactivo' }}
+          </td>
           <td class="px-6 py-4 whitespace-nowrap">{{ career.numberWeeks }}</td>
-          <td class="px-6 py-4 whitespace-nowrap">{{ career.universityId }}</td>
+          <td class="px-6 py-4 whitespace-nowrap">{{ getUniversityName(career.universityId) }}</td>
           <td class="px-6 py-4 whitespace-nowrap">{{ career.employeeId }}</td>
           <td class="px-6 py-4 whitespace-nowrap">
             <div class="flex space-x-2">
@@ -60,10 +62,10 @@
             </div>
             <div>
               <label class="block text-sm font-medium">Estado</label>
-<select class="mt-1 w-full rounded border border-gray-400 p-1 text-sm focus:border-indigo-500 focus:ring-indigo-500" formControlName="state">
-  <option [ngValue]="true">Activo</option>
-  <option [ngValue]="false">Inactivo</option>
-</select>
+              <select class="mt-1 w-full rounded border border-gray-400 p-1 text-sm focus:border-indigo-500 focus:ring-indigo-500" formControlName="state">             
+                <option [ngValue]="true">Activo</option>
+                <option [ngValue]="false">Inactivo</option>
+              </select>
 
             </div>
             <div>
@@ -71,8 +73,13 @@
                 <input type="number" class="mt-1 w-full rounded border border-gray-400 p-1 text-sm focus:border-indigo-500 focus:ring-indigo-500" formControlName="numberWeeks">
             </div>
             <div>
-                <label class="block text-sm font-medium">Universidad</label>
-                <input type="number" class="mt-1 w-full rounded border border-gray-400 p-1 text-sm focus:border-indigo-500 focus:ring-indigo-500" formControlName="universityId">
+              <label for="universityId">Universidad:</label>
+              <select formControlName="universityId" id="universityId" class="mt-1 w-full rounded border border-gray-400 p-1 text-sm focus:border-indigo-500 focus:ring-indigo-500">
+                <option value="">Seleccione una universidad</option>
+                <option *ngFor="let university of universities" [value]="university.id">
+                  {{ university.name }}
+                </option>
+              </select>
             </div>
             <div>
                 <label class="block text-sm font-medium">Empleado</label>

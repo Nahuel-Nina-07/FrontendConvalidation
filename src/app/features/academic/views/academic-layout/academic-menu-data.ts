@@ -7,7 +7,8 @@ export const menu_data: Array<{ title: string, menuItems: MenuItemInterface[] }>
         menuItems: [
             { icon: 'assets/icons/icon-estructura.svg', title: 'Universidades de Origen', url: 'university' },
             { icon: 'assets/icons/icon-contrato.svg', title: 'Carreras de Origen', url: 'career' },
-            { icon: '/assets/icons/icon-empresa.svg', title: 'Empresa de seguros', url: 'seguros' }
+            { icon: 'assets/icons/icon-estructura.svg', title: 'Lista de Convalidaciones', url: 'listConvalidation' },
+            { icon: '/assets/icons/icon-empresa.svg', title: 'Convalidacion por asignatura', url: 'convalidationAsignature' }
 
         ],
     },
