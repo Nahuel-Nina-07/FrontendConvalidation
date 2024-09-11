@@ -1,0 +1,19 @@
+<div class="flex flex-col h-full gap-1">
+  <suint-page-header
+    description="Convalidaciones en proceso"
+    title="Lista de convalidaciones"
+    class="dropdown-button"
+    (onClickButton)="toggleDropdown()"
+  />
+  <div
+    class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 dropdown-menu"
+    [ngClass]="{
+      'transition ease-linear duration-300 transform opacity-100 scale-100 block':
+        idDropDownServiceOpen,
+      'transition ease-in duration-75 transform opacity-0 scale-95 hidden':
+        !idDropDownServiceOpen
+    }"
+  >
+    <shared-modal-add-student />
+  </div>
+</div>

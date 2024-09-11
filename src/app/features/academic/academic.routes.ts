@@ -11,16 +11,16 @@ export const routes: Routes = [
         loadComponent: () => import('./views/academic-main/academic-main.component').then(m => m.AcademicMainComponent),
       },
       {
+        path: 'convalidation-list',
+        loadComponent: () => import('./views/academic-convalidation-list/academic-convalidation-list.component').then(m => m.AcademicConvalidationListComponent),
+      },
+      {
         path: 'university',
         loadComponent: () => import('./views/academic-convalidation/academic-convalidation.component').then(m => m.AcademicConvalidationComponent),
       },
       {
         path: 'career',
         loadComponent: () => import('./views/academic-career-origin/academic-career-origin.component').then(m => m.CareerOriginComponent),
-      },
-      {
-        path: 'listConvalidation',
-        loadComponent: () => import('./views/academic-list-convalidation/academic-list-convalidation.component').then(m => m.AcademicListConvalidationComponent),
       },
       {
         path: 'convalidationAsignature',

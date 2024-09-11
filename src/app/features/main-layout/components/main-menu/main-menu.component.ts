@@ -84,6 +84,11 @@ export class MainMenuComponent {
       name: 'Contrataciones',
       icon: '/assets/icons/icon-contrataciones.svg',
       route: '/contrataciones'
+    },
+    {
+      name: 'Convalidacion Homologacion',
+      icon: '/assets/icons/icon-homologacion.svg',
+      route: '/convalidaciones'
     }
   ]
 }
