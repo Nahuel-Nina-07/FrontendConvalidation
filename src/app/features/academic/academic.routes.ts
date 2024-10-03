@@ -25,6 +25,10 @@ export const routes: Routes = [
       {
         path: 'convalidationAsignature',
         loadComponent: () => import('./views/academic-convalidation-asignature/academic-convalidation-asignature.component').then(m => m.AcademicConvalidationAsignatureComponent),
+      },
+      {
+        path: 'career-origin',
+        loadComponent: () => import('./views/academic-origin-career-convalidation/academic-origin-career-convalidation.component').then(m => m.AcademicOriginCareerConvalidationComponent),
       }
     ],
   },

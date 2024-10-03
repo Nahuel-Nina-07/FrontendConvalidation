@@ -1,46 +1,77 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, HostListener, inject, Output } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { SuintPageHeaderComponent } from '../../../../shared/components/page-header/page-header.component';
 import { SvgIconComponent } from 'angular-svg-icon';
 import { ContratoService } from '../../../human-resources/services/contrato.service';
 import { WorkAreaService } from '../../../human-resources/services/work-area.service';
-import { DashboardService } from '../../../main-layout/services/dashboard.service';
-import { ModalAddStudentComponent } from "../../../../shared/components/modals/modal-add-student/modal-add-student.component";
-import { ModalServicesComponent } from "../../../../shared/components/modals/modal-services/modal-services.component";
+import { UniversityOriginService } from '../../services/university-origin.service';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { InputCustomComponent } from '../../../../shared/components/custom-input/custom-input.component';
+import { ModalFormComponent } from "../../../../shared/components/modals/modal-form/modal-form.component";
 
 @Component({
   selector: 'app-academic-convalidation-list',
   standalone: true,
-  imports: [SvgIconComponent, SuintPageHeaderComponent, CommonModule, ModalAddStudentComponent, ModalServicesComponent],
+  imports: [SvgIconComponent, SuintPageHeaderComponent, CommonModule, ReactiveFormsModule, InputCustomComponent, ModalFormComponent],
   templateUrl: './academic-convalidation-list.component.html',
-  styleUrl: './academic-convalidation-list.component.scss'
+  styleUrls: ['./academic-convalidation-list.component.scss']
 })
-export class AcademicConvalidationListComponent {
-  openForm( ){
-    console.log('Me hicieron clic');
+export class AcademicConvalidationListComponent implements OnInit {
+  #_formBuilder = inject(FormBuilder);
+  private readonly universityOriginSvc = inject(UniversityOriginService);
+
+  contractGroup: FormGroup;
+  cities: any[] = [];
+
+  constructor() {
+    this.contractGroup = this.#_formBuilder.group({
+      name: new FormControl(''),
+      phone: new FormControl(''),
+      scheduleLoad: new FormControl(''),
+      fax: new FormControl(''),
+      cityId: new FormControl(''),
+      email: new FormControl(''),
+      observation: new FormControl(''),
+    });
   }
 
-  @Output() toggleMenu = new EventEmitter<void>();
-
-  public idDropDownServiceOpen: boolean = false;
-
-  onToggleMenu(){
-    this.toggleMenu.emit();
+  ngOnInit() {
+    this.loadCities();
   }
 
-  toggleDropdown(){
-    this.idDropDownServiceOpen = !this.idDropDownServiceOpen;
-  }
+  loadCities() {
+    this.universityOriginSvc.getCity().subscribe({
+        next: (response) => {
+            this.cities = response;
+            console.log('Ciudades cargadas:', this.cities);
+        },
+        error: (error) => {
+            console.error('Error al cargar las ciudades:', error);
+        }
+    });
+}
 
-  @HostListener('document:click', ['$event']) onDocumentClick(event: MouseEvent){
-    const target = event.target as HTMLElement;
 
-    // Asegúrate de que el click no fue en el botón del dropdown
-    const clickedInsideDropdownButton = target.closest('.dropdown-button');
-    const clickedInsideDropdownMenu = target.closest('.dropdown-menu');
+  register() {
+    const universityData = {
+      name: this.contractGroup.get('name')?.value,
+      phone: this.contractGroup.get('phone')?.value,
+      scheduleLoad: this.contractGroup.get('scheduleLoad')?.value,
+      fax: this.contractGroup.get('fax')?.value,
+      cityId: this.contractGroup.get('cityId')?.value,
+      email: this.contractGroup.get('email')?.value,
+      observation: this.contractGroup.get('observation')?.value,
+    };
 
-    if (!clickedInsideDropdownButton && !clickedInsideDropdownMenu) {
-      this.idDropDownServiceOpen = false;
-    }
+    console.log('Datos de universidad a enviar:', universityData);
+
+    this.universityOriginSvc.createUniversityOrigin(universityData).subscribe({
+      next: (response) => {
+        console.log('Universidad creada con éxito:', response);
+      },
+      error: (error) => {
+        console.error('Error al crear la universidad:', error);
+      }
+    });
   }
 }

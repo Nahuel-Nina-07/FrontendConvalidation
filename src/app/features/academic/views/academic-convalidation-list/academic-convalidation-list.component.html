@@ -2,18 +2,97 @@
   <suint-page-header
     description="Convalidaciones en proceso"
     title="Lista de convalidaciones"
-    class="dropdown-button"
-    (onClickButton)="toggleDropdown()"
-  />
-  <div
-    class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 dropdown-menu"
-    [ngClass]="{
-      'transition ease-linear duration-300 transform opacity-100 scale-100 block':
-        idDropDownServiceOpen,
-      'transition ease-in duration-75 transform opacity-0 scale-95 hidden':
-        !idDropDownServiceOpen
-    }"
-  >
-    <shared-modal-add-student />
-  </div>
+    (onClickButton)="modal.openModal()"
+  ></suint-page-header>
+
+    <suit-modal-form
+      titleModal="Datos de Universidad de Origen"
+      #modal
+      [width]="'800px'"
+      [maxWidth]="'100%'"
+    >
+      <form [formGroup]="contractGroup" (ngSubmit)="register()">
+        <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+
+          <!-- Columna 1 -->
+          <div>
+            <input-custom
+              name="Organización"
+              formControlName="name"
+              type="text"
+              placeholder="Introduce la organización"
+            ></input-custom>
+
+            <input-custom
+              name="Teléfono"
+              formControlName="phone"
+              type="text"
+              placeholder="Introduce tu teléfono"
+            ></input-custom>
+          </div>
+
+          <!-- Columna 2 -->
+          <div>
+            <input-custom
+              name="Carga Horaria"
+              formControlName="scheduleLoad"
+              type="datetime-local"
+              placeholder="Introduce la carga horaria"
+            ></input-custom>
+
+            <input-custom
+              name="Fax"
+              formControlName="fax"
+              type="text"
+              placeholder="Introduce el número de fax"
+            ></input-custom>
+          </div>
+
+          <!-- Columna 3 -->
+
+          <div>
+            <input-custom
+              name="Ciudad"
+              type="select"
+              [options]="cities" 
+              formControlName="cityId" 
+              [displayProperty]="'name'"   
+              [valueProperty]="'id'"  
+              placeholder="Selecciona un código postal"
+            ></input-custom>
+          </div>
+
+          <!--  [displayProperty]="'postalCode'" lo que muestro 
+                [valueProperty]="'name'"  lo que guardo ne la base
+          -->
+
+          <!-- Fila que ocupa 2 columnas -->
+          <div class="col-span-2">
+            <input-custom
+              name="Correo"
+              formControlName="email"
+              type="email"
+              placeholder="Introduce el correo"
+              class="w-full"
+            ></input-custom>
+          </div>
+
+          <div class="col-span-2">
+            <input-custom
+              name="Observaciones"
+              formControlName="observation"
+              type="text"
+              placeholder="Introduce tus observaciones"
+              class="w-full"
+            ></input-custom>
+          </div>
+        </div>
+
+        <div class="mt-6 flex justify-end">
+          <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md shadow-sm">
+            Guardar
+          </button>
+        </div>
+      </form>
+    </suit-modal-form>
 </div>

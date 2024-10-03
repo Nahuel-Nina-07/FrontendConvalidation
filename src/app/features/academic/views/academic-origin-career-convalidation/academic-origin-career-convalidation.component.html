@@ -1,0 +1,125 @@
+<div class="flex flex-col h-full gap-1">
+    <suint-page-header
+      description="Convalidaciones en proceso"
+      title="Lista de convalidaciones"
+      (onClickButton)="modal.openModal()"
+    ></suint-page-header>
+    <div class="flex-1 overflow-y-auto bg-white rounded-[4px] shadow-sm">
+      @defer(on timer(3000ms)) {
+      <ng-container *ngIf="contract$ | async as contractData; else noData">
+        <pre>
+            {{ contractData | json }}
+          </pre
+        >
+      </ng-container>
+      <ng-template #noData>
+        <span class="text-red-500">Error: No se encontraron datos.</span>
+      </ng-template>
+      } @placeholder {
+      <div class="space-y-4 animate-pulse">
+        <div class="w-full h-48 bg-gray-300 rounded-md"></div>
+        <div class="w-3/4 h-6 bg-gray-300 rounded-md"></div>
+        <div class="space-y-2">
+          <div class="w-full h-4 bg-gray-300 rounded-md"></div>
+          <div class="w-5/6 h-4 bg-gray-300 rounded-md"></div>
+        </div>
+      </div>
+      }
+      <pre>
+        {{ workArea$ | async | json }}
+      </pre>
+      <suit-modal-form
+        titleModal="Datos de Universidad de Origen"
+        #modal
+        [width]="'800px'"
+        [maxWidth]="'100%'"
+      >
+      <form [formGroup]="contractGroup">
+        <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+
+            <div>
+              <input-custom
+                name="Universidad de Origen"
+                type="select"
+                [options]="['Argentina', 'Bolivia', 'Chile', 'Perú']"
+                formControlName="country"
+              ></input-custom>
+
+              <input-custom
+              name="Nombre de la Carrera"
+              formControlName="careerName"
+              type="text"
+              placeholder="Introduce la sucursal"
+            ></input-custom>
+
+            <input-custom
+              name="Numero de semana"
+              formControlName="careerName"
+              type="number"
+              placeholder="Introduce el numero de semanas"
+            ></input-custom>
+
+            <input-custom
+              name="Nivel Academico"
+              formControlName="fax"
+              type="text"
+          
+              [options]="['Argentina', 'Bolivia', 'Chile', 'Perú']"
+            ></input-custom>
+            </div>
+
+          <!-- Columna 2 -->
+          <div>
+            <input-custom
+              name="Facultad o Unidad Academica"
+              formControlName="fax"
+              type="text"
+          
+              [options]="['Argentina', 'Bolivia', 'Chile', 'Perú']"
+            ></input-custom>
+
+            <input-custom
+              name="Resolucion Date"
+              formControlName="fax"
+              type="text"
+              placeholder="Introduce el número de fax"
+            ></input-custom>
+
+            <input-custom
+              name="Nota de aprobacion"
+              formControlName="fax"
+              type="text"
+              placeholder="Introduce el número de fax"
+            ></input-custom>
+
+            <input-custom
+              name="Regimend de Estudio"
+              formControlName="fax"
+              type="text"
+          
+              [options]="['Argentina', 'Bolivia', 'Chile', 'Perú']"
+            ></input-custom>
+          </div>
+      
+          
+          <!-- Columna 3 -->
+        <div>
+          <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md shadow-sm" (click)="register()">Nueva facultad</button>
+
+
+          <input-custom
+            name="Estado"
+            type="select"
+            [options]="['Argentina', 'Bolivia', 'Chile', 'Perú']"
+            formControlName="country"
+          ></input-custom>
+        </div>
+  
+        </div>
+        <div class="mt-6 flex justify-end">
+          <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md shadow-sm" (click)="register()">Guardar</button>
+        </div>
+      </form>
+      </suit-modal-form>
+    </div>
+  </div>

@@ -8,6 +8,8 @@ import { Observable } from 'rxjs';
 export class UniversityOriginService {
   private apiUrl = 'http://localhost:5050/UniversityOrigin';
 
+  private apiUrlCity = 'http://localhost:5050/City';
+
   constructor(private http: HttpClient) {}
 
   createUniversityOrigin(university: any): Observable<any> {
@@ -16,6 +18,10 @@ export class UniversityOriginService {
 
   getUniversityOrigins(): Observable<any[]> {
     return this.http.get<any[]>(this.apiUrl);
+  }
+
+  getCity(): Observable<any[]> {
+    return this.http.get<any[]>(this.apiUrlCity);
   }
 
   deleteUniversityOrigin(id: number): Observable<any> {

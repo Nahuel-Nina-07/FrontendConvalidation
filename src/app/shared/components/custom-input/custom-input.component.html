@@ -1,0 +1,35 @@
+<div>
+  <label class="text-sm text-primary">{{ name }}</label>
+  <ng-container *ngIf="type === 'select'; else inputField">
+    <select
+    class="block w-full h-9 p-2 bg-white border border-gray-200 rounded-md text-sm outline-none focus:border-primary-focus transition duration-500"
+    [ngStyle]="{
+        width: inputWidth,
+        'min-height': minHeight,
+        'max-width': maxWidth
+    }"
+    [ngModel]="value" 
+    (ngModelChange)="onSelectChange($event)" 
+    [disabled]="isDisabled"
+>
+    <option *ngFor="let option of options" [ngValue]="option[valueProperty]">{{ option[displayProperty] }}</option> 
+</select>
+  </ng-container>
+
+  <!-- Fallback para input si no es select -->
+  <ng-template #inputField>
+    <input
+      class="block w-full h-9 p-2 bg-white border border-gray-200 rounded-md text-sm outline-none placeholder:text-slate-400 placeholder:text-sm focus:border-primary-focus !ring-offset-0 !ring-0 transition duration-500"
+      [type]="type"
+      [value]="value"
+      (input)="onInputChange($event)"
+      [placeholder]="placeholder"
+      [disabled]="isDisabled"
+      [ngStyle]="{
+        width: inputWidth,
+        'min-height': minHeight,
+        'max-width': maxWidth
+      }"
+    />
+  </ng-template>
+</div>
