@@ -22,6 +22,7 @@ export class ModalFormComponent {
   }
 
   closeModal() {
+    window.location.reload();
     this.isOpen = false;
   }
 }

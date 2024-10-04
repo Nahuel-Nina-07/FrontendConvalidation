@@ -32,6 +32,10 @@ export class UniversityOriginService {
     return this.http.get<any[]>(`${this.apiUrl}/${name}`);
   }
 
+  getUniversityById(id: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/${id}`);
+  }
+
   updateUniversityOrigin(university: any): Observable<any> {
     return this.http.post<any>(this.apiUrl, university);
   }

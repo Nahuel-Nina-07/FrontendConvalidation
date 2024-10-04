@@ -1,98 +1,124 @@
 <div class="flex flex-col h-full gap-1">
-  <suint-page-header
-    description="Convalidaciones en proceso"
-    title="Lista de convalidaciones"
-    (onClickButton)="modal.openModal()"
-  ></suint-page-header>
-
-    <suit-modal-form
-      titleModal="Datos de Universidad de Origen"
-      #modal
-      [width]="'800px'"
-      [maxWidth]="'100%'"
+  <form [formGroup]="contractGroup">
+    <suint-page-header
+      description="Convalidaciones en proceso"
+      title="Lista de convalidaciones"
     >
-      <form [formGroup]="contractGroup" (ngSubmit)="register()">
-        <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+      <input-custom
+        name="Universidad"
+        type="select"
+        [options]="universities"
+        formControlName="universityId"
+        [displayProperty]="'name'"
+        [valueProperty]="'id'"
+      ></input-custom>
 
-          <!-- Columna 1 -->
-          <div>
-            <input-custom
-              name="Organización"
-              formControlName="name"
-              type="text"
-              placeholder="Introduce la organización"
-            ></input-custom>
+      <app-suint-button
+        [text]="'Editar'"
+        [iconSrc]="'assets/icons/icon-save.svg'"
+        (onClickButton)="openEditModal()"
+      ></app-suint-button>
 
-            <input-custom
-              name="Teléfono"
-              formControlName="phone"
-              type="text"
-              placeholder="Introduce tu teléfono"
-            ></input-custom>
-          </div>
+      <app-suint-button
+        [text]="'Agregar'"
+        [iconSrc]="'assets/icons/icon-add.svg'"
+        (onClickButton)="openAddModal()"
+      ></app-suint-button>
 
-          <!-- Columna 2 -->
-          <div>
-            <input-custom
-              name="Carga Horaria"
-              formControlName="scheduleLoad"
-              type="datetime-local"
-              placeholder="Introduce la carga horaria"
-            ></input-custom>
+    </suint-page-header>
+  </form>
 
-            <input-custom
-              name="Fax"
-              formControlName="fax"
-              type="text"
-              placeholder="Introduce el número de fax"
-            ></input-custom>
-          </div>
+  <suit-modal-form
+    titleModal="Datos de Universidad de Origen"
+    #modal
+    [width]="'800px'"
+    [maxWidth]="'100%'"
+  >
+    <form [formGroup]="contractGroup" (ngSubmit)="register()">
+      <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <!-- Columna 1 -->
+        <div>
+          <input-custom
+            name="Organización"
+            formControlName="name"
+            type="text"
+            placeholder="Introduce la organización"
+          ></input-custom>
 
-          <!-- Columna 3 -->
-
-          <div>
-            <input-custom
-              name="Ciudad"
-              type="select"
-              [options]="cities" 
-              formControlName="cityId" 
-              [displayProperty]="'name'"   
-              [valueProperty]="'id'"  
-              placeholder="Selecciona un código postal"
-            ></input-custom>
-          </div>
-
-          <!--  [displayProperty]="'postalCode'" lo que muestro 
-                [valueProperty]="'name'"  lo que guardo ne la base
-          -->
-
-          <!-- Fila que ocupa 2 columnas -->
-          <div class="col-span-2">
-            <input-custom
-              name="Correo"
-              formControlName="email"
-              type="email"
-              placeholder="Introduce el correo"
-              class="w-full"
-            ></input-custom>
-          </div>
-
-          <div class="col-span-2">
-            <input-custom
-              name="Observaciones"
-              formControlName="observation"
-              type="text"
-              placeholder="Introduce tus observaciones"
-              class="w-full"
-            ></input-custom>
-          </div>
+          <input-custom
+            name="Teléfono"
+            formControlName="phone"
+            type="text"
+            placeholder="Introduce tu teléfono"
+          ></input-custom>
         </div>
 
-        <div class="mt-6 flex justify-end">
-          <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md shadow-sm">
-            Guardar
-          </button>
+        <!-- Columna 2 -->
+        <div>
+          <input-custom
+            name="Carga Horaria"
+            formControlName="scheduleLoad"
+            type="datetime-local"
+            placeholder="Introduce la carga horaria"
+          ></input-custom>
+
+          <input-custom
+            name="Fax"
+            formControlName="fax"
+            type="text"
+            placeholder="Introduce el número de fax"
+          ></input-custom>
         </div>
-      </form>
-    </suit-modal-form>
+
+        <!-- Columna 3 -->
+        <div>
+          <input-custom
+            name="Ciudad"
+            type="select"
+            [options]="cities"
+            formControlName="cityId"
+            [displayProperty]="'name'"
+            [valueProperty]="'id'"
+          ></input-custom>
+        </div>
+
+        <!-- Fila que ocupa 2 columnas -->
+        <div class="col-span-2">
+          <!-- <input-custom
+            name="Correo"
+            formControlName="email"
+            type="email"
+            placeholder="Introduce el correo"
+            class="w-full"
+          ></input-custom> -->
+
+          <input
+            name="Correo"
+            formControlName="email"
+            type="email"
+            placeholder="Introduce el correo"
+          />
+        </div>
+
+        <div class="col-span-2">
+          <input-custom
+            name="Observaciones"
+            formControlName="observation"
+            type="text"
+            placeholder="Introduce tus observaciones"
+            class="w-full"
+          ></input-custom>
+        </div>
+      </div>
+
+      <div class="mt-6 flex justify-end">
+        <app-suint-button
+          [text]="'Guardar'"
+          [iconSrc]="'assets/icons/icon-save.svg'"
+          type="submit"
+          (onClickButton)="window()"
+        ></app-suint-button>
+      </div>
+    </form>
+  </suit-modal-form>
 </div>
