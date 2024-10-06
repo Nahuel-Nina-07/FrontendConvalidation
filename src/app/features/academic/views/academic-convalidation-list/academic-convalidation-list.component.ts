@@ -7,11 +7,12 @@ import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angul
 import { InputCustomComponent } from '../../../../shared/components/custom-input/custom-input.component';
 import { ModalFormComponent } from "../../../../shared/components/modals/modal-form/modal-form.component";
 import { SuintButtonComponent } from "../../../../shared/components/suint-button/suint-button.component";
+import { AcademicOriginCareerConvalidationComponent } from "../academic-origin-career-convalidation/academic-origin-career-convalidation.component";
 
 @Component({
   selector: 'app-academic-convalidation-list',
   standalone: true,
-  imports: [SvgIconComponent, SuintPageHeaderComponent, CommonModule, ReactiveFormsModule, InputCustomComponent, ModalFormComponent, SuintButtonComponent],
+  imports: [SvgIconComponent, SuintPageHeaderComponent, CommonModule, ReactiveFormsModule, InputCustomComponent, ModalFormComponent, SuintButtonComponent, AcademicOriginCareerConvalidationComponent],
   templateUrl: './academic-convalidation-list.component.html',
   styleUrls: ['./academic-convalidation-list.component.scss']
 })
@@ -31,7 +32,7 @@ export class AcademicConvalidationListComponent implements OnInit {
       id: new FormControl(0),
       name: new FormControl(''),
       phone: new FormControl(''),
-      scheduleLoad: new FormControl(''),
+      branch: new FormControl(''),
       fax: new FormControl(''),
       cityId: new FormControl(''),
       email: new FormControl(''),
@@ -43,6 +44,7 @@ export class AcademicConvalidationListComponent implements OnInit {
   ngOnInit() {
     this.loadCities();
     this.loadUniversities();
+    
   }
 
   clearForm() {
@@ -50,7 +52,7 @@ export class AcademicConvalidationListComponent implements OnInit {
       id: 0,
       name: '',
       phone: '',
-      scheduleLoad: '',
+      branch: '',
       fax: '',
       cityId: '',
       email: '',
@@ -66,9 +68,11 @@ export class AcademicConvalidationListComponent implements OnInit {
      // Recarga la página
 }
 
-  window(){
+delayReload() {
+  setTimeout(() => {
     window.location.reload();
-  }
+  }, 1500);
+}
 
 
   openEditModal() {
@@ -83,7 +87,7 @@ export class AcademicConvalidationListComponent implements OnInit {
           id: selectedUniversity.id,
           name: selectedUniversity.name,
           phone: selectedUniversity.phone,
-          scheduleLoad: selectedUniversity.scheduleLoad,
+          branch: selectedUniversity.branch,
           fax: selectedUniversity.fax,
           cityId: selectedUniversity.cityId,
           email: selectedUniversity.email,
@@ -125,12 +129,13 @@ export class AcademicConvalidationListComponent implements OnInit {
       id: this.contractGroup.get('id')?.value || 0,
       name: this.contractGroup.get('name')?.value,
       phone: this.contractGroup.get('phone')?.value,
-      scheduleLoad: this.contractGroup.get('scheduleLoad')?.value,
+      branch: this.contractGroup.get('branch')?.value,
       fax: this.contractGroup.get('fax')?.value,
       cityId: this.contractGroup.get('cityId')?.value,
       email: this.contractGroup.get('email')?.value,
       observation: this.contractGroup.get('observation')?.value,
     };
+    console.log('Datos a enviar:', universityData);
 
     if (universityData.id === 0) {
       // Crear nueva universidad

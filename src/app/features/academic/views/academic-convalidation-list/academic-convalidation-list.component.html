@@ -20,13 +20,16 @@
       ></app-suint-button>
 
       <app-suint-button
-        [text]="'Agregar'"
+        [text]="'Nuevo'"
         [iconSrc]="'assets/icons/icon-add.svg'"
         (onClickButton)="openAddModal()"
       ></app-suint-button>
 
     </suint-page-header>
   </form>
+  
+  <app-academic-origin-career-convalidation></app-academic-origin-career-convalidation>
+
 
   <suit-modal-form
     titleModal="Datos de Universidad de Origen"
@@ -56,10 +59,10 @@
         <!-- Columna 2 -->
         <div>
           <input-custom
-            name="Carga Horaria"
-            formControlName="scheduleLoad"
-            type="datetime-local"
-            placeholder="Introduce la carga horaria"
+            name="Sucursal"
+            formControlName="branch"
+            type="text"
+            placeholder="Introduce la la sucursal"
           ></input-custom>
 
           <input-custom
@@ -97,10 +100,17 @@
             formControlName="email"
             type="email"
             placeholder="Introduce el correo"
+            class="block w-full h-9 p-2 bg-white border border-gray-200 rounded-md text-sm outline-none placeholder:text-slate-400 placeholder:text-sm focus:border-primary-focus !ring-offset-0 !ring-0 transition duration-500"
           />
         </div>
 
         <div class="col-span-2">
+
+          <input name="Observaciones"
+          formControlName="observation"
+          type="text"
+          placeholder="Introduce tus observaciones"
+          class="w-full">
           <input-custom
             name="Observaciones"
             formControlName="observation"
@@ -116,7 +126,7 @@
           [text]="'Guardar'"
           [iconSrc]="'assets/icons/icon-save.svg'"
           type="submit"
-          (onClickButton)="window()"
+          (onClickButton)="delayReload()"
         ></app-suint-button>
       </div>
     </form>

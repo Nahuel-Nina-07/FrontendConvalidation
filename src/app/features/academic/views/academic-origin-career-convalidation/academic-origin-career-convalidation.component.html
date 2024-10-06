@@ -1,125 +1,166 @@
 <div class="flex flex-col h-full gap-1">
-    <suint-page-header
-      description="Convalidaciones en proceso"
-      title="Lista de convalidaciones"
-      (onClickButton)="modal.openModal()"
-    ></suint-page-header>
-    <div class="flex-1 overflow-y-auto bg-white rounded-[4px] shadow-sm">
-      @defer(on timer(3000ms)) {
-      <ng-container *ngIf="contract$ | async as contractData; else noData">
-        <pre>
-            {{ contractData | json }}
-          </pre
-        >
-      </ng-container>
-      <ng-template #noData>
-        <span class="text-red-500">Error: No se encontraron datos.</span>
-      </ng-template>
-      } @placeholder {
-      <div class="space-y-4 animate-pulse">
-        <div class="w-full h-48 bg-gray-300 rounded-md"></div>
-        <div class="w-3/4 h-6 bg-gray-300 rounded-md"></div>
-        <div class="space-y-2">
-          <div class="w-full h-4 bg-gray-300 rounded-md"></div>
-          <div class="w-5/6 h-4 bg-gray-300 rounded-md"></div>
-        </div>
-      </div>
-      }
-      <pre>
-        {{ workArea$ | async | json }}
-      </pre>
-      <suit-modal-form
-        titleModal="Datos de Universidad de Origen"
-        #modal
-        [width]="'800px'"
-        [maxWidth]="'100%'"
-      >
-      <form [formGroup]="contractGroup">
+  <div class="bg-gray-100 min-h-screen p-5">
+    <suint-page-header description="" title="Carreras">
+      <!-- Botón de nuevo -->
+      <app-suint-button
+        [text]="'Nuevo'"
+        [iconSrc]="'assets/icons/icon-add.svg'"
+        (onClickButton)="openAddModal()"
+      ></app-suint-button>
+    </suint-page-header>
+
+    <div class="shadow-sm bg-white rounded-b-md p-5">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="border-b border-gray-200">
+            <th class="p-4 text-sm font-semibold text-gray-600">Nombre</th>
+            <th class="p-4 text-sm font-semibold text-gray-600"># Asig.</th>
+            <th class="p-4 text-sm font-semibold text-gray-600">Teléfono</th>
+            <th class="p-4 text-sm font-semibold text-gray-600">
+              Fecha de inicio
+            </th>
+            <th class="p-4 text-sm font-semibold text-gray-600">Estado</th>
+            <th class="p-4 text-sm font-semibold text-gray-600">Repo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b border-gray-100 hover:bg-gray-50">
+            <td class="p-4 text-gray-700">o</td>
+            <td class="p-4 text-gray-700">o</td>
+            <td class="p-4 text-gray-700">o</td>
+            <td class="p-4 text-gray-700">o</td>
+            <td class="p-4 text-center">
+              <img
+                
+                alt="estado"
+                class="w-6 h-6 inline-block"
+              />
+            </td>
+            <td class="p-4 text-center">
+              <img
+                
+                alt="repo"
+                class="w-6 h-6 inline-block"
+              />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="flex-1 overflow-y-auto bg-white rounded-[4px] shadow-sm">
+    <suit-modal-form
+      titleModal="Datos de carrera de origen"
+      #modal
+      [width]="'800px'"
+      [maxWidth]="'100%'"
+    >
+      <form [formGroup]="contractGroup" (ngSubmit)="register()">
         <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
-
-            <div>
-              <input-custom
-                name="Universidad de Origen"
-                type="select"
-                [options]="['Argentina', 'Bolivia', 'Chile', 'Perú']"
-                formControlName="country"
-              ></input-custom>
-
-              <input-custom
-              name="Nombre de la Carrera"
-              formControlName="careerName"
-              type="text"
-              placeholder="Introduce la sucursal"
+          <div>
+            <input-custom
+              name="Universidad de Origen"
+              type="select"
+              [options]="universities"
+              formControlName="universityId"
+              [displayProperty]="'name'"
+              [valueProperty]="'id'"
             ></input-custom>
 
             <input-custom
-              name="Numero de semana"
-              formControlName="careerName"
+              name="Nombre de la Carrera"
+              formControlName="name"
+              type="text"
+              placeholder="Introduce el nombre de la carrera"
+            ></input-custom>
+
+            <input-custom
+              name="Numero de semanas"
+              formControlName="numberWeeks"
               type="number"
-              placeholder="Introduce el numero de semanas"
+              placeholder="Introduce el número de semanas"
             ></input-custom>
 
             <input-custom
               name="Nivel Academico"
-              formControlName="fax"
-              type="text"
-          
-              [options]="['Argentina', 'Bolivia', 'Chile', 'Perú']"
+              formControlName="academicLevelId"
+              type="select"
+              [options]="['Nivel 1', 'Nivel 2', 'Nivel 3']"
             ></input-custom>
-            </div>
+          </div>
 
           <!-- Columna 2 -->
           <div>
             <input-custom
               name="Facultad o Unidad Academica"
-              formControlName="fax"
-              type="text"
-          
-              [options]="['Argentina', 'Bolivia', 'Chile', 'Perú']"
+              [options]="faculties"
+              formControlName="facultyId"
+              type="select"
+              [displayProperty]="'name'"
+              [valueProperty]="'id'"
             ></input-custom>
 
             <input-custom
-              name="Resolucion Date"
-              formControlName="fax"
-              type="text"
-              placeholder="Introduce el número de fax"
+              name="Fecha de Resolución"
+              formControlName="resolutionDate"
+              type="datetime-local"
+              placeholder="Selecciona la fecha de resolución"
             ></input-custom>
 
             <input-custom
-              name="Nota de aprobacion"
-              formControlName="fax"
-              type="text"
-              placeholder="Introduce el número de fax"
+              name="Nota de Aprobación"
+              formControlName="approvalNote"
+              type="number"
+              placeholder="Introduce la nota de aprobación"
             ></input-custom>
 
             <input-custom
-              name="Regimend de Estudio"
-              formControlName="fax"
-              type="text"
-          
-              [options]="['Argentina', 'Bolivia', 'Chile', 'Perú']"
+              name="Régimen de Estudio"
+              formControlName="studyRegimenId"
+              type="select"
+              [options]="['Presencial', 'Virtual']"
             ></input-custom>
           </div>
-      
-          
+
           <!-- Columna 3 -->
-        <div>
-          <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md shadow-sm" (click)="register()">Nueva facultad</button>
+          <div>
+            <div class="mt-6 flex justify-end">
+              <app-suint-button
+                [text]="'Agregar'"
+                [iconSrc]="'assets/icons/icon-add.svg'"
+                type="submit"
+                
+              ></app-suint-button>
+            </div>
 
+            <input-custom
+              name="Estado"
+              type="select"
+              [options]="stateOptions"
+              formControlName="state"
+              [displayProperty]="'name'"
+              [valueProperty]="'value'"
+            ></input-custom>
 
-          <input-custom
-            name="Estado"
-            type="select"
-            [options]="['Argentina', 'Bolivia', 'Chile', 'Perú']"
-            formControlName="country"
-          ></input-custom>
-        </div>
-  
+            <input-custom
+              name="Carga Horaria"
+              type="select"
+              [options]="workloadOptions"
+              formControlName="workload"
+              [displayProperty]="'name'"
+              [valueProperty]="'name'"
+            ></input-custom>
+          </div>
         </div>
         <div class="mt-6 flex justify-end">
-          <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md shadow-sm" (click)="register()">Guardar</button>
+          <app-suint-button
+            [text]="'Guardar'"
+            [iconSrc]="'assets/icons/icon-save.svg'"
+            type="submit"
+            
+          ></app-suint-button>
         </div>
       </form>
-      </suit-modal-form>
-    </div>
+    </suit-modal-form>
   </div>
+</div>
