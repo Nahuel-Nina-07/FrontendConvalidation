@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, Input, OnInit, ViewChild } from '@angular/core';
 import { SvgIconComponent } from 'angular-svg-icon';
 import { SuintPageHeaderComponent } from '../../../../shared/components/page-header/page-header.component';
 import { CommonModule } from '@angular/common';
@@ -23,6 +23,11 @@ export class AcademicOriginCareerConvalidationComponent implements OnInit {
   #_formBuilder = inject(FormBuilder);
   private readonly universityOriginService = inject(UniversityOriginService);  // Inyección del servicio
   private readonly careerOriginService = inject(CareerOriginService);  // Inyección del servicio
+
+  @Input() data: any[] = [];
+
+  // Recibe la configuración de las columnas (nombre y campo a mostrar)
+  @Input() columns: { header: string, field: string }[] = [];
 
   contractGroup: FormGroup;
   universities: any[] = [];  // Lista para almacenar las carreras

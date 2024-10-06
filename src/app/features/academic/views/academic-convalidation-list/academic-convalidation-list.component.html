@@ -11,6 +11,7 @@
         formControlName="universityId"
         [displayProperty]="'name'"
         [valueProperty]="'id'"
+        (ngModelChange)="onUniversityChange($event)"
       ></input-custom>
 
       <app-suint-button
@@ -28,7 +29,7 @@
     </suint-page-header>
   </form>
   
-  <app-academic-origin-career-convalidation></app-academic-origin-career-convalidation>
+  <app-academic-origin-career-convalidation [data]="careers" [columns]="tableColumns"></app-academic-origin-career-convalidation>
 
 
   <suit-modal-form
@@ -55,7 +56,6 @@
             placeholder="Introduce tu teléfono"
           ></input-custom>
         </div>
-
         <!-- Columna 2 -->
         <div>
           <input-custom
@@ -106,11 +106,6 @@
 
         <div class="col-span-2">
 
-          <input name="Observaciones"
-          formControlName="observation"
-          type="text"
-          placeholder="Introduce tus observaciones"
-          class="w-full">
           <input-custom
             name="Observaciones"
             formControlName="observation"

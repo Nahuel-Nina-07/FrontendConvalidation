@@ -28,8 +28,14 @@ export class CareerOriginService {
     return this.http.post<any>(this.apiUrl, career); // Usar POST para actualizar también
   }
 
+  getCareerByUniversity(id: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/University/${id}`);
+  }
+
   //Facultad
   getFacultyAll(): Observable<any[]> {
     return this.http.get<any[]>(`${this.facultyUrl}`);
   }
+
+
 }

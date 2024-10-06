@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, Input, OnInit, ViewChild } from '@angular/core';
 import { SuintPageHeaderComponent } from '../../../../shared/components/page-header/page-header.component';
 import { SvgIconComponent } from 'angular-svg-icon';
 import { UniversityOriginService } from '../../services/university-origin.service';
@@ -8,10 +8,12 @@ import { InputCustomComponent } from '../../../../shared/components/custom-input
 import { ModalFormComponent } from "../../../../shared/components/modals/modal-form/modal-form.component";
 import { SuintButtonComponent } from "../../../../shared/components/suint-button/suint-button.component";
 import { AcademicOriginCareerConvalidationComponent } from "../academic-origin-career-convalidation/academic-origin-career-convalidation.component";
+import { CareerOriginService } from '../../services/career-origin.service';
 
 @Component({
   selector: 'app-academic-convalidation-list',
   standalone: true,
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   imports: [SvgIconComponent, SuintPageHeaderComponent, CommonModule, ReactiveFormsModule, InputCustomComponent, ModalFormComponent, SuintButtonComponent, AcademicOriginCareerConvalidationComponent],
   templateUrl: './academic-convalidation-list.component.html',
   styleUrls: ['./academic-convalidation-list.component.scss']
@@ -19,14 +21,23 @@ import { AcademicOriginCareerConvalidationComponent } from "../academic-origin-c
 export class AcademicConvalidationListComponent implements OnInit {
   #_formBuilder = inject(FormBuilder);
   private readonly universityOriginSvc = inject(UniversityOriginService);
+  private readonly careerOriginSvc = inject(CareerOriginService);
 
   contractGroup: FormGroup;
   cities: any[] = [];
   universities: any[] = [];
   selectedUniversityId: number | null = null;  // Nueva variable para mantener el ID de la universidad seleccionada
-
+  careers: any[] = [];
+  
   @ViewChild('modal') modal!: ModalFormComponent;
 
+  tableColumns = [
+    { header: 'Nombre', field: 'name' },
+    { header: '# Asig.', field: 'state' },
+    { header: 'Teléfono', field: 'phone' },
+    { header: 'Fecha de inicio', field: 'startDate' }
+  ];
+  
   constructor() {
     this.contractGroup = this.#_formBuilder.group({
       id: new FormControl(0),
@@ -44,7 +55,7 @@ export class AcademicConvalidationListComponent implements OnInit {
   ngOnInit() {
     this.loadCities();
     this.loadUniversities();
-    
+    this.getAllCareers();  // Llamar al método para cargar las carreras
   }
 
   clearForm() {
@@ -65,15 +76,40 @@ export class AcademicConvalidationListComponent implements OnInit {
     this.selectedUniversityId = null;  // Al abrir el modal para agregar, no hay ID seleccionado
     this.clearForm();
     this.modal.openModal();
-     // Recarga la página
-}
+  }
 
-delayReload() {
-  setTimeout(() => {
-    window.location.reload();
-  }, 1500);
-}
+  delayReload() {
+    setTimeout(() => {
+      window.location.reload();
+    }, 1500);
+  }
 
+  
+
+  onUniversityChange(universityId: number) {
+    // Verificamos si se seleccionó una universidad válida
+    if (universityId) {
+      this.selectedUniversityId = universityId; // Almacenar el ID de la universidad seleccionada
+      this.getCareersByUniversity(universityId); // Llamar al método para cargar las carreras de esa universidad
+    } else {
+      this.selectedUniversityId = null; // Restablecemos la selección
+      this.careers = []; // Limpiar las carreras anteriores
+      this.getAllCareers(); // Cargar todas las carreras si no hay universidad seleccionada
+    }
+  }
+  
+  // Nuevo método para obtener todas las carreras
+  getAllCareers(): void {
+    this.careerOriginSvc.getCareers().subscribe({
+      next: (careers) => {
+        this.careers = careers; // Mostrar todas las carreras en la vista
+        console.log('Todas las carreras:', careers); // También mostramos las carreras en la consola
+      },
+      error: (error) => {
+        console.error('Error al cargar todas las carreras:', error);
+      }
+    });
+  }
 
   openEditModal() {
     const selectedUniversityId = this.contractGroup.get('universityId')?.value;
@@ -121,6 +157,13 @@ delayReload() {
       error: (error) => {
         console.error('Error al cargar las ciudades:', error);
       }
+    });
+  }
+
+  getCareersByUniversity(universityId: number): void {
+    this.careerOriginSvc.getCareerByUniversity(universityId).subscribe((data) => {
+      this.careers = data;
+      console.log('Carreras para la universidad seleccionada:', this.careers);  // Mostrar carreras en la consola
     });
   }
 
