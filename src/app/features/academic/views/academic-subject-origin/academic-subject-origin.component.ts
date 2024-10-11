@@ -21,14 +21,13 @@ export class AcademicSubjectOriginComponent implements OnInit{
 
   constructor(private subjectService: SubjectOriginService) {}
 
-  subjects: any[] = [];
   @Input() data: any[] = [];
   @Input() columns: { header: string, field: string }[] = [];
-
+  subjects: any[] = [];
   tableColumns = [
     { header: 'Nombre', field: 'name' },
-    { header: '# Asig.', field: 'state' },
-    { header: 'Teléfono', field: 'phone' },
+    { header: 'Total Horas', field: 'state' },
+    { header: 'Semestre', field: 'phone' },
     { header: 'Fecha de inicio', field: 'startDate' }
   ];
 

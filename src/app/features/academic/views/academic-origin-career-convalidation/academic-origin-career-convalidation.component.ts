@@ -27,21 +27,10 @@ export class AcademicOriginCareerConvalidationComponent implements OnInit {
   career: any[] = [];
   tableColumns = [
     { header: 'Nombre', field: 'name' },
-    { header: 'Ciudad', field: 'cityId' },
+    { header: '# Asig', field: 'cityId' },
     { header: 'Teléfono', field: 'phone' },
-    { header: 'Correo Electronico', field: 'email' }
+    { header: 'Fecha de inicio', field: 'email' }
   ];
-
-
-
-
-
-
-
-
-
-
-
 
 
 
