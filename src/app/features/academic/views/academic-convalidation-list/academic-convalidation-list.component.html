@@ -1,8 +1,8 @@
 <div class="flex flex-col h-full gap-1">
   <form [formGroup]="contractGroup">
     <suint-page-header
-      description="Convalidaciones en proceso"
-      title="Lista de convalidaciones"
+     
+      title="Datos de universidad de origen"
     >
       <input-custom
         name="Universidad"
@@ -14,7 +14,7 @@
         (ngModelChange)="onUniversityChange($event)"
       ></input-custom>
 
-      <app-suint-button
+      <!-- <app-suint-button
         [text]="'Editar'"
         [iconSrc]="'assets/icons/icon-save.svg'"
         (onClickButton)="openEditModal()"
@@ -24,13 +24,52 @@
         [text]="'Nuevo'"
         [iconSrc]="'assets/icons/icon-add.svg'"
         (onClickButton)="openAddModal()"
-      ></app-suint-button>
+      ></app-suint-button> -->
 
     </suint-page-header>
   </form>
   
-  <app-academic-origin-career-convalidation [data]="careers" [columns]="tableColumns"></app-academic-origin-career-convalidation>
+  <!-- <app-academic-origin-career-convalidation [data]="careers" [columns]="tableColumns"></app-academic-origin-career-convalidation> -->
 
+
+  <div class="bg-gray-100 min-h-screen p-5">
+    <suint-page-header description="" title="Universidades">
+      <!-- Botón de nuevo -->
+      <app-suint-button
+        [text]="'Nuevo'"
+        [iconSrc]="'assets/icons/icon-add.svg'"
+        (onClickButton)="openAddModal()"
+      ></app-suint-button>
+    </suint-page-header>
+
+    <div class="shadow-sm bg-white rounded-b-md p-5">
+      <div class="shadow-sm bg-white rounded-b-md p-5">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="border-b border-gray-200">
+              <th *ngFor="let column of columns" class="p-4 text-sm font-semibold text-gray-600">
+                {{ column.header }}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of data" class="border-b border-gray-100 hover:bg-gray-50">
+              <td *ngFor="let column of columns" class="p-4 text-gray-700">
+                <!-- Aquí añadimos la lógica condicional para el estado -->
+                <ng-container *ngIf="column.field === 'state'; else defaultValue">
+                  {{ item[column.field] ? 'Activado' : 'Desactivado' }}
+                </ng-container>
+                <ng-template #defaultValue>
+                  {{ item[column.field] }}
+                </ng-template>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      
+  </div>
 
   <suit-modal-form
     titleModal="Datos de Universidad de Origen"
@@ -87,21 +126,14 @@
 
         <!-- Fila que ocupa 2 columnas -->
         <div class="col-span-2">
-          <!-- <input-custom
+          <input-custom
             name="Correo"
             formControlName="email"
             type="email"
             placeholder="Introduce el correo"
             class="w-full"
-          ></input-custom> -->
+          ></input-custom>
 
-          <input
-            name="Correo"
-            formControlName="email"
-            type="email"
-            placeholder="Introduce el correo"
-            class="block w-full h-9 p-2 bg-white border border-gray-200 rounded-md text-sm outline-none placeholder:text-slate-400 placeholder:text-sm focus:border-primary-focus !ring-offset-0 !ring-0 transition duration-500"
-          />
         </div>
 
         <div class="col-span-2">

@@ -31,6 +31,13 @@ export class AcademicConvalidationListComponent implements OnInit {
   
   @ViewChild('modal') modal!: ModalFormComponent;
 
+
+  @Input() data: any[] = [];
+
+  // Recibe la configuración de las columnas (nombre y campo a mostrar)
+  @Input() columns: { header: string, field: string }[] = [];
+
+  
   tableColumns = [
     { header: 'Nombre', field: 'name' },
     { header: '# Asig.', field: 'state' },

@@ -1,4 +1,20 @@
 <div class="flex flex-col h-full gap-1">
+  <form [formGroup]="contractGroup">
+    <suint-page-header
+      title="Datos de Carrera de Origen"
+    >
+      <input-custom
+        name="Selecciona Universidad"
+        type="select"
+        [options]="universities"
+        formControlName="universityId"
+        [displayProperty]="'name'"
+        [valueProperty]="'id'"
+        (ngModelChange)="openAddModal()"
+      ></input-custom>
+
+    </suint-page-header>
+  </form>
   <div class="bg-gray-100 min-h-screen p-5">
     <suint-page-header description="" title="Carreras">
       <!-- Botón de nuevo -->
@@ -113,14 +129,7 @@
 
           <!-- Columna 3 -->
           <div>
-            <div class="mt-6 flex justify-end">
-              <app-suint-button
-                [text]="'Agregar'"
-                [iconSrc]="'assets/icons/icon-add.svg'"
-                type="submit"
-                
-              ></app-suint-button>
-            </div>
+            
 
             <input-custom
               name="Estado"

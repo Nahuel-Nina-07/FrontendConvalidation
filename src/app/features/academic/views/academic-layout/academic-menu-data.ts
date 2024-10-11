@@ -16,14 +16,11 @@ export const menu_data: Array<{ title: string, menuItems: MenuItemInterface[] }>
         ],
     },
     {
-        title: 'GESTION',
+        title: 'Instituciones de Origen',
         menuItems: [
-            { icon: 'assets/icons/icon-estructura.svg', title: 'Personal', url: 'personal' },
-            { icon: 'assets/icons/icon-contrato.svg', title: 'Postulantes', url: 'postulantes' },
-            { icon: 'assets/icons/icon-estructura.svg', title: 'Personal', url: 'personal' },
-            { icon: 'assets/icons/icon-contrato.svg', title: 'Postulantes', url: 'postulantes' },
-            { icon: 'assets/icons/icon-estructura.svg', title: 'Personal', url: 'personal' },
-            { icon: 'assets/icons/icon-contrato.svg', title: 'Postulantes', url: 'postulantes' }
+            { icon: 'assets/icons/icon-estructura.svg', title: 'Universidades', url: 'personal' },
+            { icon: 'assets/icons/icon-contrato.svg', title: 'Carreras', url: 'postulantes' },
+            { icon: 'assets/icons/icon-estructura.svg', title: 'Asignaturas', url: 'personal' },
         ],
     }
     
