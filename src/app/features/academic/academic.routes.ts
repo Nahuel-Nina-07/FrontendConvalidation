@@ -11,25 +11,18 @@ export const routes: Routes = [
         loadComponent: () => import('./views/academic-main/academic-main.component').then(m => m.AcademicMainComponent),
       },
       {
-        path: 'convalidation-list',
+        path: 'university-origin',
         loadComponent: () => import('./views/academic-convalidation-list/academic-convalidation-list.component').then(m => m.AcademicConvalidationListComponent),
       },
-      {
-        path: 'university',
-        loadComponent: () => import('./views/academic-convalidation/academic-convalidation.component').then(m => m.AcademicConvalidationComponent),
-      },
-      {
-        path: 'career',
-        loadComponent: () => import('./views/academic-career-origin/academic-career-origin.component').then(m => m.CareerOriginComponent),
-      },
-      {
-        path: 'convalidationAsignature',
-        loadComponent: () => import('./views/academic-convalidation-asignature/academic-convalidation-asignature.component').then(m => m.AcademicConvalidationAsignatureComponent),
-      },
+      
       {
         path: 'career-origin',
         loadComponent: () => import('./views/academic-origin-career-convalidation/academic-origin-career-convalidation.component').then(m => m.AcademicOriginCareerConvalidationComponent),
-      }
+      },
+      {
+        path: 'subjects-origin',
+        loadComponent: () => import('./views/academic-subject-origin/academic-subject-origin.component').then(m => m.AcademicSubjectOriginComponent),
+      },
     ],
   },
 ];

@@ -1,1 +1,126 @@
-<p>academic-subject-origin works!</p>
+<suint-page-header title="Asignaturas de origen">
+  <input-custom
+    name="Selecciona universidad"
+    type="select"
+    formControlName="universityId"
+    [displayProperty]="'name'"
+    [valueProperty]="'id'"
+  ></input-custom>
+  <input-custom
+    name="Selecciona carrera"
+    type="select"
+    formControlName="universityId"
+    [displayProperty]="'name'"
+    [valueProperty]="'id'"
+  ></input-custom>
+</suint-page-header>
+
+<suint-list-all [data]="subjects" [columns]="tableColumns" title="Asignaturas"
+  ><app-suint-button
+    [text]="'Nuevo'"
+    [iconSrc]="'assets/icons/icon-add.svg'"
+    (onClickButton)="openAddModal()"
+  ></app-suint-button
+></suint-list-all>
+
+<div class="flex-1 overflow-y-auto bg-white rounded-[4px] shadow-sm">
+  <suit-modal-form
+    titleModal="Datos de asignaturas de origen"
+    #modal
+    [width]="'800px'"
+    [maxWidth]="'100%'"
+  >
+    <form>
+      <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <div>
+          <input-custom
+            name="Universidad de Origen"
+            type="select"
+            formControlName="universityId"
+            [displayProperty]="'name'"
+            [valueProperty]="'id'"
+          ></input-custom>
+
+          <input-custom
+            name="Nombre de la Carrera"
+            formControlName="name"
+            type="text"
+            placeholder="Introduce el nombre de la carrera"
+          ></input-custom>
+
+          <input-custom
+            name="Numero de semanas"
+            formControlName="numberWeeks"
+            type="number"
+            placeholder="Introduce el número de semanas"
+          ></input-custom>
+
+          <input-custom
+            name="Nivel Academico"
+            formControlName="academicLevelId"
+            type="select"
+            [options]="['Nivel 1', 'Nivel 2', 'Nivel 3']"
+          ></input-custom>
+        </div>
+
+        <!-- Columna 2 -->
+        <div>
+          <input-custom
+            name="Facultad o Unidad Academica"
+            formControlName="facultyId"
+            type="select"
+            [displayProperty]="'name'"
+            [valueProperty]="'id'"
+          ></input-custom>
+
+          <input-custom
+            name="Fecha de Resolución"
+            formControlName="resolutionDate"
+            type="datetime-local"
+            placeholder="Selecciona la fecha de resolución"
+          ></input-custom>
+
+          <input-custom
+            name="Nota de Aprobación"
+            formControlName="approvalNote"
+            type="number"
+            placeholder="Introduce la nota de aprobación"
+          ></input-custom>
+
+          <input-custom
+            name="Régimen de Estudio"
+            formControlName="studyRegimenId"
+            type="select"
+            [options]="['Presencial', 'Virtual']"
+          ></input-custom>
+        </div>
+
+        <!-- Columna 3 -->
+        <div>
+          <input-custom
+            name="Estado"
+            type="select"
+            formControlName="state"
+            [displayProperty]="'name'"
+            [valueProperty]="'value'"
+          ></input-custom>
+
+          <input-custom
+            name="Carga Horaria"
+            type="select"
+            formControlName="workload"
+            [displayProperty]="'name'"
+            [valueProperty]="'name'"
+          ></input-custom>
+        </div>
+      </div>
+      <div class="mt-6 flex justify-end">
+        <app-suint-button
+          [text]="'Guardar'"
+          [iconSrc]="'assets/icons/icon-save.svg'"
+          type="submit"
+        ></app-suint-button>
+      </div>
+    </form>
+  </suit-modal-form>
+</div>

@@ -9,12 +9,13 @@ import { ModalFormComponent } from "../../../../shared/components/modals/modal-f
 import { SuintButtonComponent } from "../../../../shared/components/suint-button/suint-button.component";
 import { AcademicOriginCareerConvalidationComponent } from "../academic-origin-career-convalidation/academic-origin-career-convalidation.component";
 import { CareerOriginService } from '../../services/career-origin.service';
+import { ListAllComponent } from "../../../../shared/components/list-all/list-all.component";
 
 @Component({
   selector: 'app-academic-convalidation-list',
   standalone: true,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  imports: [SvgIconComponent, SuintPageHeaderComponent, CommonModule, ReactiveFormsModule, InputCustomComponent, ModalFormComponent, SuintButtonComponent, AcademicOriginCareerConvalidationComponent],
+  imports: [SvgIconComponent, SuintPageHeaderComponent, CommonModule, ReactiveFormsModule, InputCustomComponent, ModalFormComponent, SuintButtonComponent, AcademicOriginCareerConvalidationComponent, ListAllComponent],
   templateUrl: './academic-convalidation-list.component.html',
   styleUrls: ['./academic-convalidation-list.component.scss']
 })
@@ -40,9 +41,9 @@ export class AcademicConvalidationListComponent implements OnInit {
   
   tableColumns = [
     { header: 'Nombre', field: 'name' },
-    { header: '# Asig.', field: 'state' },
+    { header: 'Ciudad', field: 'cityId' },
     { header: 'Teléfono', field: 'phone' },
-    { header: 'Fecha de inicio', field: 'startDate' }
+    { header: 'Correo Electronico', field: 'email' }
   ];
   
   constructor() {
@@ -50,7 +51,7 @@ export class AcademicConvalidationListComponent implements OnInit {
       id: new FormControl(0),
       name: new FormControl(''),
       phone: new FormControl(''),
-      branch: new FormControl(''),
+      
       fax: new FormControl(''),
       cityId: new FormControl(''),
       email: new FormControl(''),
@@ -70,7 +71,7 @@ export class AcademicConvalidationListComponent implements OnInit {
       id: 0,
       name: '',
       phone: '',
-      branch: '',
+      
       fax: '',
       cityId: '',
       email: '',
@@ -130,7 +131,7 @@ export class AcademicConvalidationListComponent implements OnInit {
           id: selectedUniversity.id,
           name: selectedUniversity.name,
           phone: selectedUniversity.phone,
-          branch: selectedUniversity.branch,
+          
           fax: selectedUniversity.fax,
           cityId: selectedUniversity.cityId,
           email: selectedUniversity.email,
@@ -179,7 +180,6 @@ export class AcademicConvalidationListComponent implements OnInit {
       id: this.contractGroup.get('id')?.value || 0,
       name: this.contractGroup.get('name')?.value,
       phone: this.contractGroup.get('phone')?.value,
-      branch: this.contractGroup.get('branch')?.value,
       fax: this.contractGroup.get('fax')?.value,
       cityId: this.contractGroup.get('cityId')?.value,
       email: this.contractGroup.get('email')?.value,

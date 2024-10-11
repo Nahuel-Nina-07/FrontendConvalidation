@@ -5,8 +5,6 @@ export const menu_data: Array<{ title: string, menuItems: MenuItemInterface[] }>
     {
         title: 'CONVALIDACION',
         menuItems: [
-            { icon: 'assets/icons/icon-estructura.svg', title: 'Lista de convalidaciones', url: 'convalidation-list' },
-            { icon: 'assets/icons/icon-estructura.svg', title: 'carrera origen ', url: 'career-origin' },
             { icon: '/assets/icons/icon-empresa.svg', title: 'Editar asignatura', url: 'personal' },
             { icon: 'assets/icons/icon-contrato.svg', title: 'Replicar silabo', url: 'postulantes' },
             { icon: 'assets/icons/icon-estructura.svg', title: 'Universidades de Origen', url: 'university' },
@@ -18,9 +16,9 @@ export const menu_data: Array<{ title: string, menuItems: MenuItemInterface[] }>
     {
         title: 'Instituciones de Origen',
         menuItems: [
-            { icon: 'assets/icons/icon-estructura.svg', title: 'Universidades', url: 'personal' },
-            { icon: 'assets/icons/icon-contrato.svg', title: 'Carreras', url: 'postulantes' },
-            { icon: 'assets/icons/icon-estructura.svg', title: 'Asignaturas', url: 'personal' },
+            { icon: 'assets/icons/icon-estructura.svg', title: 'Universidades', url: 'university-origin' },
+            { icon: 'assets/icons/icon-contrato.svg', title: 'Carreras', url: 'career-origin' },
+            { icon: 'assets/icons/icon-estructura.svg', title: 'Asignaturas', url: 'subjects-origin' },
         ],
     }
     

@@ -1,58 +1,23 @@
 <div class="flex flex-col h-full gap-1">
-  <form [formGroup]="contractGroup">
-    <suint-page-header
-      title="Datos de Carrera de Origen"
-    >
-      <input-custom
-        name="Selecciona Universidad"
-        type="select"
-        [options]="universities"
-        formControlName="universityId"
-        [displayProperty]="'name'"
-        [valueProperty]="'id'"
-        (ngModelChange)="openAddModal()"
-      ></input-custom>
+  <suint-page-header description="" title="Carreras">
+    <!-- Botón de nuevo -->
+    <app-suint-button
+      [text]="'Nuevo'"
+      [iconSrc]="'assets/icons/icon-add.svg'"
+      (onClickButton)="openAddModal()"
+    ></app-suint-button>
+  </suint-page-header>
 
-    </suint-page-header>
-  </form>
-  <div class="bg-gray-100 min-h-screen p-5">
-    <suint-page-header description="" title="Carreras">
-      <!-- Botón de nuevo -->
-      <app-suint-button
-        [text]="'Nuevo'"
-        [iconSrc]="'assets/icons/icon-add.svg'"
-        (onClickButton)="openAddModal()"
-      ></app-suint-button>
-    </suint-page-header>
+  <suint-list-all
+    [data]="career"
+    [columns]="tableColumns"
+    title="Asignaturas"
+  ><app-suint-button
+  [text]="'Nuevo'"
+  [iconSrc]="'assets/icons/icon-add.svg'"
+  (onClickButton)="openAddModal()"
+></app-suint-button></suint-list-all>
 
-    <div class="shadow-sm bg-white rounded-b-md p-5">
-      <div class="shadow-sm bg-white rounded-b-md p-5">
-        <table class="w-full text-left border-collapse">
-          <thead>
-            <tr class="border-b border-gray-200">
-              <th *ngFor="let column of columns" class="p-4 text-sm font-semibold text-gray-600">
-                {{ column.header }}
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let item of data" class="border-b border-gray-100 hover:bg-gray-50">
-              <td *ngFor="let column of columns" class="p-4 text-gray-700">
-                <!-- Aquí añadimos la lógica condicional para el estado -->
-                <ng-container *ngIf="column.field === 'state'; else defaultValue">
-                  {{ item[column.field] ? 'Activado' : 'Desactivado' }}
-                </ng-container>
-                <ng-template #defaultValue>
-                  {{ item[column.field] }}
-                </ng-template>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      
-      
-  </div>
   <div class="flex-1 overflow-y-auto bg-white rounded-[4px] shadow-sm">
     <suit-modal-form
       titleModal="Datos de carrera de origen"
@@ -129,7 +94,6 @@
 
           <!-- Columna 3 -->
           <div>
-            
 
             <input-custom
               name="Estado"
@@ -155,7 +119,6 @@
             [text]="'Guardar'"
             [iconSrc]="'assets/icons/icon-save.svg'"
             type="submit"
-            
           ></app-suint-button>
         </div>
       </form>

@@ -1,0 +1,48 @@
+<div class="bg-gray-100 min-h-screen p-5">
+  <div
+    class="flex items-center justify-between w-full h-16 px-5 bg-white rounded-t-md shadow-sm"
+  >
+    <div class="flex flex-col gap-1">
+      <h1 class="leading-none font-primaryBold text-secondary">
+        {{ title }}
+      </h1>
+      <span class="text-xs leading-none text-enable">
+        {{ description }}
+      </span>
+    </div>
+    <ng-content></ng-content>
+  </div>
+
+  
+    <div class="shadow-sm bg-white rounded-b-md p-5">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="border-b border-gray-200">
+            <th
+              *ngFor="let column of columns"
+              class="p-4 text-sm font-semibold text-gray-600"
+            >
+              {{ column.header }}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="let item of data"
+            class="border-b border-gray-100 hover:bg-gray-50"
+          >
+            <td *ngFor="let column of columns" class="p-4 text-gray-700">
+              <!-- Aquí añadimos la lógica condicional para el estado -->
+              <ng-container *ngIf="column.field === 'state'; else defaultValue">
+                {{ item[column.field] ? "Activado" : "Desactivado" }}
+              </ng-container>
+              <ng-template #defaultValue>
+                {{ item[column.field] }}
+              </ng-template>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+

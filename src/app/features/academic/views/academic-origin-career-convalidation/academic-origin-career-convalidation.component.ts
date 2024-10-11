@@ -11,23 +11,43 @@ import { SuintButtonComponent } from '../../../../shared/components/suint-button
 import { UniversityOriginService } from '../../services/university-origin.service';
 import { CareerOriginService } from '../../services/career-origin.service';
 import { state } from '@angular/animations';
+import { ListAllComponent } from '../../../../shared/components/list-all/list-all.component';
 
 @Component({
   selector: 'app-academic-origin-career-convalidation',
   standalone: true,
-  imports: [SvgIconComponent, SuintPageHeaderComponent, CommonModule, ModalFormComponent, ReactiveFormsModule, InputCustomComponent,SuintButtonComponent],
+  imports: [SvgIconComponent, SuintPageHeaderComponent, CommonModule, ModalFormComponent, ReactiveFormsModule, InputCustomComponent,SuintButtonComponent, ListAllComponent],
   templateUrl: './academic-origin-career-convalidation.component.html',
   styleUrl: './academic-origin-career-convalidation.component.scss'
 })
 export class AcademicOriginCareerConvalidationComponent implements OnInit {
+
+  @Input() data: any[] = [];
+  @Input() columns: { header: string, field: string }[] = [];
+  career: any[] = [];
+  tableColumns = [
+    { header: 'Nombre', field: 'name' },
+    { header: 'Ciudad', field: 'cityId' },
+    { header: 'Teléfono', field: 'phone' },
+    { header: 'Correo Electronico', field: 'email' }
+  ];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   #_formBuilder = inject(FormBuilder);
   private readonly universityOriginService = inject(UniversityOriginService);  // Inyección del servicio
   private readonly careerOriginService = inject(CareerOriginService);  // Inyección del servicio
-
-  @Input() data: any[] = [];
-
-  // Recibe la configuración de las columnas (nombre y campo a mostrar)
-  @Input() columns: { header: string, field: string }[] = [];
 
   contractGroup: FormGroup;
   universities: any[] = [];  // Lista para almacenar las carreras
