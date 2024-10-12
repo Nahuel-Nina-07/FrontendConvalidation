@@ -1,29 +1,39 @@
-<suint-page-header title="Asignaturas de origen">
-  <input-custom
-    name="Selecciona universidad"
-    type="select"
-    formControlName="universityId"
-    [displayProperty]="'name'"
-    [valueProperty]="'id'"
-  ></input-custom>
-  <input-custom
-    name="Selecciona carrera"
-    type="select"
-    formControlName="universityId"
-    [displayProperty]="'name'"
-    [valueProperty]="'id'"
-  ></input-custom>
-</suint-page-header>
+<div class="flex flex-col h-full gap-1">
 
-<suint-list-all [data]="subjects" [columns]="tableColumns" title="Asignaturas"
-  ><app-suint-button
-    [text]="'Nuevo'"
-    [iconSrc]="'assets/icons/icon-add.svg'"
-    (onClickButton)="openAddModal()"
-  ></app-suint-button
-></suint-list-all>
+  <form [formGroup]="contractGroup">
+    <suint-page-header title="Datos de Asignaturas de Origen">
+    <input-custom
+      name="Selecciona universidad"
+      type="select"
+      [options]="universities"
+      formControlName="universityId"
+      [displayProperty]="'name'"
+      [valueProperty]="'id'"
+      (ngModelChange)="onUniversityChange($event)"
+    ></input-custom>
 
-<div class="flex-1 overflow-y-auto bg-white rounded-[4px] shadow-sm">
+    <!-- Select de carreras -->
+    <input-custom
+      name="Selecciona carrera"
+      type="select"
+      [options]="careers"
+      formControlName="universityId"
+      [displayProperty]="'name'"
+      [valueProperty]="'id'"
+      (ngModelChange)="onCareerChange($event)"
+    ></input-custom>
+  </suint-page-header>
+
+  <suint-list-all [data]="subjects" [columns]="tableColumns" title="Asignaturas"
+    ><app-suint-button
+      [text]="'Nuevo'"
+      [iconSrc]="'assets/icons/icon-add.svg'"
+      (onClickButton)="openAddModal()"
+    ></app-suint-button
+  ></suint-list-all>
+</form>
+</div>
+<!-- <div class="flex-1 overflow-y-auto bg-white rounded-[4px] shadow-sm">
   <suit-modal-form
     titleModal="Datos de asignaturas de origen"
     #modal
@@ -63,7 +73,6 @@
           ></input-custom>
         </div>
 
-        <!-- Columna 2 -->
         <div>
           <input-custom
             name="Facultad o Unidad Academica"
@@ -95,7 +104,6 @@
           ></input-custom>
         </div>
 
-        <!-- Columna 3 -->
         <div>
           <input-custom
             name="Estado"
@@ -123,4 +131,4 @@
       </div>
     </form>
   </suit-modal-form>
-</div>
+</div> -->

@@ -20,4 +20,8 @@ export class SubjectOriginService {
   deleteSubject(id: number): Observable<any> {
     return this.http.delete<any>(`${this.apiUrl}/Delete/${id}`);
   }
+
+  getSubjectByCareer(id: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/Career/${id}`);
+  }
 }

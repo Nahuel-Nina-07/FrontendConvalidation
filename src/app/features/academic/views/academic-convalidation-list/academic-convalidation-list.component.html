@@ -26,7 +26,7 @@
   <suint-list-all
     [data]="universities"
     [columns]="tableColumns"
-    title="Asignaturas"
+    title="Universidades"
     ><app-suint-button
       [text]="'Nuevo'"
       [iconSrc]="'assets/icons/icon-add.svg'"
@@ -90,7 +90,7 @@
             type="select"
             [options]="cities"
             formControlName="cityId"
-            [displayProperty]="'name'"
+            [displayProperty]="'postalCode'"
             [valueProperty]="'id'"
           ></input-custom>
         </div>

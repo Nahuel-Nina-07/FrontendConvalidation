@@ -50,7 +50,7 @@ export class AcademicOriginCareerConvalidationComponent implements OnInit {
     this.contractGroup = this.#_formBuilder.group({
       id: new FormControl(0),
       name: new FormControl(''),
-      resolutionDate: new FormControl(''),
+      resolution: new FormControl(''),
       state: new FormControl(''),
       numberWeeks: new FormControl(''),
       academicLevelId: new FormControl(''),
@@ -65,7 +65,7 @@ export class AcademicOriginCareerConvalidationComponent implements OnInit {
 
   ngOnInit() {
     this.loadUniversities();  // Cargar carreras al inicio
-    this.loadFaculties();  // Cargar facultades al inicio
+    // this.loadFaculties();  // Cargar facultades al inicio
     this.initializeOptions();  // Inicializar las opciones de estado y carga horaria
   }
 
@@ -73,7 +73,7 @@ export class AcademicOriginCareerConvalidationComponent implements OnInit {
     this.contractGroup.reset({
       id: 0,
       name: '',
-      resolutionDate: '',
+      resolution: '',
       state:'',
       numberWeeks: '',
       academicLevelId: '',
@@ -104,17 +104,17 @@ export class AcademicOriginCareerConvalidationComponent implements OnInit {
     });
   }
 
-  // Método para cargar facultades
-  loadFaculties() {
-    this.careerOriginService.getFacultyAll().subscribe({
-      next: (response) => {
-        this.faculties = response;
-      },
-      error: (error) => {
-        console.error('Error al cargar las universidades:', error);
-      }
-    });
-  }
+  // // Método para cargar facultades
+  // loadFaculties() {
+  //   this.careerOriginService.getFacultyAll().subscribe({
+  //     next: (response) => {
+  //       this.faculties = response;
+  //     },
+  //     error: (error) => {
+  //       console.error('Error al cargar las universidades:', error);
+  //     }
+  //   });
+  // }
 
   initializeOptions() {
     this.stateOptions = [
@@ -132,7 +132,7 @@ export class AcademicOriginCareerConvalidationComponent implements OnInit {
     const careerData = {
       id: this.contractGroup.get('id')?.value,
       name: this.contractGroup.get('name')?.value,
-      resolutionDate: this.contractGroup.get('resolutionDate')?.value,
+      resolution: this.contractGroup.get('resolution')?.value,
       state: this.contractGroup.get('state')?.value,
       numberWeeks: this.contractGroup.get('numberWeeks')?.value,
       // academicLevelId: this.contractGroup.get('academicLevelId')?.value,
@@ -161,7 +161,7 @@ export class AcademicOriginCareerConvalidationComponent implements OnInit {
       this.careerOriginService.updateCareer(careerData).subscribe({
         next: () => {
           this.loadUniversities();
-          this.loadFaculties();
+          // this.loadFaculties();
           // Recargar la lista de carreras
             // Limpiar el formulario
         },
@@ -170,4 +170,17 @@ export class AcademicOriginCareerConvalidationComponent implements OnInit {
     }
   }
 
+
+  onUniversityChange(universityId: number): void {
+    if (universityId) {
+      this.loadCareersByUniversity(universityId);
+    }
+  }
+
+  private loadCareersByUniversity(universityId: number): void {
+    this.careerOriginService.getCareerByUniversity(universityId).subscribe({
+      next: (data: any[]) => this.career = data,
+      error: (err) => console.error('Error al obtener las carreras', err)
+    });
+  }
 }

@@ -1,22 +1,30 @@
+
 <div class="flex flex-col h-full gap-1">
-  <suint-page-header description="" title="Carreras">
-    <!-- Botón de nuevo -->
-    <app-suint-button
+  <form [formGroup]="contractGroup">
+  <suint-page-header description="" title="Datos de Carreras de Origen">
+    <input-custom
+      name="Universidad de Origen"
+      type="select"
+      [options]="universities"
+      formControlName="universityId"
+      [displayProperty]="'name'"
+      [valueProperty]="'id'"
+      (ngModelChange)="onUniversityChange($event)"
+    ></input-custom>
+    <!-- <app-suint-button
       [text]="'Nuevo'"
       [iconSrc]="'assets/icons/icon-add.svg'"
       (onClickButton)="openAddModal()"
-    ></app-suint-button>
+    ></app-suint-button> -->
   </suint-page-header>
-
-  <suint-list-all
-    [data]="career"
-    [columns]="tableColumns"
-    title="Asignaturas"
-  ><app-suint-button
-  [text]="'Nuevo'"
-  [iconSrc]="'assets/icons/icon-add.svg'"
-  (onClickButton)="openAddModal()"
-></app-suint-button></suint-list-all>
+</form>
+  <suint-list-all [data]="career" [columns]="tableColumns" title="Carreras"
+    ><app-suint-button
+      [text]="'Nuevo'"
+      [iconSrc]="'assets/icons/icon-add.svg'"
+      (onClickButton)="openAddModal()"
+    ></app-suint-button
+  ></suint-list-all>
 
   <div class="flex-1 overflow-y-auto bg-white rounded-[4px] shadow-sm">
     <suit-modal-form
@@ -28,15 +36,6 @@
       <form [formGroup]="contractGroup" (ngSubmit)="register()">
         <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
           <div>
-            <input-custom
-              name="Universidad de Origen"
-              type="select"
-              [options]="universities"
-              formControlName="universityId"
-              [displayProperty]="'name'"
-              [valueProperty]="'id'"
-            ></input-custom>
-
             <input-custom
               name="Nombre de la Carrera"
               formControlName="name"
@@ -71,9 +70,9 @@
             ></input-custom>
 
             <input-custom
-              name="Fecha de Resolución"
-              formControlName="resolutionDate"
-              type="datetime-local"
+              name="Resolución"
+              formControlName="resolution"
+              type="text"
               placeholder="Selecciona la fecha de resolución"
             ></input-custom>
 
@@ -83,18 +82,10 @@
               type="number"
               placeholder="Introduce la nota de aprobación"
             ></input-custom>
-
-            <input-custom
-              name="Régimen de Estudio"
-              formControlName="studyRegimenId"
-              type="select"
-              [options]="['Presencial', 'Virtual']"
-            ></input-custom>
           </div>
 
           <!-- Columna 3 -->
           <div>
-
             <input-custom
               name="Estado"
               type="select"
@@ -111,6 +102,13 @@
               formControlName="workload"
               [displayProperty]="'name'"
               [valueProperty]="'name'"
+            ></input-custom>
+
+            <input-custom
+              name="Régimen de Estudio"
+              formControlName="studyRegimenId"
+              type="select"
+              [options]="['Presencial', 'Virtual']"
             ></input-custom>
           </div>
         </div>

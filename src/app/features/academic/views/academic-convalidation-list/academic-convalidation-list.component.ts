@@ -71,7 +71,6 @@ export class AcademicConvalidationListComponent implements OnInit {
       id: 0,
       name: '',
       phone: '',
-      
       fax: '',
       cityId: '',
       email: '',
