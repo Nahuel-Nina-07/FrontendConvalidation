@@ -27,18 +27,16 @@ export class AcademicConvalidationListComponent implements OnInit {
   contractGroup: FormGroup;
   cities: any[] = [];
   universities: any[] = [];
-  selectedUniversityId: number | null = null;  // Nueva variable para mantener el ID de la universidad seleccionada
+  selectedUniversityId: number | null = null; 
   careers: any[] = [];
   
+  filteredUniversities: any[] = [];
+
   @ViewChild('modal') modal!: ModalFormComponent;
 
-
   @Input() data: any[] = [];
-
-  // Recibe la configuración de las columnas (nombre y campo a mostrar)
   @Input() columns: { header: string, field: string }[] = [];
 
-  
   tableColumns = [
     { header: 'Nombre', field: 'name' },
     { header: 'Ciudad', field: 'cityId' },
@@ -51,37 +49,23 @@ export class AcademicConvalidationListComponent implements OnInit {
       id: new FormControl(0),
       name: new FormControl(''),
       phone: new FormControl(''),
-      
       fax: new FormControl(''),
       cityId: new FormControl(''),
       email: new FormControl(''),
       observation: new FormControl(''),
       universityId: new FormControl(''),
+
+      search: new FormControl('')
     });
   }
 
   ngOnInit() {
     this.loadCities();
     this.loadUniversities();
-    this.getAllCareers();  // Llamar al método para cargar las carreras
-  }
-
-  clearForm() {
-    this.contractGroup.reset({
-      id: 0,
-      name: '',
-      phone: '',
-      fax: '',
-      cityId: '',
-      email: '',
-      observation: '',
-      universityId: this.selectedUniversityId  // Mantener el ID seleccionado
-    });
   }
 
   openAddModal() {
-    this.selectedUniversityId = null;  // Al abrir el modal para agregar, no hay ID seleccionado
-    this.clearForm();
+    this.selectedUniversityId = null;
     this.modal.openModal();
   }
 
@@ -91,46 +75,16 @@ export class AcademicConvalidationListComponent implements OnInit {
     }, 1500);
   }
 
-  
-
-  onUniversityChange(universityId: number) {
-    // Verificamos si se seleccionó una universidad válida
-    if (universityId) {
-      this.selectedUniversityId = universityId; // Almacenar el ID de la universidad seleccionada
-      this.getCareersByUniversity(universityId); // Llamar al método para cargar las carreras de esa universidad
-    } else {
-      this.selectedUniversityId = null; // Restablecemos la selección
-      this.careers = []; // Limpiar las carreras anteriores
-      this.getAllCareers(); // Cargar todas las carreras si no hay universidad seleccionada
-    }
-  }
-  
-  // Nuevo método para obtener todas las carreras
-  getAllCareers(): void {
-    this.careerOriginSvc.getCareers().subscribe({
-      next: (careers) => {
-        this.careers = careers; // Mostrar todas las carreras en la vista
-        console.log('Todas las carreras:', careers); // También mostramos las carreras en la consola
-      },
-      error: (error) => {
-        console.error('Error al cargar todas las carreras:', error);
-      }
-    });
-  }
-
   openEditModal() {
     const selectedUniversityId = this.contractGroup.get('universityId')?.value;
-
     if (selectedUniversityId) {
-      this.selectedUniversityId = selectedUniversityId;  // Guardar el ID seleccionado
+      this.selectedUniversityId = selectedUniversityId;
       const selectedUniversity = this.universities.find(university => university.id === selectedUniversityId);
-      
       if (selectedUniversity) {
         this.contractGroup.patchValue({
           id: selectedUniversity.id,
           name: selectedUniversity.name,
           phone: selectedUniversity.phone,
-          
           fax: selectedUniversity.fax,
           cityId: selectedUniversity.cityId,
           email: selectedUniversity.email,
@@ -149,12 +103,26 @@ export class AcademicConvalidationListComponent implements OnInit {
     this.universityOriginSvc.getUniversityOrigins().subscribe({
       next: (response) => {
         this.universities = response;
+        this.filteredUniversities = response;  // Inicialmente, todas las universidades se muestran.
       },
       error: (error) => {
         console.error('Error al cargar las universidades:', error);
       }
     });
   }
+
+
+  filterUniversities() {
+    const searchValue = this.contractGroup.get('search')?.value.toLowerCase();
+    if (searchValue) {
+      this.filteredUniversities = this.universities.filter(university =>
+        university.name.toLowerCase().includes(searchValue)
+      );
+    } else {
+      this.filteredUniversities = [...this.universities]; // Mostrar todas las universidades si no hay búsqueda
+    }
+  }
+
 
   loadCities() {
     this.universityOriginSvc.getCity().subscribe({
@@ -167,12 +135,6 @@ export class AcademicConvalidationListComponent implements OnInit {
     });
   }
 
-  getCareersByUniversity(universityId: number): void {
-    this.careerOriginSvc.getCareerByUniversity(universityId).subscribe((data) => {
-      this.careers = data;
-      console.log('Carreras para la universidad seleccionada:', this.careers);  // Mostrar carreras en la consola
-    });
-  }
 
   register() {
     const universityData = {

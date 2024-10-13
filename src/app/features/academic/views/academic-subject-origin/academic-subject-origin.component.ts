@@ -24,10 +24,8 @@ export class AcademicSubjectOriginComponent implements OnInit{
   private universityService = inject(UniversityOriginService);
   private careerService = inject(CareerOriginService);
 
-  // Definimos el FormGroup
   contractGroup: FormGroup;
 
-  // Variables para almacenar datos
   subjects: any[] = [];
   universities: any[] = [];
   careers: any[] = [];
@@ -104,7 +102,6 @@ export class AcademicSubjectOriginComponent implements OnInit{
     });
   }
 
-  // Cargamos las carreras según la carrera seleccionada
   private loadSubjectsByCareer(originCareerId: number): void {
     this.subjectService.getSubjectByCareer(originCareerId).subscribe({
       next: (data: any[]) => this.subjects = data,
@@ -115,7 +112,6 @@ export class AcademicSubjectOriginComponent implements OnInit{
   onSubmit() {
     if (this.contractGroup.valid) {
       const formData = this.contractGroup.value;
-
       this.subjectService.createSubject(formData).subscribe({
         next: (response) => {
           console.log('Asignatura creada:', response);
@@ -131,16 +127,12 @@ export class AcademicSubjectOriginComponent implements OnInit{
     }
   }
 
-
   onDelete(item: any): void {
-    const itemId = item.id; // Cambia esto según el nombre de la propiedad que contenga el ID
+    const itemId = item.id;
     console.log('Delete item with ID:', itemId);
-    
-    // Aquí llamas a tu servicio de eliminación. Asegúrate de reemplazar `YourService` con el nombre real de tu servicio.
     this.subjectService.deleteSubject(itemId).subscribe({
       next: (response) => {
         console.log('Item deleted successfully', response);
-        // Aquí puedes agregar lógica para actualizar la vista después de eliminar el ítem
       },
       error: (error) => {
         console.error('Error deleting item', error);

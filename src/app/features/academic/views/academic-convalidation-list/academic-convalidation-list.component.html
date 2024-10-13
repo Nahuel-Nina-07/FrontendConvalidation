@@ -2,31 +2,21 @@
   <form [formGroup]="contractGroup">
     <suint-page-header title="Datos de universidad de origen">
       <input-custom
-        name="Observaciones"
-        formControlName="observation"
+        name="Buscar Universidad"
+        formControlName="search"
         type="text"
-        placeholder="Introduce tus observaciones"
+        placeholder="Buscar..."
         class="w-full"
+        (input)="filterUniversities()"
       ></input-custom>
-
-      <!-- <app-suint-button
-        [text]="'Editar'"
-        [iconSrc]="'assets/icons/icon-save.svg'"
-        (onClickButton)="openEditModal()"
-      ></app-suint-button>
-
-      <app-suint-button
-        [text]="'Nuevo'"
-        [iconSrc]="'assets/icons/icon-add.svg'"
-        (onClickButton)="openAddModal()"
-      ></app-suint-button> -->
     </suint-page-header>
   </form>
 
   <suint-list-all
-    [data]="universities"
+    [data]="filteredUniversities"
     [columns]="tableColumns"
     title="Universidades"
+    (editItem)="openEditModal()"
     ><app-suint-button
       [text]="'Nuevo'"
       [iconSrc]="'assets/icons/icon-add.svg'"
@@ -42,7 +32,6 @@
   >
     <form [formGroup]="contractGroup" (ngSubmit)="register()">
       <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <!-- Columna 1 -->
         <div>
           <input-custom
             name="Organización"
@@ -58,15 +47,7 @@
             placeholder="Introduce tu teléfono"
           ></input-custom>
         </div>
-        <!-- Columna 2 -->
         <div>
-          <!-- <input-custom
-            name="Sucursal"
-            formControlName="branch"
-            type="text"
-            placeholder="Introduce la la sucursal"
-          ></input-custom> -->
-
           <input-custom
             name="Fax"
             formControlName="fax"
@@ -83,7 +64,6 @@
           ></input-custom>
         </div>
 
-        <!-- Columna 3 -->
         <div>
           <input-custom
             name="Ciudad"
@@ -94,18 +74,6 @@
             [valueProperty]="'id'"
           ></input-custom>
         </div>
-
-        <!-- Fila que ocupa 2 columnas -->
-        <!-- <div class="col-span-2">
-          <input-custom
-            name="Correo"
-            formControlName="email"
-            type="email"
-            placeholder="Introduce el correo"
-            class="w-full"
-          ></input-custom>
-
-        </div> -->
 
         <div class="col-span-2">
           <input-custom

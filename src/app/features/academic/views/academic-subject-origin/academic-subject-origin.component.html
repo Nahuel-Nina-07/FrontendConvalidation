@@ -11,7 +11,6 @@
         (ngModelChange)="onUniversityChange($event)"
       ></input-custom>
 
-      <!-- Select de carreras -->
       <input-custom
         name="Selecciona carrera"
         type="select"
@@ -21,7 +20,6 @@
         [valueProperty]="'id'"
         (ngModelChange)="onCareerChange($event)"
       ></input-custom>
-
     </suint-page-header>
 
     <suint-list-all
@@ -78,10 +76,8 @@
             type="text"
             placeholder="Carga horaria"
           ></input-custom>
-      
-            <!-- FlipSwitch usando solo Tailwind -->
+
             <div class="flex flex-col items-center ">
-              <!-- Label "Estado" arriba -->
               <label class="text-sm text-primary">Estado</label>
             <label class="relative inline-block w-12 h-6 m-2">
               <input
