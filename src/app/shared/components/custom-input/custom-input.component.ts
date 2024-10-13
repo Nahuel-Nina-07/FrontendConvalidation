@@ -8,7 +8,6 @@ import { InputDirective } from '../../directives/input.directive';
   standalone: true,
   imports: [InputDirective, CommonModule, FormsModule],
   templateUrl: './custom-input.component.html',
-  styleUrls: ['./custom-input.component.scss'],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,

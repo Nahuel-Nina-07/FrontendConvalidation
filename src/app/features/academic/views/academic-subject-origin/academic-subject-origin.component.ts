@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, Input, OnInit, ViewChild } from '@angular/core';
 import { SuintPageHeaderComponent } from "../../../../shared/components/page-header/page-header.component";
 import { InputCustomComponent } from "../../../../shared/components/custom-input/custom-input.component";
 import { SuintButtonComponent } from "../../../../shared/components/suint-button/suint-button.component";
@@ -8,12 +8,13 @@ import { ListAllComponent } from "../../../../shared/components/list-all/list-al
 import { SubjectOriginService } from '../../services/subject-origin.service';
 import { UniversityOriginService } from '../../services/university-origin.service';
 import { CareerOriginService } from '../../services/career-origin.service';
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { InputDirective } from '../../../../shared/directives/input.directive';
 
 @Component({
   selector: 'app-academic-subject-origin',
   standalone: true,
-  imports: [SuintPageHeaderComponent, InputCustomComponent, SuintButtonComponent, ModalFormComponent, CommonModule, ListAllComponent,ReactiveFormsModule],
+  imports: [FormsModule, SuintPageHeaderComponent, InputCustomComponent, SuintButtonComponent, ModalFormComponent, CommonModule, ListAllComponent,ReactiveFormsModule,InputDirective],
   templateUrl: './academic-subject-origin.component.html',
   styleUrl: './academic-subject-origin.component.scss'
 })
@@ -32,13 +33,12 @@ export class AcademicSubjectOriginComponent implements OnInit{
   careers: any[] = [];
 
   @ViewChild('modal') modal!: ModalFormComponent;
-
   // Inicializamos las columnas de la tabla
   tableColumns = [
     { header: 'Nro. asignatura', field: 'code' },
     { header: 'Nombre', field: 'name' },
-    { header: 'Total Horas', field: 'state' },
-    { header: 'Semestre', field: 'phone' },
+    { header: 'Total Horas', field: 'status' },
+    { header: 'Semestre', field: 'semester' },
     { header: 'Fecha de inicio', field: 'startDate' }
   ];
 
@@ -54,7 +54,11 @@ export class AcademicSubjectOriginComponent implements OnInit{
   private createFormGroup(): FormGroup {
     return this.#_formBuilder.group({
       id: new FormControl(0),
+      code: new FormControl(''),
       name: new FormControl(''),
+      semester: new FormControl(''),
+      hourlyLoad: new FormControl(''),
+      status: new FormControl(false),
       universityId: new FormControl(''),
       originCareerId: new FormControl(''),
     });
@@ -68,14 +72,6 @@ export class AcademicSubjectOriginComponent implements OnInit{
   // Método para abrir el modal
   openAddModal() {
     this.modal.openModal();
-  }
-
-  // Cargamos las asignaturas
-  private loadSubjects(): void {
-    this.subjectService.getSubject().subscribe({
-      next: (data: any[]) => this.subjects = data,
-      error: (err) => console.error('Error al obtener las asignaturas', err)
-    });
   }
 
   // Cargamos las universidades
@@ -108,12 +104,30 @@ export class AcademicSubjectOriginComponent implements OnInit{
     });
   }
 
-
   // Cargamos las carreras según la carrera seleccionada
   private loadSubjectsByCareer(originCareerId: number): void {
     this.subjectService.getSubjectByCareer(originCareerId).subscribe({
       next: (data: any[]) => this.subjects = data,
       error: (err) => console.error('Error al obtener las asignaturas', err)
     });
+  }
+
+  onSubmit() {
+    if (this.contractGroup.valid) {
+      const formData = this.contractGroup.value;
+
+      this.subjectService.createSubject(formData).subscribe({
+        next: (response) => {
+          console.log('Asignatura creada:', response);
+          this.modal.closeModal();
+          this.loadInitialData(); // Recargar datos
+        },
+        error: (err) => {
+          console.error('Error al crear la asignatura', err);
+        },
+      });
+    } else {
+      console.log('El formulario es inválido');
+    }
   }
 }
