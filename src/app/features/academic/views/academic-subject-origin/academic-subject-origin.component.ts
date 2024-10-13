@@ -130,4 +130,21 @@ export class AcademicSubjectOriginComponent implements OnInit{
       console.log('El formulario es inválido');
     }
   }
+
+
+  onDelete(item: any): void {
+    const itemId = item.id; // Cambia esto según el nombre de la propiedad que contenga el ID
+    console.log('Delete item with ID:', itemId);
+    
+    // Aquí llamas a tu servicio de eliminación. Asegúrate de reemplazar `YourService` con el nombre real de tu servicio.
+    this.subjectService.deleteSubject(itemId).subscribe({
+      next: (response) => {
+        console.log('Item deleted successfully', response);
+        // Aquí puedes agregar lógica para actualizar la vista después de eliminar el ítem
+      },
+      error: (error) => {
+        console.error('Error deleting item', error);
+      }
+    });
+  }
 }

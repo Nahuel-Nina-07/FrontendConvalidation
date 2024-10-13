@@ -22,18 +22,13 @@
         (ngModelChange)="onCareerChange($event)"
       ></input-custom>
 
-      <input-custom
-            name="Nro. de la Asignatura"
-            formControlName="code"
-            type="text"
-            placeholder="Código de asignatura"
-          ></input-custom>
     </suint-page-header>
 
     <suint-list-all
       [data]="subjects"
       [columns]="tableColumns"
       title="Asignaturas"
+      (deleteItem)="onDelete($event)"
       ><app-suint-button
         [text]="'Nuevo'"
         [iconSrc]="'assets/icons/icon-add.svg'"
@@ -53,16 +48,12 @@
     <form [formGroup]="contractGroup" (ngSubmit)="onSubmit()">
       <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <div>
-          <!-- <input-custom
+          <input-custom
             name="Nro. de la Asignatura"
             formControlName="code"
             type="text"
             placeholder="Código de asignatura"
-          ></input-custom> -->
-          <input name="Nro. de la Asignatura"
-          formControlName="code"
-          type="text"
-          placeholder="Código de asignatura">
+          ></input-custom>
       
           <input-custom
             name="Semestre"
