@@ -1,3 +1,4 @@
+// In list-all.component.ts
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { SvgIconComponent } from 'angular-svg-icon';
@@ -5,7 +6,7 @@ import { SvgIconComponent } from 'angular-svg-icon';
 @Component({
   selector: 'suint-list-all',
   standalone: true,
-  imports: [CommonModule,SvgIconComponent],
+  imports: [CommonModule, SvgIconComponent],
   templateUrl: './list-all.component.html'
 })
 export class ListAllComponent {
@@ -15,14 +16,12 @@ export class ListAllComponent {
   @Input() data: any[] = [];
   @Input() text: string = 'Nuevo';  // Texto por defecto
   @Input() iconSrc: string = 'assets/icons/icon-add.svg';
-  
 
   @Output() deleteItem: EventEmitter<any> = new EventEmitter();
+  @Output() editItem: EventEmitter<any> = new EventEmitter(); // Add this line
 
   onEdit(item: any): void {
-    // Lógica para editar el item
-    console.log('Edit item:', item);
-    // Puedes implementar la lógica para abrir un modal de edición o redirigir a una página de edición
+    this.editItem.emit(item); // Emit the edit event
   }
 
   onDelete(item: any): void {

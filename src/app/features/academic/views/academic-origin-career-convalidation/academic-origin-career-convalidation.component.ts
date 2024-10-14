@@ -40,7 +40,6 @@ export class AcademicOriginCareerConvalidationComponent implements OnInit {
 
   contractGroup: FormGroup;
   universities: any[] = [];  // Lista para almacenar las carreras
-  faculties: any[] = [];  // Lista para almacenar las facultades
   stateOptions: { name: string; value: boolean }[] = [];
   workloadOptions: { name: string }[] = [];
 
@@ -55,44 +54,23 @@ export class AcademicOriginCareerConvalidationComponent implements OnInit {
       numberWeeks: new FormControl(''),
       academicLevelId: new FormControl(''),
       studyRegimenId: new FormControl(''),
-      facultyId: new FormControl(''),
+      facultyName: new FormControl(''),
       approvalNote: new FormControl(''),
       universityId: new FormControl(''),
-      employeeId: new FormControl(''),
       workload: new FormControl('')
     });
   }
 
   ngOnInit() {
-    this.loadUniversities();  // Cargar carreras al inicio
-    // this.loadFaculties();  // Cargar facultades al inicio
-    this.initializeOptions();  // Inicializar las opciones de estado y carga horaria
+    this.loadUniversities();
+    this.initializeOptions();
+    this.loadCareers();
   }
 
-  clearForm() {
-    this.contractGroup.reset({
-      id: 0,
-      name: '',
-      resolution: '',
-      state:'',
-      numberWeeks: '',
-      academicLevelId: '',
-      studyRegimenId: '',
-      facultyId: '',
-      approvalNote: '',
-      universityId: '',
-      employeeId: '',
-      workload: ''
-    });
-  }
   openAddModal() {
-     // Al abrir el modal para agregar, no hay ID seleccionado
-    this.clearForm();
     this.modal.openModal();
-     // Recarga la página
 }
 
-  // Método para cargar las carreras
   loadUniversities() {
       this.universityOriginService.getUniversityOrigins().subscribe({
         next: (response) => {
@@ -104,17 +82,16 @@ export class AcademicOriginCareerConvalidationComponent implements OnInit {
     });
   }
 
-  // // Método para cargar facultades
-  // loadFaculties() {
-  //   this.careerOriginService.getFacultyAll().subscribe({
-  //     next: (response) => {
-  //       this.faculties = response;
-  //     },
-  //     error: (error) => {
-  //       console.error('Error al cargar las universidades:', error);
-  //     }
-  //   });
-  // }
+  loadCareers() {
+    this.careerOriginService.getCareers().subscribe({
+      next: (response) => {
+        this.career = response;
+      },
+      error: (error) => {
+        console.error('Error al cargar las universidades:', error);
+      }
+    });
+  }
 
   initializeOptions() {
     this.stateOptions = [
@@ -127,7 +104,6 @@ export class AcademicOriginCareerConvalidationComponent implements OnInit {
     ];
   }
 
-  // Método para registrar o crear una nueva carrera
   register() {
     const careerData = {
       id: this.contractGroup.get('id')?.value,
@@ -135,15 +111,11 @@ export class AcademicOriginCareerConvalidationComponent implements OnInit {
       resolution: this.contractGroup.get('resolution')?.value,
       state: this.contractGroup.get('state')?.value,
       numberWeeks: this.contractGroup.get('numberWeeks')?.value,
-      // academicLevelId: this.contractGroup.get('academicLevelId')?.value,
-      // studyRegimenId: this.contractGroup.get('studyRegimenId')?.value,
       academicLevelId: 1,
       studyRegimenId: 1,
-      facultyId: this.contractGroup.get('facultyId')?.value,
+      facultyName: this.contractGroup.get('facultyName')?.value,
       approvalNote: this.contractGroup.get('approvalNote')?.value,
       universityId: this.contractGroup.get('universityId')?.value,
-      // employeeId: this.contractGroup.get('employeeId')?.value,
-      employeeId: 1,  
       workload: this.contractGroup.get('workload')?.value
     };
     console.log('Datos a enviar:', careerData);
@@ -157,13 +129,9 @@ export class AcademicOriginCareerConvalidationComponent implements OnInit {
         error: (error) => console.error('Error al crear la carrera:', error)
       });
     } else {
-      // Actualizar carrera existente
       this.careerOriginService.updateCareer(careerData).subscribe({
         next: () => {
           this.loadUniversities();
-          // this.loadFaculties();
-          // Recargar la lista de carreras
-            // Limpiar el formulario
         },
         error: (error) => console.error('Error al actualizar la carrera:', error)
       });
@@ -181,6 +149,24 @@ export class AcademicOriginCareerConvalidationComponent implements OnInit {
     this.careerOriginService.getCareerByUniversity(universityId).subscribe({
       next: (data: any[]) => this.career = data,
       error: (err) => console.error('Error al obtener las carreras', err)
+    });
+  }
+
+  onEdit(item: any): void {
+    this.contractGroup.patchValue(item); // Fill the form with the selected item's data
+    this.modal.openModal(); // Open the modal for editing
+  }
+
+  onDelete(item: any): void {
+    const itemId = item.id;
+    console.log('Delete item with ID:', itemId);
+    this.careerOriginService.deleteCareer(itemId).subscribe({
+      next: (response) => {
+        console.log('Item deleted successfully', response);
+      },
+      error: (error) => {
+        console.error('Error deleting item', error);
+      }
     });
   }
 }

@@ -22,12 +22,10 @@ import { ListAllComponent } from "../../../../shared/components/list-all/list-al
 export class AcademicConvalidationListComponent implements OnInit {
   #_formBuilder = inject(FormBuilder);
   private readonly universityOriginSvc = inject(UniversityOriginService);
-  private readonly careerOriginSvc = inject(CareerOriginService);
 
   contractGroup: FormGroup;
   cities: any[] = [];
   universities: any[] = [];
-  selectedUniversityId: number | null = null; 
   careers: any[] = [];
   
   filteredUniversities: any[] = [];
@@ -44,20 +42,7 @@ export class AcademicConvalidationListComponent implements OnInit {
     { header: 'Correo Electronico', field: 'email' }
   ];
   
-  constructor() {
-    this.contractGroup = this.#_formBuilder.group({
-      id: new FormControl(0),
-      name: new FormControl(''),
-      phone: new FormControl(''),
-      fax: new FormControl(''),
-      cityId: new FormControl(''),
-      email: new FormControl(''),
-      observation: new FormControl(''),
-      universityId: new FormControl(''),
-
-      search: new FormControl('')
-    });
-  }
+  
 
   ngOnInit() {
     this.loadCities();
@@ -65,38 +50,8 @@ export class AcademicConvalidationListComponent implements OnInit {
   }
 
   openAddModal() {
-    this.selectedUniversityId = null;
     this.modal.openModal();
-  }
-
-  delayReload() {
-    setTimeout(() => {
-      window.location.reload();
-    }, 1500);
-  }
-
-  openEditModal() {
-    const selectedUniversityId = this.contractGroup.get('universityId')?.value;
-    if (selectedUniversityId) {
-      this.selectedUniversityId = selectedUniversityId;
-      const selectedUniversity = this.universities.find(university => university.id === selectedUniversityId);
-      if (selectedUniversity) {
-        this.contractGroup.patchValue({
-          id: selectedUniversity.id,
-          name: selectedUniversity.name,
-          phone: selectedUniversity.phone,
-          fax: selectedUniversity.fax,
-          cityId: selectedUniversity.cityId,
-          email: selectedUniversity.email,
-          observation: selectedUniversity.observation
-        });
-        this.modal.openModal();
-      } else {
-        console.log('Universidad no encontrada.');
-      }
-    } else {
-      console.log('No se ha seleccionado ninguna universidad.');
-    }
+    this.contractGroup.reset();
   }
 
   loadUniversities() {
@@ -135,39 +90,62 @@ export class AcademicConvalidationListComponent implements OnInit {
     });
   }
 
+  constructor() {
+    this.contractGroup = this.createFormGroup();
+  }
 
-  register() {
-    const universityData = {
-      id: this.contractGroup.get('id')?.value || 0,
-      name: this.contractGroup.get('name')?.value,
-      phone: this.contractGroup.get('phone')?.value,
-      fax: this.contractGroup.get('fax')?.value,
-      cityId: this.contractGroup.get('cityId')?.value,
-      email: this.contractGroup.get('email')?.value,
-      observation: this.contractGroup.get('observation')?.value,
-    };
-    console.log('Datos a enviar:', universityData);
+  private createFormGroup(): FormGroup {
+    return this.#_formBuilder.group({
+      id: new FormControl(0),
+      name: new FormControl(''),
+      phone: new FormControl(''),
+      fax: new FormControl(''),
+      cityId: new FormControl(''),
+      email: new FormControl(''),
+      observation: new FormControl(''),
+      search: new FormControl('')
+    });
+  }
 
-    if (universityData.id === 0) {
-      // Crear nueva universidad
-      this.universityOriginSvc.createUniversityOrigin(universityData).subscribe({
-        next: () => {
-          this.loadUniversities();  
+
+  private loadInitialData(): void {
+    this.loadUniversities();
+  }
+
+
+  onSubmit() {
+    if (this.contractGroup.valid) {
+      const formData = this.contractGroup.value;
+      this.universityOriginSvc.createUniversityOrigin(formData).subscribe({
+        next: (response) => {
+          console.log('Asignatura creada:', response);
+          this.modal.closeModal();
+          this.loadInitialData(); // Recargar datos
         },
-        error: (error) => {
-          console.error('Error al crear la universidad:', error);
-        }
+        error: (err) => {
+          console.error('Error al crear la asignatura', err);
+        },
       });
     } else {
-      // Actualizar universidad existente
-      this.universityOriginSvc.updateUniversityOrigin(universityData).subscribe({
-        next: () => {
-          this.loadUniversities();  
-        },
-        error: (error) => {
-          console.error('Error al actualizar la universidad:', error);
-        }
-      });
+      console.log('El formulario es inválido');
     }
+  }
+
+  onDelete(item: any): void {
+    const itemId = item.id;
+    console.log('Delete item with ID:', itemId);
+    this.universityOriginSvc.deleteUniversityOrigin(itemId).subscribe({
+      next: (response) => {
+        console.log('Item deleted successfully', response);
+      },
+      error: (error) => {
+        console.error('Error deleting item', error);
+      }
+    });
+  }
+
+  onEdit(item: any): void {
+    this.contractGroup.patchValue(item); // Fill the form with the selected item's data
+    this.modal.openModal(); // Open the modal for editing
   }
 }

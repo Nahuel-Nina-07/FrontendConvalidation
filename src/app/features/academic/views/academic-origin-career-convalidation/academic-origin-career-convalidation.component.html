@@ -1,24 +1,24 @@
-
 <div class="flex flex-col h-full gap-1">
   <form [formGroup]="contractGroup">
-  <suint-page-header description="" title="Datos de Carreras de Origen">
-    <input-custom
-      name="Universidad de Origen"
-      type="select"
-      [options]="universities"
-      formControlName="universityId"
-      [displayProperty]="'name'"
-      [valueProperty]="'id'"
-      (ngModelChange)="onUniversityChange($event)"
-    ></input-custom>
-    <!-- <app-suint-button
+    <suint-page-header description="" title="Datos de Carreras de Origen">
+      <input-custom
+        name="Universidad de Origen"
+        type="select"
+        [options]="universities"
+        formControlName="universityId"
+        [displayProperty]="'name'"
+        [valueProperty]="'id'"
+        (ngModelChange)="onUniversityChange($event)"
+      ></input-custom>
+      <!-- <app-suint-button
       [text]="'Nuevo'"
       [iconSrc]="'assets/icons/icon-add.svg'"
       (onClickButton)="openAddModal()"
     ></app-suint-button> -->
-  </suint-page-header>
-</form>
-  <suint-list-all [data]="career" [columns]="tableColumns" title="Carreras"
+    </suint-page-header>
+  </form>
+  <suint-list-all [data]="career" [columns]="tableColumns" title="Carreras" (deleteItem)="onDelete($event)"
+  (editItem)="onEdit($event)"
     ><app-suint-button
       [text]="'Nuevo'"
       [iconSrc]="'assets/icons/icon-add.svg'"
@@ -36,19 +36,39 @@
       <form [formGroup]="contractGroup" (ngSubmit)="register()">
         <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
           <div>
-            <input-custom
+            <!-- <input-custom
               name="Nombre de la Carrera"
               formControlName="name"
               type="text"
               placeholder="Introduce el nombre de la carrera"
-            ></input-custom>
+            ></input-custom> -->
 
-            <input-custom
+            <div>
+              <label class="text-sm text-primary">Nombre de la Carrera</label>
+              <input
+                formControlName="name"
+                type="text"
+                placeholder="Introduce el nombre de la carrera"
+                class="block w-full h-9 p-2 bg-white border border-gray-200 rounded-md text-sm outline-none placeholder:text-slate-400 placeholder:text-sm focus:border-primary-focus !ring-offset-0 !ring-0 transition duration-500"
+              />
+            </div>
+
+            <!-- <input-custom
               name="Numero de semanas"
               formControlName="numberWeeks"
               type="number"
               placeholder="Introduce el número de semanas"
-            ></input-custom>
+            ></input-custom> -->
+
+            <div>
+              <label class="text-sm text-primary">Numero de semanas</label>
+              <input
+                formControlName="numberWeeks"
+                type="number"
+                placeholder="Introduce el número de semanas"
+                class="block w-full h-9 p-2 bg-white border border-gray-200 rounded-md text-sm outline-none placeholder:text-slate-400 placeholder:text-sm focus:border-primary-focus !ring-offset-0 !ring-0 transition duration-500"
+              />
+            </div>
 
             <input-custom
               name="Nivel Academico"
@@ -60,40 +80,72 @@
 
           <!-- Columna 2 -->
           <div>
-            <input-custom
+            <!-- <input-custom
               name="Facultad o Unidad Academica"
               [options]="faculties"
               formControlName="facultyId"
               type="select"
               [displayProperty]="'name'"
               [valueProperty]="'id'"
-            ></input-custom>
+            ></input-custom> -->
 
-            <input-custom
+            <div>
+              <label class="text-sm text-primary"
+                >Facultad o Unidad Academica</label
+              >
+              <input
+                formControlName="facultyName"
+                type="text"
+                placeholder="Introduce el facultad"
+                class="block w-full h-9 p-2 bg-white border border-gray-200 rounded-md text-sm outline-none placeholder:text-slate-400 placeholder:text-sm focus:border-primary-focus !ring-offset-0 !ring-0 transition duration-500"
+              />
+            </div>
+
+            <!-- <input-custom
               name="Resolución"
               formControlName="resolution"
               type="text"
               placeholder="Selecciona la fecha de resolución"
-            ></input-custom>
+            ></input-custom> -->
 
-            <input-custom
+            <div>
+              <label class="text-sm text-primary">Resolución</label>
+              <input
+                formControlName="resolution"
+                type="text"
+                placeholder="Selecciona la fecha de resolución"
+                class="block w-full h-9 p-2 bg-white border border-gray-200 rounded-md text-sm outline-none placeholder:text-slate-400 placeholder:text-sm focus:border-primary-focus !ring-offset-0 !ring-0 transition duration-500"
+              />
+            </div>
+
+            <!-- <input-custom
               name="Nota de Aprobación"
               formControlName="approvalNote"
               type="number"
               placeholder="Introduce la nota de aprobación"
-            ></input-custom>
+            ></input-custom> -->
+
+            <div>
+              <label class="text-sm text-primary">Nota de Aprobación</label>
+              <input
+                formControlName="approvalNote"
+                type="number"
+                placeholder="Introduce la nota de aprobación"
+                class="block w-full h-9 p-2 bg-white border border-gray-200 rounded-md text-sm outline-none placeholder:text-slate-400 placeholder:text-sm focus:border-primary-focus !ring-offset-0 !ring-0 transition duration-500"
+              />
+            </div>
           </div>
 
           <!-- Columna 3 -->
           <div>
-            <input-custom
+            <!-- <input-custom
               name="Estado"
               type="select"
               [options]="stateOptions"
               formControlName="state"
               [displayProperty]="'name'"
               [valueProperty]="'value'"
-            ></input-custom>
+            ></input-custom> -->
 
             <input-custom
               name="Carga Horaria"
@@ -110,6 +162,23 @@
               type="select"
               [options]="['Presencial', 'Virtual']"
             ></input-custom>
+
+            <div class="flex flex-col items-center">
+              <label class="text-sm text-primary">Estado</label>
+              <label class="relative inline-block w-12 h-6 m-2">
+                <input
+                  type="checkbox"
+                  formControlName="state"
+                  class="opacity-0 w-0 h-0 peer"
+                />
+                <span
+                  class="absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-gray-300 rounded-full transition peer-checked:bg-blue-500"
+                ></span>
+                <span
+                  class="absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition peer-checked:translate-x-6"
+                ></span>
+              </label>
+            </div>
           </div>
         </div>
         <div class="mt-6 flex justify-end">

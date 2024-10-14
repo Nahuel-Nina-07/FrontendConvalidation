@@ -70,6 +70,7 @@ export class AcademicSubjectOriginComponent implements OnInit{
   // Método para abrir el modal
   openAddModal() {
     this.modal.openModal();
+    this.contractGroup.reset();
   }
 
   // Cargamos las universidades
@@ -138,5 +139,10 @@ export class AcademicSubjectOriginComponent implements OnInit{
         console.error('Error deleting item', error);
       }
     });
+  }
+
+  onEdit(item: any): void {
+    this.contractGroup.patchValue(item); // Fill the form with the selected item's data
+    this.modal.openModal(); // Open the modal for editing
   }
 }

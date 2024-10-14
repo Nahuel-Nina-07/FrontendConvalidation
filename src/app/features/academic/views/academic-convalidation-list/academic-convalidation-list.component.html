@@ -16,7 +16,8 @@
     [data]="filteredUniversities"
     [columns]="tableColumns"
     title="Universidades"
-    (editItem)="openEditModal()"
+    (editItem)="onEdit($event)"
+    (deleteItem)="onDelete($event)"
     ><app-suint-button
       [text]="'Nuevo'"
       [iconSrc]="'assets/icons/icon-add.svg'"
@@ -30,38 +31,79 @@
     [width]="'800px'"
     [maxWidth]="'100%'"
   >
-    <form [formGroup]="contractGroup" (ngSubmit)="register()">
+    <form [formGroup]="contractGroup" (ngSubmit)="onSubmit()">
       <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <div>
-          <input-custom
+          <!-- <input-custom
             name="Organización"
             formControlName="name"
             type="text"
             placeholder="Introduce la organización"
-          ></input-custom>
+          ></input-custom> -->
 
-          <input-custom
+          <div>
+            <label class="text-sm text-primary">Organización</label>
+            <input
+            formControlName="name"
+            type="text"
+            placeholder="Introduce la organización"
+              class="block w-full h-9 p-2 bg-white border border-gray-200 rounded-md text-sm outline-none placeholder:text-slate-400 placeholder:text-sm focus:border-primary-focus !ring-offset-0 !ring-0 transition duration-500"
+            />
+          </div>
+
+          <!-- <input-custom
             name="Teléfono"
             formControlName="phone"
             type="text"
             placeholder="Introduce tu teléfono"
-          ></input-custom>
+          ></input-custom> -->
+
+
+          <div>
+            <label class="text-sm text-primary">Teléfono</label>
+            <input
+            formControlName="phone"
+            type="text"
+            placeholder="Introduce tu teléfono"
+              class="block w-full h-9 p-2 bg-white border border-gray-200 rounded-md text-sm outline-none placeholder:text-slate-400 placeholder:text-sm focus:border-primary-focus !ring-offset-0 !ring-0 transition duration-500"
+            />
+          </div>
         </div>
         <div>
-          <input-custom
+          <!-- <input-custom
             name="Fax"
             formControlName="fax"
             type="text"
             placeholder="Introduce el número de fax"
-          ></input-custom>
+          ></input-custom> -->
 
-          <input-custom
+          <div>
+            <label class="text-sm text-primary">Fax</label>
+            <input
+            formControlName="fax"
+            type="text"
+            placeholder="Introduce el número de fax"
+              class="block w-full h-9 p-2 bg-white border border-gray-200 rounded-md text-sm outline-none placeholder:text-slate-400 placeholder:text-sm focus:border-primary-focus !ring-offset-0 !ring-0 transition duration-500"
+            />
+          </div>
+
+          <!-- <input-custom
             name="Correo"
             formControlName="email"
             type="email"
             placeholder="Introduce el correo"
             class="w-full"
-          ></input-custom>
+          ></input-custom> -->
+
+          <div>
+            <label class="text-sm text-primary">Correo</label>
+            <input
+            formControlName="email"
+            type="email"
+            placeholder="Introduce el correo"
+              class="block w-full h-9 p-2 bg-white border border-gray-200 rounded-md text-sm outline-none placeholder:text-slate-400 placeholder:text-sm focus:border-primary-focus !ring-offset-0 !ring-0 transition duration-500"
+            />
+          </div>
         </div>
 
         <div>
@@ -76,13 +118,23 @@
         </div>
 
         <div class="col-span-2">
-          <input-custom
+          <!-- <input-custom
             name="Observaciones"
             formControlName="observation"
             type="text"
             placeholder="Introduce tus observaciones"
             class="w-full"
-          ></input-custom>
+          ></input-custom> -->
+
+          <div>
+            <label class="text-sm text-primary">Observaciones</label>
+            <input
+            formControlName="observation"
+            type="text"
+            placeholder="Introduce tus observaciones"
+              class="block w-full h-9 p-2 bg-white border border-gray-200 rounded-md text-sm outline-none placeholder:text-slate-400 placeholder:text-sm focus:border-primary-focus !ring-offset-0 !ring-0 transition duration-500"
+            />
+          </div>
         </div>
       </div>
 
@@ -91,7 +143,6 @@
           [text]="'Guardar'"
           [iconSrc]="'assets/icons/icon-save.svg'"
           type="submit"
-          (onClickButton)="delayReload()"
         ></app-suint-button>
       </div>
     </form>
