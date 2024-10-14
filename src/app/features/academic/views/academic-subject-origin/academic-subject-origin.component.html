@@ -78,17 +78,28 @@
             type="number"
             placeholder="Número de semestre"
           ></input-custom> -->
-
-          <div>
-            <label class="text-sm text-primary">Semestre</label>
-            <input
+          <div class="grid grid-cols-2 gap-4">
+            
+            <div>
+              <label class="text-sm text-primary">Semestre</label>
+              <input
               formControlName="semester"
               type="number"
               placeholder="Número de semestre"
               class="block w-full h-9 p-2 bg-white border border-gray-200 rounded-md text-sm outline-none placeholder:text-slate-400 placeholder:text-sm focus:border-primary-focus !ring-offset-0 !ring-0 transition duration-500"
-            />
-          </div>
+              />
+            </div>
+            
+          <input-custom
+          name="Tipo de horas"
+          type="select"
+          [options]="workloadOptions"
+          formControlName="typeHours"
+          [displayProperty]="'name'"
+          [valueProperty]="'name'"
+          ></input-custom>
         </div>
+      </div>
 
         <div>
           <!-- <input-custom
@@ -115,11 +126,13 @@
               <input
               name="Horas Semestrales"
               formControlName="hourlyLoad"
-              type="text"
+              type="number"
               placeholder="Carga horaria"
                 class="block w-full h-9 p-2 bg-white border border-gray-200 rounded-md text-sm outline-none placeholder:text-slate-400 placeholder:text-sm focus:border-primary-focus !ring-offset-0 !ring-0 transition duration-500"
               />
             </div>
+
+            
             <!-- <input-custom
               name="Horas Semestrales"
               formControlName="hourlyLoad"

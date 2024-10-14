@@ -141,7 +141,7 @@ export class AcademicConvalidationListComponent implements OnInit {
     console.log('Delete item with ID:', itemId);
     this.universityOriginSvc.deleteUniversityOrigin(itemId).subscribe({
       next: (response) => {
-        this.loadInitialData();
+        this.filteredUniversities = this.filteredUniversities.filter(u => u.id !== itemId);
         console.log('Item deleted successfully', response);
       },
       error: (error) => {
@@ -149,6 +149,7 @@ export class AcademicConvalidationListComponent implements OnInit {
       }
     });
   }
+  
 
   onEdit(item: any): void {
     this.contractGroup.patchValue(item);

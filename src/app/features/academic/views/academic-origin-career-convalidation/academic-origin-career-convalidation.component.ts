@@ -32,8 +32,6 @@ export class AcademicOriginCareerConvalidationComponent implements OnInit {
 
   contractGroup: FormGroup;
   universities: any[] = [];  // Lista para almacenar las carreras
-  stateOptions: { name: string; value: boolean }[] = [];
-  workloadOptions: { name: string }[] = [];
 
   @ViewChild('modal') modal!: ModalFormComponent;
 
@@ -41,10 +39,7 @@ export class AcademicOriginCareerConvalidationComponent implements OnInit {
     this.contractGroup = this.createFormGroup();
   }
 
-  ngOnInit() {
-    
-    this.initializeOptions();
-    
+  ngOnInit() {    
     this.loadInitialData();
   }
 
@@ -86,16 +81,6 @@ export class AcademicOriginCareerConvalidationComponent implements OnInit {
     });
   }
 
-  initializeOptions() {
-    this.stateOptions = [
-      { name: 'Activo', value: true },
-      { name: 'Inactivo', value: false }
-    ];
-    this.workloadOptions = [
-      { name: 'Semanal' },
-      { name: 'Semestral' },
-    ];
-  }
 
   tableColumns = [
     { header: 'Nro. asignatura', field: 'code' },

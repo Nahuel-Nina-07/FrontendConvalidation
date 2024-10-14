@@ -1,14 +1,8 @@
 <div class="bg-gray-100 min-h-screen p-5">
-  <div
-    class="flex items-center justify-between w-full h-16 px-5 bg-white rounded-t-md shadow-sm"
-  >
+  <div class="flex items-center justify-between w-full h-16 px-5 bg-white rounded-t-md shadow-sm">
     <div class="flex flex-col gap-1">
-      <h1 class="leading-none font-primaryBold text-secondary">
-        {{ title }}
-      </h1>
-      <span class="text-xs leading-none text-enable">
-        {{ description }}
-      </span>
+      <h1 class="leading-none font-primaryBold text-secondary">{{ title }}</h1>
+      <span class="text-xs leading-none text-enable">{{ description }}</span>
     </div>
     <ng-content></ng-content>
   </div>
@@ -17,48 +11,26 @@
     <table class="w-full text-left border-collapse">
       <thead>
         <tr class="border-b border-gray-200">
-          <th
-            *ngFor="let column of columns"
-            class="p-4 text-sm font-semibold text-gray-600"
-          >
-            {{ column.header }}
-          </th>
+          <th *ngFor="let column of columns" class="p-4 text-sm font-semibold text-gray-600">{{ column.header }}</th>
           <th class="p-4 text-sm font-semibold text-gray-600">Acciones</th>
         </tr>
       </thead>
       <tbody>
-        <tr
-          *ngFor="let item of data"
-          class="border-b border-gray-100 hover:bg-gray-50"
-        >
+        <tr *ngFor="let item of data" class="border-b border-gray-100 hover:bg-gray-50">
           <td *ngFor="let column of columns" class="p-4 text-gray-700">
             <ng-container *ngIf="column.field === 'state'; else defaultValue">
               {{ item[column.field] ? "Activado" : "Desactivado" }}
             </ng-container>
-            <ng-template #defaultValue>
-              {{ item[column.field] }}
-            </ng-template>
+            <ng-template #defaultValue>{{ item[column.field] }}</ng-template>
           </td>
           <td class="p-4">
             <div class="flex items-center space-x-2">
-              <button
-                (click)="onEdit(item)"
-                class="flex items-center justify-center w-10 h-10 bg-blue-500 hover:bg-blue-600 rounded transition duration-300"
-              >
-                <svg-icon
-                  class="text-white"
-                  src="assets/icons/icon-edit.svg"
-                ></svg-icon>
+              <button (click)="onEdit(item)" class="flex items-center justify-center w-10 h-10 bg-blue-500 hover:bg-blue-600 rounded transition duration-300">
+                <svg-icon class="text-white" src="assets/icons/icon-edit.svg"></svg-icon>
               </button>
 
-              <button
-                (click)="onDelete(item)"
-                class="flex items-center justify-center w-10 h-10 bg-red-500 hover:bg-red-600 rounded transition duration-300"
-              >
-                <svg-icon
-                  class="text-white"
-                  src="assets/icons/icon-trash.svg"
-                ></svg-icon>
+              <button (click)="onDelete(item)" class="flex items-center justify-center w-10 h-10 bg-red-500 hover:bg-red-600 rounded transition duration-300">
+                <svg-icon class="text-white" src="assets/icons/icon-trash.svg"></svg-icon>
               </button>
             </div>
           </td>
@@ -66,4 +38,12 @@
       </tbody>
     </table>
   </div>
+
+  <!-- Modal para confirmar la eliminación -->
+  <app-modal-option
+    [isOpen]="isModalOpen"
+    [itemName]="itemToDelete?.name"
+    (confirmDelete)="confirmDelete()"
+    (closeModal)="closeModal()"
+  ></app-modal-option>
 </div>

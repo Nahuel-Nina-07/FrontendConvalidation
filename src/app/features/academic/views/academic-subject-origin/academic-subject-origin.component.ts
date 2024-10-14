@@ -29,6 +29,15 @@ export class AcademicSubjectOriginComponent implements OnInit{
   subjects: any[] = [];
   universities: any[] = [];
   careers: any[] = [];
+  workloadOptions: { name: string }[] = [];
+
+  initializeOptions() {
+    this.workloadOptions = [
+      { name: 'Semanal' },
+      { name: 'Semestral' },
+      { name: 'Anual' },
+    ];
+  }
 
   @ViewChild('modal') modal!: ModalFormComponent;
   tableColumns = [
@@ -57,6 +66,7 @@ export class AcademicSubjectOriginComponent implements OnInit{
       status: new FormControl(false),
       universityId: new FormControl(''),
       originCareerId: new FormControl(''),
+      typeHours: new FormControl(0),
     });
   }
 
@@ -109,6 +119,7 @@ export class AcademicSubjectOriginComponent implements OnInit{
   }
 
   private loadInitialData(): void {
+    this.initializeOptions();
     this.loadUniversities();
 
     const selectedUniversityId = this.contractGroup.get('universityId')?.value;
@@ -125,6 +136,7 @@ export class AcademicSubjectOriginComponent implements OnInit{
   onSubmit() {
     if (this.contractGroup.valid) {
       const formData = this.contractGroup.value;
+      console.log('Form data:', formData);
       this.subjectService.createSubject(formData).subscribe({
         next: (response) => {
           console.log('Asignatura creada:', response);
