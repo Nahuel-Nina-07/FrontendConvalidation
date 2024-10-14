@@ -31,7 +31,6 @@ export class AcademicSubjectOriginComponent implements OnInit{
   careers: any[] = [];
 
   @ViewChild('modal') modal!: ModalFormComponent;
-  // Inicializamos las columnas de la tabla
   tableColumns = [
     { header: 'Nro. asignatura', field: 'code' },
     { header: 'Nombre', field: 'name' },
@@ -48,7 +47,6 @@ export class AcademicSubjectOriginComponent implements OnInit{
     this.loadInitialData();
   }
 
-  // Creamos el FormGroup
   private createFormGroup(): FormGroup {
     return this.#_formBuilder.group({
       id: new FormControl(0),
@@ -62,18 +60,21 @@ export class AcademicSubjectOriginComponent implements OnInit{
     });
   }
 
-  // Cargamos los datos iniciales (asignaturas y universidades)
-  private loadInitialData(): void {
-    this.loadUniversities();
-  }
-
-  // Método para abrir el modal
   openAddModal() {
     this.modal.openModal();
-    this.contractGroup.reset();
+    const universityId = this.contractGroup.get('universityId')?.value;
+    const originCareerId = this.contractGroup.get('originCareerId')?.value;
+    const id = this.contractGroup.get('id')?.value;
+    const status = this.contractGroup.get('status')?.value;
+    
+    this.contractGroup.reset({
+      id: id,
+      universityId: universityId,
+      originCareerId: originCareerId,
+      status: status
+    });
   }
 
-  // Cargamos las universidades
   private loadUniversities(): void {
     this.universityService.getUniversityOrigins().subscribe({
       next: (data: any[]) => this.universities = data,
@@ -81,21 +82,18 @@ export class AcademicSubjectOriginComponent implements OnInit{
     });
   }
 
-  // Método para manejar el cambio de universidad seleccionada
   onUniversityChange(universityId: number): void {
     if (universityId) {
       this.loadCareersByUniversity(universityId);
     }
   }
 
-  // Método para manejar el cambio de carrera seleccionada
   onCareerChange(originCareerId: number): void {
     if (originCareerId) {
       this.loadSubjectsByCareer(originCareerId);
     }
   }
 
-  // Cargamos las carreras según la universidad seleccionada
   private loadCareersByUniversity(universityId: number): void {
     this.careerService.getCareerByUniversity(universityId).subscribe({
       next: (data: any[]) => this.careers = data,
@@ -110,6 +108,20 @@ export class AcademicSubjectOriginComponent implements OnInit{
     });
   }
 
+  private loadInitialData(): void {
+    this.loadUniversities();
+
+    const selectedUniversityId = this.contractGroup.get('universityId')?.value;
+    if (selectedUniversityId) {
+      this.loadCareersByUniversity(selectedUniversityId);
+    }
+
+    const selectedCareerId = this.contractGroup.get('originCareerId')?.value;
+    if (selectedCareerId) {
+      this.loadSubjectsByCareer(selectedCareerId);
+    }
+  }
+
   onSubmit() {
     if (this.contractGroup.valid) {
       const formData = this.contractGroup.value;
@@ -117,7 +129,17 @@ export class AcademicSubjectOriginComponent implements OnInit{
         next: (response) => {
           console.log('Asignatura creada:', response);
           this.modal.closeModal();
-          this.loadInitialData(); // Recargar datos
+
+          const selectedUniversityId = this.contractGroup.get('universityId')?.value;
+          const selectedCareerId = this.contractGroup.get('originCareerId')?.value;
+
+          if (selectedUniversityId) {
+            this.loadCareersByUniversity(selectedUniversityId);
+          }
+
+          if (selectedCareerId) {
+            this.loadSubjectsByCareer(selectedCareerId);
+          }
         },
         error: (err) => {
           console.error('Error al crear la asignatura', err);
@@ -128,12 +150,19 @@ export class AcademicSubjectOriginComponent implements OnInit{
     }
   }
 
+
   onDelete(item: any): void {
     const itemId = item.id;
     console.log('Delete item with ID:', itemId);
     this.subjectService.deleteSubject(itemId).subscribe({
       next: (response) => {
         console.log('Item deleted successfully', response);
+  
+        // Recargar la lista de asignaturas después de la eliminación
+        const selectedCareerId = this.contractGroup.get('originCareerId')?.value;
+        if (selectedCareerId) {
+          this.loadSubjectsByCareer(selectedCareerId);
+        }
       },
       error: (error) => {
         console.error('Error deleting item', error);
@@ -142,7 +171,7 @@ export class AcademicSubjectOriginComponent implements OnInit{
   }
 
   onEdit(item: any): void {
-    this.contractGroup.patchValue(item); // Fill the form with the selected item's data
-    this.modal.openModal(); // Open the modal for editing
+    this.contractGroup.patchValue(item);
+    this.modal.openModal();
   }
 }

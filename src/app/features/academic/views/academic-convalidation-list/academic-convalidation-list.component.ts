@@ -51,7 +51,11 @@ export class AcademicConvalidationListComponent implements OnInit {
 
   openAddModal() {
     this.modal.openModal();
-    this.contractGroup.reset();
+    const id = this.contractGroup.get('id')?.value;
+    
+    this.contractGroup.reset(
+      { id: id }
+    );
   }
 
   loadUniversities() {
@@ -116,6 +120,7 @@ export class AcademicConvalidationListComponent implements OnInit {
   onSubmit() {
     if (this.contractGroup.valid) {
       const formData = this.contractGroup.value;
+      console.log('Form data:', formData);
       this.universityOriginSvc.createUniversityOrigin(formData).subscribe({
         next: (response) => {
           console.log('Asignatura creada:', response);
@@ -136,6 +141,7 @@ export class AcademicConvalidationListComponent implements OnInit {
     console.log('Delete item with ID:', itemId);
     this.universityOriginSvc.deleteUniversityOrigin(itemId).subscribe({
       next: (response) => {
+        this.loadInitialData();
         console.log('Item deleted successfully', response);
       },
       error: (error) => {
@@ -145,7 +151,7 @@ export class AcademicConvalidationListComponent implements OnInit {
   }
 
   onEdit(item: any): void {
-    this.contractGroup.patchValue(item); // Fill the form with the selected item's data
-    this.modal.openModal(); // Open the modal for editing
+    this.contractGroup.patchValue(item);
+    this.modal.openModal();
   }
 }

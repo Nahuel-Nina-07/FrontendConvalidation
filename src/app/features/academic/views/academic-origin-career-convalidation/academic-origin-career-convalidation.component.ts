@@ -25,14 +25,6 @@ export class AcademicOriginCareerConvalidationComponent implements OnInit {
   @Input() data: any[] = [];
   @Input() columns: { header: string, field: string }[] = [];
   career: any[] = [];
-  tableColumns = [
-    { header: 'Nombre', field: 'name' },
-    { header: '# Asig', field: 'cityId' },
-    { header: 'Teléfono', field: 'phone' },
-    { header: 'Fecha de inicio', field: 'email' }
-  ];
-
-
 
   #_formBuilder = inject(FormBuilder);
   private readonly universityOriginService = inject(UniversityOriginService);  // Inyección del servicio
@@ -46,30 +38,31 @@ export class AcademicOriginCareerConvalidationComponent implements OnInit {
   @ViewChild('modal') modal!: ModalFormComponent;
 
   constructor() {
-    this.contractGroup = this.#_formBuilder.group({
-      id: new FormControl(0),
-      name: new FormControl(''),
-      resolution: new FormControl(''),
-      state: new FormControl(''),
-      numberWeeks: new FormControl(''),
-      academicLevelId: new FormControl(''),
-      studyRegimenId: new FormControl(''),
-      facultyName: new FormControl(''),
-      approvalNote: new FormControl(''),
-      universityId: new FormControl(''),
-      workload: new FormControl('')
-    });
+    this.contractGroup = this.createFormGroup();
   }
 
   ngOnInit() {
-    this.loadUniversities();
+    
     this.initializeOptions();
-    this.loadCareers();
+    
+    this.loadInitialData();
   }
 
   openAddModal() {
     this.modal.openModal();
-}
+    const id = this.contractGroup.get('id')?.value;
+    const academicLevelId = this.contractGroup.get('academicLevelId')?.value;
+    const studyRegimenId = this.contractGroup.get('studyRegimenId')?.value;
+    const universityId = this.contractGroup.get('universityId')?.value;
+    const state = this.contractGroup.get('state')?.value;
+    this.contractGroup.reset({
+      id: id,
+      academicLevelId: academicLevelId,
+      studyRegimenId: studyRegimenId,
+      universityId: universityId,
+      state: state
+    });
+  }
 
   loadUniversities() {
       this.universityOriginService.getUniversityOrigins().subscribe({
@@ -104,40 +97,56 @@ export class AcademicOriginCareerConvalidationComponent implements OnInit {
     ];
   }
 
-  register() {
-    const careerData = {
-      id: this.contractGroup.get('id')?.value,
-      name: this.contractGroup.get('name')?.value,
-      resolution: this.contractGroup.get('resolution')?.value,
-      state: this.contractGroup.get('state')?.value,
-      numberWeeks: this.contractGroup.get('numberWeeks')?.value,
+  tableColumns = [
+    { header: 'Nro. asignatura', field: 'code' },
+    { header: 'Nombre', field: 'name' },
+    { header: 'Total Horas', field: 'state' },
+    { header: 'Semestre', field: 'semester' },
+    { header: 'Fecha de inicio', field: 'startDate' }
+  ];
+
+  private createFormGroup(): FormGroup {
+    return this.#_formBuilder.group({
+      id: new FormControl(0),
+      name: new FormControl(''),
+      resolution: new FormControl(''),
+      state: new FormControl(false),
+      numberWeeks: new FormControl(''),
       academicLevelId: 1,
       studyRegimenId: 1,
-      facultyName: this.contractGroup.get('facultyName')?.value,
-      approvalNote: this.contractGroup.get('approvalNote')?.value,
-      universityId: this.contractGroup.get('universityId')?.value,
-      workload: this.contractGroup.get('workload')?.value
-    };
-    console.log('Datos a enviar:', careerData);
-    if (careerData.id === 0) {
-      // Crear nueva carrera
-      this.careerOriginService.createCareer(careerData).subscribe({
-        next: () => {
-          this.loadUniversities();  // Recargar la lista de carreras
-          
-        },
-        error: (error) => console.error('Error al crear la carrera:', error)
-      });
-    } else {
-      this.careerOriginService.updateCareer(careerData).subscribe({
-        next: () => {
-          this.loadUniversities();
-        },
-        error: (error) => console.error('Error al actualizar la carrera:', error)
-      });
-    }
+      facultyName: new FormControl(''),
+      approvalNote: new FormControl(''),
+      universityId: new FormControl(''),
+      workload: new FormControl(''),
+    });
   }
 
+  private loadInitialData(): void {
+    this.loadUniversities();
+    this.loadCareers();
+  }
+
+  onSubmit() {
+    if (this.contractGroup.valid) {
+      const formData = this.contractGroup.value;
+      console.log('Form data:', formData);
+      this.careerOriginService.createCareer(formData).subscribe({
+        next: (response) => {
+          console.log('Asignatura creada:', response);
+          this.modal.closeModal();
+          const selectedUniversityId = this.contractGroup.get('universityId')?.value;
+          if (selectedUniversityId) {
+            this.loadCareersByUniversity(selectedUniversityId);
+          }
+        },
+        error: (err) => {
+          console.error('Error al crear la asignatura', err);
+        },
+      });
+    } else {
+      console.log('El formulario es inválido');
+    }
+  }
 
   onUniversityChange(universityId: number): void {
     if (universityId) {
@@ -153,8 +162,8 @@ export class AcademicOriginCareerConvalidationComponent implements OnInit {
   }
 
   onEdit(item: any): void {
-    this.contractGroup.patchValue(item); // Fill the form with the selected item's data
-    this.modal.openModal(); // Open the modal for editing
+    this.contractGroup.patchValue(item); 
+    this.modal.openModal();
   }
 
   onDelete(item: any): void {
@@ -163,6 +172,14 @@ export class AcademicOriginCareerConvalidationComponent implements OnInit {
     this.careerOriginService.deleteCareer(itemId).subscribe({
       next: (response) => {
         console.log('Item deleted successfully', response);
+        const selectedUniversityId = this.contractGroup.get('universityId')?.value;
+        
+        if (selectedUniversityId) {
+          this.loadCareersByUniversity(selectedUniversityId);
+        }
+        else {
+          this.loadCareers();
+        }
       },
       error: (error) => {
         console.error('Error deleting item', error);
