@@ -11,20 +11,29 @@
     <table class="w-full text-left border-collapse">
       <thead>
         <tr class="border-b border-gray-200">
-          <th *ngFor="let column of columns" class="p-4 text-sm font-semibold text-gray-600">{{ column.header }}</th>
-          <th class="p-4 text-sm font-semibold text-gray-600">Acciones</th>
+          <th *ngFor="let column of columns" class="p-4 text-sm font-semibold text-gray-600 text-center">{{ column.header }}</th>
+          <th *ngFor="let additionalColumn of additionalColumns" class="p-4 text-sm font-semibold text-gray-600 text-center">{{ additionalColumn.header }}</th>
+          <th class="p-4 text-sm font-semibold text-gray-600 text-center">Acciones</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let item of data" class="border-b border-gray-100 hover:bg-gray-50">
-          <td *ngFor="let column of columns" class="p-4 text-gray-700">
-            <ng-container *ngIf="column.field === 'state'; else defaultValue">
-              {{ item[column.field] ? "Activado" : "Desactivado" }}
-            </ng-container>
-            <ng-template #defaultValue>{{ item[column.field] }}</ng-template>
+          <td *ngFor="let column of columns" class="p-4 text-gray-700">{{ item[column.field] }}</td>
+          
+          <!-- Renderiza las columnas adicionales -->
+          <td *ngFor="let additionalColumn of additionalColumns" class="p-4 text-center">
+            <div class="flex justify-center items-center space-x-2">
+              <button *ngFor="let button of additionalColumn.buttons" (click)="onActionButtonClick(button, item)" 
+                      class="flex items-center justify-center w-10 h-10 bg-gray-300 hover:bg-gray-400 rounded transition duration-300" 
+                      title="{{ button.name }}">
+                <svg-icon class="text-white" [src]="button.iconSrc"></svg-icon>
+              </button>
+            </div>
           </td>
-          <td class="p-4">
-            <div class="flex items-center space-x-2">
+
+          <!-- Columna para acciones comunes -->
+          <td class="p-4 text-center">
+            <div class="flex justify-center items-center space-x-2">
               <button (click)="onEdit(item)" class="flex items-center justify-center w-10 h-10 bg-blue-500 hover:bg-blue-600 rounded transition duration-300">
                 <svg-icon class="text-white" src="assets/icons/icon-edit.svg"></svg-icon>
               </button>

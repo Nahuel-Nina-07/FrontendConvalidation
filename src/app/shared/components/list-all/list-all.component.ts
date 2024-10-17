@@ -21,28 +21,40 @@ export class ListAllComponent {
   @Output() deleteItem: EventEmitter<any> = new EventEmitter();
   @Output() editItem: EventEmitter<any> = new EventEmitter();
 
-  public itemToDelete: any = null; // Ítem seleccionado para eliminar
-  public isModalOpen: boolean = false; // Controla el estado del modal
+  // Configuración de botones personalizados que se pueden agregar dinámicamente
+  @Input() additionalColumns: any[] = [];
+
+  public itemToDelete: any = null;
+  public isModalOpen: boolean = false;
+
+  ngOnInit() {
+    // Puedes inicializar cualquier lógica adicional aquí
+  }
+
+  onActionButtonClick(action: any, item: any) {
+    if (action && action.action) {
+      action.action(item); // Llama a la acción correspondiente
+    }
+  }
 
   onEdit(item: any): void {
     this.editItem.emit(item);
   }
 
   onDelete(item: any): void {
-    this.itemToDelete = item; // Guardar el ítem a eliminar
-    this.isModalOpen = true;  // Abrir el modal
+    this.itemToDelete = item;
+    this.isModalOpen = true;
   }
 
   confirmDelete() {
     if (this.itemToDelete) {
-      this.deleteItem.emit(this.itemToDelete); // Emitir la eliminación
-      this.isModalOpen = false; // Cerrar el modal
-      this.itemToDelete = null; // Limpiar la selección
+      this.deleteItem.emit(this.itemToDelete);
+      this.isModalOpen = false;
+      this.itemToDelete = null;
     }
   }
 
   closeModal() {
-    this.isModalOpen = false; // Cerrar el modal
+    this.isModalOpen = false;
   }
-
 }

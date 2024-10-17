@@ -26,6 +26,7 @@
     *ngIf="contractGroup.value.universityId && contractGroup.value.originCareerId"
       [data]="subjects"
       [columns]="tableColumns"
+      [additionalColumns]="additionalColumns"
       title="Asignaturas"
       (deleteItem)="onDelete($event)"
       (editItem)="onEdit($event)"

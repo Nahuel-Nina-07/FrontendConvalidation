@@ -39,6 +39,19 @@ export class AcademicSubjectOriginComponent implements OnInit{
     ];
   }
 
+  additionalColumns = [
+    {
+      header: 'Documento',
+      buttons: [
+        { name: 'Descargar', iconSrc: 'assets/icons/icon-unit.svg', action: this.downloadDocument.bind(this) },
+      ]
+    }
+  ];
+
+  downloadDocument(item: any) {
+    console.log('Descargando documento para hola:', item);
+  }
+
   @ViewChild('modal') modal!: ModalFormComponent;
   tableColumns = [
     { header: 'Nro. asignatura', field: 'code' },
@@ -119,6 +132,7 @@ export class AcademicSubjectOriginComponent implements OnInit{
   }
 
   private loadInitialData(): void {
+    this.additionalColumns
     this.initializeOptions();
     this.loadUniversities();
 

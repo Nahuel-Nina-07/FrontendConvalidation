@@ -1,0 +1,70 @@
+<suint-page-header description="" title="Datos de Carreras de Origen">
+</suint-page-header>
+
+<app-suint-button
+    [text]="'Nuevo'"
+    [iconSrc]="'assets/icons/icon-add.svg'"
+    (onClickButton)="openAddModal()"
+></app-suint-button>
+
+<div class="flex-1 overflow-y-auto bg-white rounded-[4px] shadow-sm">
+    <suit-modal-form
+        titleModal="Datos de unidades de origen"
+        #modal
+        [width]="'900px'"
+        [maxWidth]="'100%'"
+    >
+        <form [formGroup]="contractGroup" (ngSubmit)="onSubmit()" class="flex">
+            <div class="flex-grow"> <!-- Área principal para el contenido del formulario -->
+                <div class="flex items-center space-x-4"> <!-- Espacio entre inputs -->
+                    <div class="flex-1"> <!-- Área del primer input -->
+                        <label class="text-sm text-primary"># Unidad</label>
+                        <input
+                            formControlName="code"
+                            type="text"
+                            placeholder="Código de asignatura"
+                            class="block w-full h-9 p-2 bg-opacity-80 bg-white border border-gray-200 rounded-md text-sm outline-none placeholder:text-slate-400 placeholder:text-sm focus:border-primary-focus !ring-offset-0 !ring-0 transition duration-500"
+                            style="width: 60px;" 
+                        />
+                    </div>
+
+                    <div class="flex-1"> <!-- Área del segundo input -->
+                        <label class="text-sm text-primary">Título Unidad</label>
+                        <input
+                            formControlName="title"
+                            type="text"
+                            placeholder="Título de la unidad"
+                            class="block w-full h-9 p-2 bg-opacity-80 bg-white border border-gray-200 rounded-md text-sm outline-none placeholder:text-slate-400 placeholder:text-sm focus:border-primary-focus !ring-offset-0 !ring-0 transition duration-500"
+                        />
+                    </div>
+                </div>
+
+                <div class="mt-4"> <!-- Área de descripción -->
+                    <label class="text-sm text-primary">Contenido de la unidad</label>
+                    <textarea
+                        formControlName="description"
+                        placeholder="Descripción de la unidad"
+                        class="block w-full h-24 p-2 bg-opacity-80 bg-white border border-gray-200 rounded-md text-sm outline-none placeholder:text-slate-400 placeholder:text-sm focus:border-primary-focus !ring-offset-0 !ring-0 transition duration-500"
+                    ></textarea>
+                </div>
+            </div>
+
+            <!-- Columna para los botones -->
+            <div class="flex items-center space-x-4 ml-4"> <!-- Espacio entre botones -->
+                <button
+                    type="submit"
+                    class="bg-green-500 text-white px-4 py-2 rounded-md"
+                >
+                    +
+                </button>
+
+                <button
+                    type="button"
+                    class="bg-red-500 text-white px-4 py-2 rounded-md"
+                >
+                    -
+                </button>
+            </div>
+        </form>
+    </suit-modal-form>
+</div>

@@ -23,6 +23,10 @@ export const routes: Routes = [
         path: 'subjects-origin',
         loadComponent: () => import('./views/academic-subject-origin/academic-subject-origin.component').then(m => m.AcademicSubjectOriginComponent),
       },
+      {
+        path: 'units-origin',
+        loadComponent: () => import('./views/academic-source-unit/academic-source-unit.component').then(m => m.AcademicSourceUnitComponent),
+      },
     ],
   },
 ];

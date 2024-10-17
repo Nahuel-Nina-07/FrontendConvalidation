@@ -9,8 +9,8 @@ export class SubjectOriginService {
   constructor(private http: HttpClient) { }
   private apiUrl = 'http://localhost:5050/SourceSubject';
   
-  createSubject(career: any): Observable<any> {
-    return this.http.post<any>(this.apiUrl, career);
+  createSubject(subject: any): Observable<any> {
+    return this.http.post<any>(this.apiUrl, subject);
   }
 
   getSubject(): Observable<any[]> {
