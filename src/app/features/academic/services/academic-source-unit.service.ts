@@ -22,4 +22,8 @@ export class AcademicSourceUnitService {
     return this.http.delete<any>(`${this.apiUrl}/Delete/${id}`);
   }
 
+  getCareerByIdSubject(id: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/Subject/${id}`);
+  }
+
 }

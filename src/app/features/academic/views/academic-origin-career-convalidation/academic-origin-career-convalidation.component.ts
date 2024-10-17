@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, Input, OnInit, ViewChild } from '@angular/core';
 import { SvgIconComponent } from 'angular-svg-icon';
 import { SuintPageHeaderComponent } from '../../../../shared/components/page-header/page-header.component';
 import { CommonModule } from '@angular/common';
@@ -18,7 +18,7 @@ import { ListAllComponent } from '../../../../shared/components/list-all/list-al
   standalone: true,
   imports: [SvgIconComponent, SuintPageHeaderComponent, CommonModule, ModalFormComponent, ReactiveFormsModule, InputCustomComponent,SuintButtonComponent, ListAllComponent],
   templateUrl: './academic-origin-career-convalidation.component.html',
-  styleUrl: './academic-origin-career-convalidation.component.scss'
+  styleUrl: './academic-origin-career-convalidation.component.scss',
 })
 export class AcademicOriginCareerConvalidationComponent implements OnInit {
 

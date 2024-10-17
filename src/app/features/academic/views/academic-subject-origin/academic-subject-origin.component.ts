@@ -10,11 +10,12 @@ import { UniversityOriginService } from '../../services/university-origin.servic
 import { CareerOriginService } from '../../services/career-origin.service';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { InputDirective } from '../../../../shared/directives/input.directive';
+import { AcademicSourceUnitComponent } from '../academic-source-unit/academic-source-unit.component';
 
 @Component({
   selector: 'app-academic-subject-origin',
   standalone: true,
-  imports: [FormsModule, SuintPageHeaderComponent, InputCustomComponent, SuintButtonComponent, ModalFormComponent, CommonModule, ListAllComponent,ReactiveFormsModule,InputDirective],
+  imports: [FormsModule, SuintPageHeaderComponent, InputCustomComponent, SuintButtonComponent, ModalFormComponent, CommonModule, ListAllComponent,ReactiveFormsModule,InputDirective,AcademicSourceUnitComponent],
   templateUrl: './academic-subject-origin.component.html',
   styleUrl: './academic-subject-origin.component.scss'
 })
@@ -43,16 +44,19 @@ export class AcademicSubjectOriginComponent implements OnInit{
     {
       header: 'Documento',
       buttons: [
-        { name: 'Descargar', iconSrc: 'assets/icons/icon-unit.svg', action: this.downloadDocument.bind(this) },
+        { name: 'Unidades', iconSrc: 'assets/icons/icon-unit.svg', action: this.downloadDocument.bind(this) },
       ]
     }
   ];
 
   downloadDocument(item: any) {
+    this.academicUnitModal.openAddModal();
     console.log('Descargando documento para hola:', item);
   }
 
+  @ViewChild('academicUnitModal') academicUnitModal!: AcademicSourceUnitComponent;
   @ViewChild('modal') modal!: ModalFormComponent;
+
   tableColumns = [
     { header: 'Nro. asignatura', field: 'code' },
     { header: 'Nombre', field: 'name' },
