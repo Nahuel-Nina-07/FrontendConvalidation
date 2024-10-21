@@ -27,43 +27,44 @@
       type="text"
       placeholder="Buscar Asignatura Destino..."
       class="w-full"
-      (input)="filterSubjectsUAB()"
-      >
+      (input)="filterSubjectsUAB()">
     </input-custom>
-        <div class="overflow-x-auto m-3 rounded">
-            <table class="min-w-full bg-white rounded-lg shadow-md">
-                <thead class="bg-gray-200">
-                    <tr>
-                        <th class="w-1/12 px-4 py-2 text-left text-gray-600">Seleccionar</th>
-                        <th class="w-5/12 px-4 py-2 text-left text-gray-600">Nombre</th>
-                        <th class="w-2/12 px-4 py-2 text-left text-gray-600">Codigo</th>
-                        <th class="w-4/12 px-4 py-2 text-left text-gray-600">Semestre</th>
-                    </tr>
-                </thead>
-                <tbody>
-                  <!-- Iteramos sobre la lista de asignaturas filtradas con *ngFor -->
-                  <tr *ngFor="let subjectuab of filteredSubjectsUAB" class="border-b">
-                    <td class="px-4 py-2">
-                      <input type="checkbox" class="h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
-                    </td>
-                    <td class="px-4 py-2">
-                      <span class="font-semibold">{{ subjectuab.subjectName }}</span><br>
-                      <span class="text-sm text-gray-500">Universidad Adventista de Bolivia</span>
-                    </td>
-                    <td class="px-4 py-2">{{ subjectuab.subjectCode }}</td>
-                    <td class="px-4 py-2">{{ subjectuab.subjectSemester }}</td>
-                  </tr>
-                </tbody>
-            </table>
-        </div>
+    <div class="overflow-x-auto m-3 rounded">
+      <table class="min-w-full bg-white rounded-lg shadow-md">
+        <thead class="bg-gray-200">
+          <tr>
+            <th class="w-1/12 px-4 py-2 text-left text-gray-600">Seleccionar</th>
+            <th class="w-5/12 px-4 py-2 text-left text-gray-600">Nombre</th>
+            <th class="w-2/12 px-4 py-2 text-left text-gray-600">Código</th>
+            <th class="w-4/12 px-4 py-2 text-left text-gray-600">Semestre</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Iteramos sobre la lista de asignaturas filtradas con *ngFor -->
+          <tr *ngFor="let subjectuab of filteredSubjectsUAB" class="border-b">
+            <td class="px-4 py-2">
+              <input type="radio" name="selectedSubject" [value]="subjectuab" class="h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500" (change)="onSelectSubject(subjectuab)">
+            </td>
+            <td class="px-4 py-2">
+              <span class="font-semibold">{{ subjectuab.subjectName }}</span><br>
+              <span class="text-sm text-gray-500">Universidad Adventista de Bolivia</span>
+            </td>
+            <td class="px-4 py-2">{{ subjectuab.subjectCode }}</td>
+            <td class="px-4 py-2">{{ subjectuab.subjectSemester }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="mt-6 flex justify-end">
+      <app-suint-button
+        [text]="'Guardar'"
+        [iconSrc]="'assets/icons/icon-save.svg'"
+        type="submit"
+      ></app-suint-button>
+    </div>
   </form>
-  <div class="mt-6 flex justify-end">
-    <app-suint-button
-      [text]="'Guardar'"
-      [iconSrc]="'assets/icons/icon-save.svg'"
-      type="submit"
-    ></app-suint-button>
-  </div>
+  
+  
 </suit-modal-form>
 
 <!-- Modal para Asignatura Origen -->
@@ -94,26 +95,27 @@
                 <tbody>
                     <!-- Iteramos sobre la lista de asignaturas con *ngFor -->
                     <tr *ngFor="let subject of subjectList" class="border-b">
-                        <td class="px-4 py-2">
-                            <input type="checkbox" class="h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
-                        </td>
-                        <td class="px-4 py-2">
-                            <span class="font-semibold">{{ subject.name }}</span><br>
-                            <span class="text-sm text-gray-500">{{universitie?.name}}</span>
-                        </td>
-                        <td class="px-4 py-2">{{ subject.code }}</td>
-                        
-                        <td class="px-4 py-2">{{ subject.semester }}</td>
+                      <td class="px-4 py-2">
+                        <input type="radio" name="selectedSubject" [value]="subject" class="h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500" (change)="onSelectSubject(subject)">
+                      </td>
+                      <td class="px-4 py-2">
+                        <span class="font-semibold">{{ subject.name }}</span><br>
+                        <span class="text-sm text-gray-500">{{universitie?.name}}</span>
+                      </td>
+                      <td class="px-4 py-2">{{ subject.code }}</td>
+                      <td class="px-4 py-2">{{ subject.semester }}</td>
                     </tr>
+                    
                 </tbody>
             </table>
         </div>
+        <div class="mt-6 flex justify-end">
+          <app-suint-button
+            [text]="'Guardar'"
+            [iconSrc]="'assets/icons/icon-save.svg'"
+            type="submit"
+          ></app-suint-button>
+        </div>
   </form>
-  <div class="mt-6 flex justify-end">
-    <app-suint-button
-      [text]="'Guardar'"
-      [iconSrc]="'assets/icons/icon-save.svg'"
-      type="submit"
-    ></app-suint-button>
-  </div>
+  
 </suit-modal-form>
