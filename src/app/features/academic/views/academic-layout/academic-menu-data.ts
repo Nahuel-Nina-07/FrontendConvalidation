@@ -20,6 +20,9 @@ export const menu_data: Array<{ title: string, menuItems: MenuItemInterface[] }>
             { icon: 'assets/icons/icon-contrato.svg', title: 'Carreras', url: 'career-origin' },
             { icon: 'assets/icons/icon-estructura.svg', title: 'Asignaturas', url: 'subjects-origin' },
             { icon: 'assets/icons/icon-estructura.svg', title: 'Unidades', url: 'units-origin' },
+            { icon: 'assets/icons/icon-estructura.svg', title: 'Fechas', url: 'dates-report' },
+            { icon: 'assets/icons/icon-estructura.svg', title: 'Estudiantes', url: 'student-enrollment' },
+            { icon: 'assets/icons/icon-estructura.svg', title: 'Relation Subjects', url: 'relation-subjects' }
         ],
     }
     

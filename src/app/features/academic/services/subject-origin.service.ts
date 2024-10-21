@@ -8,7 +8,11 @@ import { Observable } from 'rxjs';
 export class SubjectOriginService {
   constructor(private http: HttpClient) { }
   private apiUrl = 'http://localhost:5050/SourceSubject';
-  
+  private unitsUrl = 'http://localhost:5050/Units';
+
+  private subjectUrl = 'http://localhost:5050/Subjects';
+
+
   createSubject(subject: any): Observable<any> {
     return this.http.post<any>(this.apiUrl, subject);
   }
@@ -23,5 +27,15 @@ export class SubjectOriginService {
 
   getSubjectByCareer(id: number): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/Career/${id}`);
+  }
+
+  //Units
+  getUnits(): Observable<any[]> {
+    return this.http.get<any[]>(this.unitsUrl);
+  }
+
+  //Subjects
+  getSubjectsUAB(): Observable<any[]> {
+    return this.http.get<any[]>(this.subjectUrl);
   }
 }

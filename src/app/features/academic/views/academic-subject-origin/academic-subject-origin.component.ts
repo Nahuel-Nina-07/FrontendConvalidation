@@ -45,16 +45,29 @@ export class AcademicSubjectOriginComponent implements OnInit{
       header: 'Documento',
       buttons: [
         { name: 'Unidades', iconSrc: 'assets/icons/icon-unit.svg', action: this.downloadDocument.bind(this) },
+        { name: 'Key', iconSrc: 'assets/icons/icon-unit.svg', action: this.getAllDocument.bind(this) },
       ]
     }
   ];
 
   downloadDocument(item: any) {
-    this.academicUnitModal.openAddModal();
-    console.log('Descargando documento para hola:', item);
+    if (this.academicUnitModal) {
+      const subjectId = item.id;  // Aquí obtienes el id del item presionado
+      this.academicUnitModal.setSourceSubjectId(subjectId);  // Estableces el id en el componente académico
+      this.academicUnitModal.openAddModal();  // Abres el modal
+      console.log('Descargando documento para id:', subjectId);
+    } else {
+      console.error('academicUnitModal no está inicializado');
+    }
   }
 
-  @ViewChild('academicUnitModal') academicUnitModal!: AcademicSourceUnitComponent;
+  getAllDocument(item: any) {
+    
+  }
+  
+  
+
+  @ViewChild('academicUnitModal', { static: false }) academicUnitModal!: AcademicSourceUnitComponent;
   @ViewChild('modal') modal!: ModalFormComponent;
 
   tableColumns = [

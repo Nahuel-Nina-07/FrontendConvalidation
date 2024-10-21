@@ -1,0 +1,82 @@
+<suint-page-header title="Lista de convalidaciones">
+</suint-page-header>
+
+<suint-list-all
+    
+      [data]="estudiantesConDatos"
+      [columns]="tableColumns"
+      [additionalColumns]="additionalColumns"
+      title="Asignaturas"
+      (deleteItem)="onDelete($event)"
+      (editItem)="onEdit($event)"
+      ><app-suint-button
+        [text]="'Nuevo'"
+        [iconSrc]="'assets/icons/icon-add.svg'"
+        (onClickButton)="openAddModal()"
+      ></app-suint-button
+    ></suint-list-all>
+
+<suit-modal-form
+  titleModal="Estudiantes"
+  #modal
+  [width]="'900px'"
+  [maxWidth]="'100%'"
+>
+  <form [formGroup]="contractGroup" (ngSubmit)="onSubmit()">
+    <input-custom
+      formControlName="search"
+      type="text"
+      placeholder="Buscar estudiante..."
+      class="w-full"
+    ></input-custom>
+
+    <div class="container mx-auto mt-3">
+      <table class="min-w-full bg-white">
+        <thead>
+          <tr
+            class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal"
+          >
+            <th class="py-3 px-6 text-left">Nombre</th>
+            <th class="py-3 px-6 text-left">Universidad</th>
+            <th class="py-3 px-6 text-left">Carrera</th>
+            <th class="py-3 px-6 text-center">Checkout</th>
+          </tr>
+        </thead>
+        <tbody class="text-gray-600 text-sm font-light">
+            <tr *ngFor="let estudiante of estudiantesFiltrados" class="border-b border-gray-200 hover:bg-gray-100">
+              <td class="py-3 px-6 text-left">{{ estudiante.name }}</td>
+              <td class="py-3 px-6 text-left">
+                <select
+                  class="border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  [formControlName]="'originUniversityId'" 
+                  (change)="onUniversityChange(getSelectValue($event))"
+                >
+                  <option value="" disabled>Selecciona una Universidad</option>
+                  <option *ngFor="let university of universities" [value]="university.id">{{ university.name }}</option>
+                </select>
+              </td>
+              <td class="py-3 px-6 text-left">
+                <select
+                  class="border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  [formControlName]="'originCareerId'"
+                >
+                  <option value="" disabled>Selecciona una Carrera</option>
+                  <option *ngFor="let carrera of careers" [value]="carrera.id">{{ carrera.name }}</option>
+                </select>
+              </td>
+              <td class="py-3 px-6 text-center">
+                <button
+                  class="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600"
+                  type="button" 
+                  (click)="onAddEstudiante(estudiante)"
+                >
+                  Agregar
+                </button>
+              </td>
+            </tr>
+          </tbody>
+          
+      </table>
+    </div>
+  </form>
+</suit-modal-form>

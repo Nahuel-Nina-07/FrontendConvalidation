@@ -1,5 +1,5 @@
 // Otros imports
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, Input, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ModalFormComponent } from '../../../../shared/components/modals/modal-form/modal-form.component';
 import { AcademicSourceUnitService } from '../../services/academic-source-unit.service';
@@ -16,6 +16,8 @@ import { SuintButtonComponent } from "../../../../shared/components/suint-button
 })
 export class AcademicSourceUnitComponent implements OnInit {
   @ViewChild('modal') modal!: ModalFormComponent;
+  @Input() sourceSubjectId: number = 3;
+
   private readonly unitOriginService = inject(AcademicSourceUnitService);
 
   contractGroup: FormGroup;
@@ -39,7 +41,7 @@ export class AcademicSourceUnitComponent implements OnInit {
       topic: new FormControl(unitData.topic || ''),
       selected: new FormControl(false),
       number: new FormControl(unitData.number || 0),
-      sourceSubjectId: new FormControl(unitData.sourceSubjectId || 3),
+      sourceSubjectId: new FormControl(this.sourceSubjectId),
     });
   }
 
@@ -47,9 +49,13 @@ export class AcademicSourceUnitComponent implements OnInit {
     return this.contractGroup.get('units') as FormArray;
   }
 
+  setSourceSubjectId(id: number) {
+    this.sourceSubjectId = id;
+  }
+
   private loadInitialData(): void {
     // Lógica para cargar datos iniciales
-    this.unitOriginService.getCareerByIdSubject(3).subscribe({
+    this.unitOriginService.getCareerByIdSubject(this.sourceSubjectId).subscribe({
       next: (units) => {
         this.populateUnits(units); // Llenar el FormArray con las unidades obtenidas
         this.ensureAtLeastOneUnit(); // Asegurarse de que haya al menos una unidad
@@ -76,7 +82,7 @@ export class AcademicSourceUnitComponent implements OnInit {
 
   openAddModal() {
     // Obtener las unidades del sujeto con ID 3
-    this.unitOriginService.getCareerByIdSubject(3).subscribe({
+    this.unitOriginService.getCareerByIdSubject(this.sourceSubjectId).subscribe({
       next: (units) => {
         this.populateUnits(units); // Llenar el FormArray con las unidades obtenidas
         this.modal.openModal(); // Abrir el modal

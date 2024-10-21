@@ -27,6 +27,18 @@ export const routes: Routes = [
         path: 'units-origin',
         loadComponent: () => import('./views/academic-source-unit/academic-source-unit.component').then(m => m.AcademicSourceUnitComponent),
       },
+      {
+        path: 'dates-report',
+        loadComponent: () => import('./views/academic-date-convalidation/academic-date-convalidation.component').then(m => m.AcademicDateConvalidationComponent),
+      },
+      {
+        path: 'student-enrollment',
+        loadComponent: () => import('./views/academic-student-enrollment/academic-student-enrollment.component').then(m => m.AcademicStudentEnrollmentComponent),
+      },
+      {
+        path: 'relation-subjects',
+        loadComponent: () => import('./views/academic-relation-subjects/academic-relation-subjects.component').then(m => m.AcademicRelationSubjectsComponent),
+      },
     ],
   },
 ];

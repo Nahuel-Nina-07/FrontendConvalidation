@@ -1,0 +1,123 @@
+<app-suint-button
+  [text]="'Nuevo'"
+  [iconSrc]="'assets/icons/icon-add.svg'"
+  (onClickButton)="openAddModal()"
+></app-suint-button>
+<suit-modal-form
+titleModal="Datos de asignaturas de origen"
+#modal
+[width]="'800px'"
+[maxWidth]="'100%'"
+>
+<form>
+  <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
+    <div>
+      <!-- <input-custom
+        name="Nro. de la Asignatura"
+        formControlName="code"
+        type="text"
+        placeholder="Código de asignatura"
+      ></input-custom> -->
+
+      <div>
+        <label class="text-sm text-primary">Nro. de la Asignatura</label>
+        <input
+          formControlName="code"
+          type="text"
+          placeholder="Código de asignatura"
+          class="block w-full h-9 p-2 bg-white border border-gray-200 rounded-md text-sm outline-none placeholder:text-slate-400 placeholder:text-sm focus:border-primary-focus !ring-offset-0 !ring-0 transition duration-500"
+        />
+      </div>
+
+      <!-- <input-custom
+        name="Semestre"
+        formControlName="semester"
+        type="number"
+        placeholder="Número de semestre"
+      ></input-custom> -->
+      <div class="grid grid-cols-2 gap-4">
+        
+        <div>
+          <label class="text-sm text-primary">Semestre</label>
+          <input
+          formControlName="semester"
+          type="number"
+          placeholder="Número de semestre"
+          class="block w-full h-9 p-2 bg-white border border-gray-200 rounded-md text-sm outline-none placeholder:text-slate-400 placeholder:text-sm focus:border-primary-focus !ring-offset-0 !ring-0 transition duration-500"
+          />
+        </div>
+        
+      <input-custom
+      name="Tipo de horas"
+      type="select"
+      ></input-custom>
+    </div>
+  </div>
+
+    <div>
+      <!-- <input-custom
+        name="Nombre de la asignatura"
+        formControlName="name"
+        type="text"
+        placeholder="Nombre de la asignatura"
+      ></input-custom> -->
+
+      <div>
+        <label class="text-sm text-primary">Nombre de la asignatura</label>
+        <input
+          formControlName="name"
+          type="text"
+          placeholder="Nombre de la asignatura"
+          class="block w-full h-9 p-2 bg-white border border-gray-200 rounded-md text-sm outline-none placeholder:text-slate-400 placeholder:text-sm focus:border-primary-focus !ring-offset-0 !ring-0 transition duration-500"
+        />
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+
+        <div>
+          <label class="text-sm text-primary">Horas Semestrales</label>
+          <input
+          name="Horas Semestrales"
+          formControlName="hourlyLoad"
+          type="number"
+          placeholder="Carga horaria"
+            class="block w-full h-9 p-2 bg-white border border-gray-200 rounded-md text-sm outline-none placeholder:text-slate-400 placeholder:text-sm focus:border-primary-focus !ring-offset-0 !ring-0 transition duration-500"
+          />
+        </div>
+
+        
+        <!-- <input-custom
+          name="Horas Semestrales"
+          formControlName="hourlyLoad"
+          type="text"
+          placeholder="Carga horaria"
+        ></input-custom> -->
+
+        <div class="flex flex-col items-center">
+          <label class="text-sm text-primary">Estado</label>
+          <label class="relative inline-block w-12 h-6 m-2">
+            <input
+              type="checkbox"
+              formControlName="status"
+              class="opacity-0 w-0 h-0 peer"
+            />
+            <span
+              class="absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-gray-300 rounded-full transition peer-checked:bg-blue-500"
+            ></span>
+            <span
+              class="absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition peer-checked:translate-x-6"
+            ></span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="mt-6 flex justify-end">
+    <app-suint-button
+      [text]="'Guardar'"
+      [iconSrc]="'assets/icons/icon-save.svg'"
+      type="submit"
+    ></app-suint-button>
+  </div>
+</form>
+</suit-modal-form>
