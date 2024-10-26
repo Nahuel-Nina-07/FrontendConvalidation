@@ -20,66 +20,191 @@ import { AcademicSubjetRelationService } from '../../services/academic-subjet-re
 })
 export class AcademicRelationSubjectsComponent implements OnInit {
   #_formBuilder = inject(FormBuilder);
-  destinoGroup: FormGroup;
-  origenGroup: FormGroup;
+  relationForm: FormGroup = this.#_formBuilder.group({
+    searchDestino: new FormControl(''),
+    searchOrigen: new FormControl(''),
+    id: new FormControl(0),
+    status: new FormControl(true),
+    studentEnrollmentId: new FormControl(0),
+    subjectId: new FormControl(null),
+    date: new FormControl('2024-10-21T23:00:23.075Z'),
+    percentajeContent: new FormControl(0),
+    technicalId: new FormControl(1),
+    sourceSubjectOriginId: new FormControl(null),
+  });
+
   subjectList: any[] = [];
   universitie: any = [];
-  subjectsUAB: any[] = []; // Lista de todas las unidades
-  filteredSubjectsUAB: any[] = []; // Lista filtrada
+  subjectsUAB: any[] = [];
+  filteredSubjectsUAB: any[] = [];
   subjectRelations: any[] = [];
+  studentData: any = {};
   private subjectService = inject(SubjectOriginService);
   private universityService = inject(UniversityOriginService);
   private relationSubjectService = inject(AcademicSubjetRelationService);
 
-  constructor(private route: ActivatedRoute) {
-    this.destinoGroup = this.createDestinoFormGroup();
-    this.origenGroup = this.createOrigenFormGroup();
+  @ViewChild('modalDestino') modalDestino!: ModalFormComponent;
+  @ViewChild('modalOrigen') modalOrigen!: ModalFormComponent;
+
+  constructor(private route: ActivatedRoute) { }
+
+  ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      this.studentData = {
+        id: params['id'],
+        name: params['name'],
+        originCareerId: params['originCareerId'],
+        originUniversityId: params['originUniversityId']
+      };
+
+      const studentId = Number(this.studentData.id);
+      this.relationForm.patchValue({ studentEnrollmentId: studentId });
+
+      console.log('Datos del estudiante:', this.studentData);
+      this.loadInitialData();
+    });
+  }
+  
+
+  private loadInitialData(): void {
+    this.getSubjectsByCareer(this.studentData.originCareerId);
+    this.getUniversityById(this.studentData.originUniversityId);
+    this.loadSubject();
+    this.getSubjectRelationByStudentEnrollment(this.studentData.id);
   }
 
-  private createDestinoFormGroup(): FormGroup {
-    return this.#_formBuilder.group({
-      searchDestino: new FormControl('')
+  getSubjectRelationByStudentEnrollment(id: number): void {
+    this.relationSubjectService.getSubjectRelationByStudentEmrollment(id).subscribe(
+      (subjectRelation) => {
+        this.subjectRelations = subjectRelation.map(relation => {
+          const subjectDestino = this.subjectsUAB.find(subject => subject.id === relation.subjectId);
+          const subjectOrigen = this.subjectList.find(subject => subject.id === relation.sourceSubjectOriginId);
+          return {
+            ...relation,
+            subjectName: subjectDestino ? subjectDestino.subjectName : 'No asignada',
+            sourceSubjectOriginName: subjectOrigen ? subjectOrigen.name : 'No asignada'
+          };
+        });
+        console.log('Relación de asignaturas con nombres:', this.subjectRelations);
+        this.updateFilteredSubjects();
+      },
+      (error) => {
+        console.error('Error al obtener la relación de asignaturas:', error);
+      }
+    );
+  }
+
+  private updateFilteredSubjects(): void {
+    const relatedSubjectIds = this.subjectRelations.map(relation => relation.subjectId);
+    const relatedOriginIds = this.subjectRelations.map(relation => relation.sourceSubjectOriginId);
+    this.filteredSubjectsUAB = this.subjectsUAB.filter(subject => !relatedSubjectIds.includes(subject.id));
+    this.subjectList = this.subjectList.filter(subject => !relatedOriginIds.includes(subject.id));
+    console.log('Asignaturas UAB actualizadas:', this.filteredSubjectsUAB);
+    console.log('Lista de asignaturas de origen actualizada:', this.subjectList);
+  }
+
+  getUniversityById(id: number): void {
+    this.universityService.getUniversityById(id).subscribe(
+      (university) => {
+        this.universitie = university;
+        console.log('Universidad:', this.universitie);
+      },
+      (error) => {
+        console.error('Error al obtener la universidad:', error);
+      }
+    );
+  }
+
+  getSubjectsByCareer(careerId: number): void {
+    this.subjectService.getSubjectByCareer(careerId).subscribe(
+      (subjects) => {
+        this.subjectList = subjects.filter(subject => subject.status === true);
+        const relatedOriginIds = this.subjectRelations.map(relation => relation.sourceSubjectOriginId);
+        this.subjectList = this.subjectList.filter(subject => !relatedOriginIds.includes(subject.id));
+        console.log('Asignaturas activas filtradas:', this.subjectList);
+      },
+      (error) => {
+        console.error('Error al obtener las asignaturas:', error);
+      }
+    );
+  }
+
+  onSubmit() {
+    if (this.relationForm.valid) {
+      const formData = this.relationForm.value;
+      console.log('Form data:', formData);
+      this.relationSubjectService.createSubjectRelation(formData).subscribe({
+        next: (response) => {
+          console.log('Asignatura creada:', response);
+          this.modalDestino.closeModal();
+          this.modalOrigen.closeModal();
+          this.loadInitialData(); // Recargar datos
+        },
+        error: (err) => {
+          console.error('Error al crear la asignatura', err);
+        },
+      });
+    } else {
+      console.log('El formulario es inválido');
+    }
+  }
+
+  filterSubjectsOrigen() {
+    const searchValue = this.relationForm.get('searchOrigen')?.value.toLowerCase();
+    if (searchValue) {
+      this.subjectList = this.subjectList.filter(subject =>
+        subject.name.toLowerCase().includes(searchValue) ||
+        subject.code.toLowerCase().includes(searchValue) ||
+        subject.semester.toString().includes(searchValue)
+      );
+    } else {
+      this.getSubjectsByCareer(this.studentData.originCareerId);
+    }
+  }
+
+  loadSubject() {
+    this.subjectService.getSubjectsUAB().subscribe({
+      next: (response) => {
+        this.subjectsUAB = response;
+        const relatedSubjectIds = this.subjectRelations.map(relation => relation.subjectId);
+        this.filteredSubjectsUAB = this.subjectsUAB.filter(subject => !relatedSubjectIds.includes(subject.id));
+        console.log('Asignaturas UAB filtradas:', this.filteredSubjectsUAB);
+      },
+      error: (error) => {
+        console.error('Error al cargar las universidades:', error);
+      }
     });
   }
 
-  private createOrigenFormGroup(): FormGroup {
-    return this.#_formBuilder.group({
-      searchOrigen: new FormControl(''),
-      
+  filterSubjectsUAB() {
+    const searchValue = this.relationForm.get('searchDestino')?.value.toLowerCase();
+    if (searchValue) {
+      this.filteredSubjectsUAB = this.subjectsUAB.filter(subject =>
+        subject.subjectName.toLowerCase().includes(searchValue)
+      );
+    } else {
+      this.filteredSubjectsUAB = [...this.subjectsUAB];
+    }
+  }
+
+  selectedDestinoId: number | null = null;  // ID de asignatura destino seleccionada
+selectedOrigenId: number | null = null;   // ID de asignatura origen seleccionada
+
+  selectedSubjectDestino(subject: any) {
+    this.selectedDestinoId = subject.id;
+    this.relationForm.patchValue({
+      subjectId: subject.id,
+    });
+  }
+
+  selectedSubjectOrigen(subject: any) {
+    this.selectedOrigenId = subject.id; 
+    this.relationForm.patchValue({
+      sourceSubjectOriginId: subject.id,
     });
   }
 
   
-
-  @ViewChild('modalDestino') modalDestino!: ModalFormComponent;
-  @ViewChild('modalOrigen') modalOrigen!: ModalFormComponent;
-
-  openDestinoModal() {
-    this.modalDestino.openModal();
-  }
-
-  openOrigenModal() {
-    this.modalOrigen.openModal();
-  }
-
-  tableColumns = [
-    { header: 'Asignatura Destino', field: 'subjectName' },
-    { header: 'Asignatura Origen', field: 'sourceSubjectOriginName' },
-    { header: 'Porcentaje', field: 'percentageContent' },
-  ];
-
-  additionalColumns = [
-    {
-      header: 'Unidades',
-      buttons: [
-        { name: 'Unidades', iconSrc: 'assets/icons/icon-unit.svg', action: this.downloadDocument.bind(this) },
-      ]
-    }
-  ];
-
-  downloadDocument(item: any) {
-    console.log('Descargando documento para estudiante:', item);
-  }
 
   onDelete(item: any): void {
     const itemId = item.id;
@@ -94,240 +219,47 @@ export class AcademicRelationSubjectsComponent implements OnInit {
       }
     });
   }
-  
-  
 
-  onSubmitDestino() {
-    // Verificar si hay alguna relación existente con `subjectId` o `sourceSubjectOriginId` en null
-    const incompleteRelation = this.subjectRelations.find(
-      (relation) => relation.sourceSubjectOriginId === null
-    );
-  
-    if (incompleteRelation) {
-      // Mostrar mensaje de advertencia
-      console.warn('No puedes agregar una asignatura de destino hasta que completes las asignaturas de origen.');
-      alert('No puedes agregar una asignatura de destino hasta que completes las asignaturas de origen.');
-      return;
+  openDestinoModal(item: any) {
+    this.onSubmit();
+    this.relationForm.patchValue(item);
+    this.modalDestino.openModal();
+    this.loadInitialData();
+  }
+
+  openOrigenModal(item: any) {
+    this.relationForm.patchValue(item);
+    this.modalOrigen.openModal();
+    this.loadInitialData();
+  }
+  onEdit(item: any): void {
+    this.relationForm.patchValue(item); 
+  }
+
+  tableColumns = [
+    { header: 'Asignatura Destino', field: 'subjectName' },
+    { header: 'Asignatura Origen', field: 'sourceSubjectOriginName' },
+    { header: 'Porcentaje', field: 'percentageContent' },
+  ];
+
+  additionalColumns = [
+    {
+      header: 'Agregar asignaturas',
+      buttons: [
+        { name: 'Asignaturas Destino', iconSrc: 'assets/icons/add-comparation.svg', action: this.openDestinoModal.bind(this) },
+        { name: 'Asignaturas Origen', iconSrc: 'assets/icons/add-destino.svg', action: this.openOrigenModal.bind(this) },
+      ]
+    },
+    {
+      header: 'Comparacion de Asignaturas',
+      buttons: [
+        { name: 'Comparar', iconSrc: 'assets/icons/add-comparation.svg', action: this.convalidation.bind(this) },
+      ]
     }
-  
-    if (this.destinoGroup.valid && this.selectedSubject) {
-      const formData = {
-        id: 0,
-        status: true,
-        studentEnrollmentId: this.studentData.id,
-        subjectId: this.selectedSubject.id,
-        date: "2024-10-21T03:01:46.199Z",
-        percentajeContent: 0,
-        technicalId: 0,
-        sourceSubjectOriginId: null
-      };
-      console.log('Destino Form data:', formData);
-  
-      this.relationSubjectService.createSubjectRelation(formData).subscribe(
-        response => {
-          console.log('Relación de asignatura creada:', response);
-          // Recargar la lista de relaciones
-          this.getSubjectRelationByStudentEnrollment(this.studentData.id);
-        },
-        error => {
-          console.error('Error al crear la relación de asignatura:', error);
-        }
-      );
-    } else {
-      console.warn('No se ha seleccionado ninguna asignatura.');
-    }
+  ];
+
+  convalidation(item: any) {
+    alert('No hay unidades en las materias');
   }
-  
-  onSubmitOrigen() {
-    // Verificar si hay alguna relación existente con `subjectId` o `sourceSubjectOriginId` en null
-    const incompleteRelation = this.subjectRelations.find(
-      (relation) => relation.subjectId === null
-    );
-  
-    if (incompleteRelation) {
-      // Mostrar mensaje de advertencia
-      console.warn('No puedes agregar una asignatura de origen hasta que completes las asignaturas de destino.');
-      alert('No puedes agregar una asignatura de origen hasta que completes las asignaturas de destino.');
-      return;
-    }
-  
-    if (this.origenGroup.valid && this.selectedSubject) {
-      const formData = {
-        id: 0,
-        status: true,
-        studentEnrollmentId: this.studentData.id,
-        subjectId: null,
-        date: "2024-10-21T03:01:46.199Z",
-        percentajeContent: 0,
-        technicalId: 0,
-        sourceSubjectOriginId: this.selectedSubject.id  // 'selectedSubject' es la asignatura de origen
-      };
-      console.log('Origen Form data:', formData);
-  
-      this.relationSubjectService.createSubjectRelation(formData).subscribe(
-        response => {
-          console.log('Relación de asignatura creada:', response);
-          // Recargar la lista de relaciones
-          this.getSubjectRelationByStudentEnrollment(this.studentData.id);
-        },
-        error => {
-          console.error('Error al crear la relación de asignatura:', error);
-        }
-      );
-    } else {
-      console.warn('No se ha seleccionado ninguna asignatura.');
-    }
-  }
-  
-  
-
-  studentData: any = {};
-
-  ngOnInit(): void {
-    // Obtener los parámetros de la URL
-    this.route.queryParams.subscribe(params => {
-      this.studentData = {
-        id: params['id'],
-        name: params['name'],
-        originCareerId: params['originCareerId'],
-        originUniversityId: params['originUniversityId']
-      };
-
-      console.log('Datos del estudiante:', this.studentData);
-      this.loadInitialData();
-      
-    });
-  }
-
-  private loadInitialData(): void {
-    this.getSubjectsByCareer(this.studentData.originCareerId);
-    this.getUniversityById(this.studentData.originUniversityId);
-    this.loadSubject();
-    this.getSubjectRelationByStudentEnrollment(this.studentData.id);
-  }
-
-  getSubjectRelationByStudentEnrollment(id: number): void {
-    this.relationSubjectService.getSubjectRelationByStudentEmrollment(id).subscribe(
-      (subjectRelation) => {
-        // Mapea las relaciones de asignaturas
-        this.subjectRelations = subjectRelation.map(relation => {
-          const subjectDestino = this.subjectsUAB.find(subject => subject.id === relation.subjectId);
-          const subjectOrigen = this.subjectList.find(subject => subject.id === relation.sourceSubjectOriginId);
-
-          return {
-            ...relation,
-            subjectName: subjectDestino ? subjectDestino.subjectName : 'No asignada',
-            sourceSubjectOriginName: subjectOrigen ? subjectOrigen.name : 'No asignada'
-          };
-        });
-
-        console.log('Relación de asignaturas con nombres:', this.subjectRelations);
-
-        // Filtrar subjectsUAB y subjectList después de obtener las relaciones
-        this.updateFilteredSubjects();
-      },
-      (error) => {
-        console.error('Error al obtener la relación de asignaturas:', error);
-      }
-    );
-}
-
-private updateFilteredSubjects(): void {
-  const relatedSubjectIds = this.subjectRelations.map(relation => relation.subjectId);
-  const relatedOriginIds = this.subjectRelations.map(relation => relation.sourceSubjectOriginId);
-
-  // Filtrar asignaturas que ya están en las relaciones existentes
-  this.filteredSubjectsUAB = this.subjectsUAB.filter(subject => !relatedSubjectIds.includes(subject.id));
-  this.subjectList = this.subjectList.filter(subject => !relatedOriginIds.includes(subject.id));
-
-  console.log('Asignaturas UAB actualizadas:', this.filteredSubjectsUAB);
-  console.log('Lista de asignaturas de origen actualizada:', this.subjectList);
-}
-
-  getUniversityById(id: number): void {
-    this.universityService.getUniversityById(id).subscribe(
-      (university) => {
-        this.universitie = university;  // Guardar la universidad en la variable
-        console.log('Universidad:', this.universitie);
-      },
-      (error) => {
-        console.error('Error al obtener la universidad:', error);
-      }
-    );
-  }
-
-  getSubjectsByCareer(careerId: number): void {
-    this.subjectService.getSubjectByCareer(careerId).subscribe(
-      (subjects) => {
-        // Filtrar asignaturas activas (status true)
-        this.subjectList = subjects.filter(subject => subject.status === true);
-
-        // Filtrar asignaturas que ya están en subjectRelations
-        const relatedOriginIds = this.subjectRelations.map(relation => relation.sourceSubjectOriginId);
-        
-        // Filtrar asignaturas activas que no están en las relaciones existentes
-        this.subjectList = this.subjectList.filter(subject => !relatedOriginIds.includes(subject.id));
-
-        console.log('Asignaturas activas filtradas:', this.subjectList);
-      },
-      (error) => {
-        console.error('Error al obtener las asignaturas:', error);
-      }
-    );
-}
-
-  filterSubjectsOrigen() {
-    const searchValue = this.origenGroup.get('searchOrigen')?.value.toLowerCase();
-    if (searchValue) {
-      this.subjectList = this.subjectList.filter(subject =>
-        subject.name.toLowerCase().includes(searchValue) ||
-        subject.code.toLowerCase().includes(searchValue) ||
-        subject.semester.toString().includes(searchValue) // Convertir semester a string si es un número
-      );
-    } else {
-      // Si no hay valor de búsqueda, vuelve a cargar todas las asignaturas activas
-      this.getSubjectsByCareer(this.studentData.originCareerId);
-    }
-  }
-
-  loadSubject() {
-    this.subjectService.getSubjectsUAB().subscribe({
-      next: (response) => {
-        this.subjectsUAB = response;
-
-        // Filtrar asignaturas que ya están en subjectRelations
-        const relatedSubjectIds = this.subjectRelations.map(relation => relation.subjectId);
-
-        // Filtrar asignaturas que no están en las relaciones existentes
-        this.filteredSubjectsUAB = this.subjectsUAB.filter(subject => !relatedSubjectIds.includes(subject.id));
-
-        console.log('Asignaturas UAB filtradas:', this.filteredSubjectsUAB);
-      },
-      error: (error) => {
-        console.error('Error al cargar las universidades:', error);
-      }
-    });
-}
-
-
-  // Método para filtrar las unidades de la UAB
-  filterSubjectsUAB() {
-    const searchValue = this.destinoGroup.get('searchDestino')?.value.toLowerCase();  // Cambiado a destinoGroup
-    if (searchValue) {
-      this.filteredSubjectsUAB = this.subjectsUAB.filter(subject =>
-        subject.subjectName.toLowerCase().includes(searchValue)
-      );
-    } else {
-      this.filteredSubjectsUAB = [...this.subjectsUAB];  // Mostrar todas las unidades si no hay búsqueda
-    }
-  }
-  
-  selectedSubject: any;
-
-onSelectSubject(subject: any) {
-  this.selectedSubject = subject;
-  console.log('Asignatura seleccionada:', this.selectedSubject);
-}
-
 
 }

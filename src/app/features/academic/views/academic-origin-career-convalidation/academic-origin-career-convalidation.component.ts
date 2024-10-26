@@ -12,6 +12,7 @@ import { UniversityOriginService } from '../../services/university-origin.servic
 import { CareerOriginService } from '../../services/career-origin.service';
 import { state } from '@angular/animations';
 import { ListAllComponent } from '../../../../shared/components/list-all/list-all.component';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-academic-origin-career-convalidation',
@@ -35,11 +36,20 @@ export class AcademicOriginCareerConvalidationComponent implements OnInit {
 
   @ViewChild('modal') modal!: ModalFormComponent;
 
-  constructor() {
+  constructor(private route: ActivatedRoute) {
     this.contractGroup = this.createFormGroup();
   }
 
-  ngOnInit() {    
+  ngOnInit() {
+    this.route.queryParams.subscribe(params => {
+      const universityId = params['id'];
+      
+      if (universityId) {
+        this.contractGroup.patchValue({ universityId: universityId });
+        this.loadCareersByUniversity(universityId);
+      }
+    });
+  
     this.loadInitialData();
   }
 
@@ -83,11 +93,9 @@ export class AcademicOriginCareerConvalidationComponent implements OnInit {
 
 
   tableColumns = [
-    { header: 'Nro. asignatura', field: 'code' },
+    { header: 'Nro. asignatura', field: 'resolution' },
     { header: 'Nombre', field: 'name' },
-    { header: 'Total Horas', field: 'state' },
-    { header: 'Semestre', field: 'semester' },
-    { header: 'Fecha de inicio', field: 'startDate' }
+    { header: 'Numero de semanas', field: 'numberWeeks' }
   ];
 
   private createFormGroup(): FormGroup {

@@ -8,7 +8,9 @@ import { Observable } from 'rxjs';
 export class CareerOriginService {
     // Ajusta la URL según corresponda
   private apiUrl = 'http://localhost:5050/OriginCareer';
-  // private facultyUrl = 'http://localhost:5050/Faculty';  // Ajusta la URL según corresponda
+  // private facultyUrl = 'http://localhost:5050/Faculty'; 
+   // Ajusta la URL según corresponda
+  private apisUrl ="http://localhost:5050/SourceUnit"
 
   constructor(private http: HttpClient) {}
 
@@ -32,6 +34,12 @@ export class CareerOriginService {
     return this.http.get<any[]>(`${this.apiUrl}/University/${id}`);
   }
 
+  getSubjectBySource(id: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apisUrl}/Subject/${id}`);
+  }
+
+
+  
   //Facultad
   // getFacultyAll(): Observable<any[]> {
   //   return this.http.get<any[]>(`${this.facultyUrl}`);

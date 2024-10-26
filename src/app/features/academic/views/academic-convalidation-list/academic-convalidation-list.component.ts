@@ -10,6 +10,7 @@ import { SuintButtonComponent } from "../../../../shared/components/suint-button
 import { AcademicOriginCareerConvalidationComponent } from "../academic-origin-career-convalidation/academic-origin-career-convalidation.component";
 import { CareerOriginService } from '../../services/career-origin.service';
 import { ListAllComponent } from "../../../../shared/components/list-all/list-all.component";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-academic-convalidation-list',
@@ -29,6 +30,7 @@ export class AcademicConvalidationListComponent implements OnInit {
   careers: any[] = [];
   
   filteredUniversities: any[] = [];
+  private router = inject(Router);
 
   @ViewChild('modal') modal!: ModalFormComponent;
 
@@ -154,5 +156,22 @@ export class AcademicConvalidationListComponent implements OnInit {
   onEdit(item: any): void {
     this.contractGroup.patchValue(item);
     this.modal.openModal();
+  }
+
+  additionalColumns = [
+    {
+      header: 'Agregar Carrera',
+      buttons: [
+        { name: 'Carreras', iconSrc: 'assets/icons/add-career.svg', action: this.Carreras.bind(this) },
+      ]
+    }
+  ];
+
+  Carreras(item: any): void {
+    this.router.navigate(['/academico/career-origin'], {
+      queryParams: {
+        id: item.id,
+      }
+    });
   }
 }

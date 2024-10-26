@@ -27,7 +27,6 @@ export class AcademicStudentEnrollmentComponent implements OnInit {
   careers: any[] = [];
   
 
-
   #_formBuilder = inject(FormBuilder);
   private studentEnrollmentService = inject(StudentEnrollmentService);
   private universityService = inject(UniversityOriginService);
@@ -35,7 +34,6 @@ export class AcademicStudentEnrollmentComponent implements OnInit {
   private router = inject(Router);
 
   contractGroup: FormGroup;
-
 
   private createFormGroup(): FormGroup {
     return this.#_formBuilder.group({
@@ -125,10 +123,8 @@ export class AcademicStudentEnrollmentComponent implements OnInit {
         };
       });
   
-      console.log('Estudiantes con nombres:', this.estudiantes); // Verifica el resultado mapeado
-  
-      // Filtra estudiantes que no tienen universidad ni carrera
-      this.estudiantesFiltrados = this.estudiantes.filter(estudiante =>
+      console.log('Estudiantes con nombres:', this.estudiantes);
+        this.estudiantesFiltrados = this.estudiantes.filter(estudiante =>
         estudiante.originUniversityId === null && estudiante.originCareerId === null
       );
   
@@ -141,9 +137,6 @@ export class AcademicStudentEnrollmentComponent implements OnInit {
       console.log('Estudiantes con asignaciones:', this.estudiantesConDatos);
     });
   }
-  
-  
-  
   
   private loadUniversities(): void {
     this.universityService.getUniversityOrigins().subscribe({
@@ -167,7 +160,6 @@ export class AcademicStudentEnrollmentComponent implements OnInit {
     });
   }
   
-
   getSelectValue(event: Event): number {
     const selectElement = event.target as HTMLSelectElement;  // Casting
     return Number(selectElement.value); // Convierte a número aquí
@@ -201,9 +193,9 @@ export class AcademicStudentEnrollmentComponent implements OnInit {
 
   additionalColumns = [
     {
-      header: 'Documento',
+      header: 'Asignaturas',
       buttons: [
-        { name: 'Unidades', iconSrc: 'assets/icons/icon-unit.svg', action: this.downloadDocument.bind(this) },
+        { name: 'Unidades', iconSrc: 'assets/icons/icon-subject.svg', action: this.downloadDocument.bind(this) },
       ]
     }
   ];
@@ -219,5 +211,4 @@ export class AcademicStudentEnrollmentComponent implements OnInit {
       }
     });
   }
-  
 }

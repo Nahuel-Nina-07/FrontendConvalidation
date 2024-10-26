@@ -1,18 +1,13 @@
-<suint-list-all [title]="studentData.name"
-[data]="subjectRelations"
-[columns]="tableColumns"
-[additionalColumns]="additionalColumns"
-(deleteItem)="onDelete($event)">
-  <app-suint-button
-    [text]="'Asignatura Destino'"
-    [iconSrc]="'assets/icons/icon-add.svg'"
-    (onClickButton)="openDestinoModal()"
-  ></app-suint-button>
-  <app-suint-button
-    [text]="'Asignatura Origen'"
-    [iconSrc]="'assets/icons/icon-add.svg'"
-    (onClickButton)="openOrigenModal()"
-  ></app-suint-button>
+<suint-list-all
+  [title]="studentData.name"
+  [data]="subjectRelations"
+  [additionalColumns]="additionalColumns"
+  [columns]="tableColumns"
+  (deleteItem)="onDelete($event)"
+  [isEditVisible]="false"
+  [isDeleteVisible]="true"
+  [isNewVisible]="true"
+>
 </suint-list-all>
 
 <!-- Modal para Asignatura Destino -->
@@ -21,7 +16,7 @@
   #modalDestino
   [width]="'900px'"
   [maxWidth]="'100%'">
-  <form [formGroup]="destinoGroup" (ngSubmit)="onSubmitDestino()">
+  <form [formGroup]="relationForm" (ngSubmit)="onSubmit()">
     <input-custom
       formControlName="searchDestino"
       type="text"
@@ -40,17 +35,13 @@
           </tr>
         </thead>
         <tbody>
-          <!-- Iteramos sobre la lista de asignaturas filtradas con *ngFor -->
           <tr *ngFor="let subjectuab of filteredSubjectsUAB" class="border-b">
             <td class="px-4 py-2">
-              <input type="radio" name="selectedSubject" [value]="subjectuab" class="h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500" (change)="onSelectSubject(subjectuab)">
+              <input type="checkbox" (change)="selectedSubjectDestino(subjectuab)" class="h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
             </td>
-            <td class="px-4 py-2">
-              <span class="font-semibold">{{ subjectuab.subjectName }}</span><br>
-              <span class="text-sm text-gray-500">Universidad Adventista de Bolivia</span>
-            </td>
+            <td class="px-4 py-2">{{ subjectuab.subjectName }}</td>
             <td class="px-4 py-2">{{ subjectuab.subjectCode }}</td>
-            <td class="px-4 py-2">{{ subjectuab.subjectSemester }}</td>
+            <td class="px-4 py-2">{{ subjectuab.semester }}</td>
           </tr>
         </tbody>
       </table>
@@ -63,8 +54,6 @@
       ></app-suint-button>
     </div>
   </form>
-  
-  
 </suit-modal-form>
 
 <!-- Modal para Asignatura Origen -->
@@ -73,49 +62,42 @@
   #modalOrigen
   [width]="'900px'"
   [maxWidth]="'100%'">
-  <form [formGroup]="origenGroup" (ngSubmit)="onSubmitOrigen()">
+  <form [formGroup]="relationForm" (ngSubmit)="onSubmit()">
     <input-custom
       formControlName="searchOrigen"
       type="text"
       placeholder="Buscar Asignatura Origen..."
       class="w-full"
-      (input)="filterSubjectsOrigen()"
-      >
+      (input)="filterSubjectsOrigen()">
     </input-custom>
-        <div class="overflow-x-auto m-3 rounded">
-            <table class="min-w-full bg-white rounded-lg shadow-md">
-                <thead class="bg-gray-200">
-                    <tr>
-                        <th class="w-1/12 px-4 py-2 text-left text-gray-600">Seleccionar</th>
-                        <th class="w-5/12 px-4 py-2 text-left text-gray-600">Nombre</th>
-                        <th class="w-2/12 px-4 py-2 text-left text-gray-600">Codigo</th>
-                        <th class="w-4/12 px-4 py-2 text-left text-gray-600">Semestre</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Iteramos sobre la lista de asignaturas con *ngFor -->
-                    <tr *ngFor="let subject of subjectList" class="border-b">
-                      <td class="px-4 py-2">
-                        <input type="radio" name="selectedSubject" [value]="subject" class="h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500" (change)="onSelectSubject(subject)">
-                      </td>
-                      <td class="px-4 py-2">
-                        <span class="font-semibold">{{ subject.name }}</span><br>
-                        <span class="text-sm text-gray-500">{{universitie?.name}}</span>
-                      </td>
-                      <td class="px-4 py-2">{{ subject.code }}</td>
-                      <td class="px-4 py-2">{{ subject.semester }}</td>
-                    </tr>
-                    
-                </tbody>
-            </table>
-        </div>
-        <div class="mt-6 flex justify-end">
-          <app-suint-button
-            [text]="'Guardar'"
-            [iconSrc]="'assets/icons/icon-save.svg'"
-            type="submit"
-          ></app-suint-button>
-        </div>
+    <div class="overflow-x-auto m-3 rounded">
+      <table class="min-w-full bg-white rounded-lg shadow-md">
+        <thead class="bg-gray-200">
+          <tr>
+            <th class="w-1/12 px-4 py-2 text-left text-gray-600">Seleccionar</th>
+            <th class="w-5/12 px-4 py-2 text-left text-gray-600">Nombre</th>
+            <th class="w-2/12 px-4 py-2 text-left text-gray-600">Codigo</th>
+            <th class="w-4/12 px-4 py-2 text-left text-gray-600">Semestre</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let subject of subjectList" class="border-b">
+            <td class="px-4 py-2">
+              <input type="checkbox" (change)="selectedSubjectOrigen(subject)" class="h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
+            </td>
+            <td class="px-4 py-2">{{ subject.name }}</td>
+            <td class="px-4 py-2">{{ subject.code }}</td>
+            <td class="px-4 py-2">{{ subject.semester }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="mt-6 flex justify-end">
+      <app-suint-button
+        [text]="'Guardar'"
+        [iconSrc]="'assets/icons/icon-save.svg'"
+        type="submit"
+      ></app-suint-button>
+    </div>
   </form>
-  
 </suit-modal-form>

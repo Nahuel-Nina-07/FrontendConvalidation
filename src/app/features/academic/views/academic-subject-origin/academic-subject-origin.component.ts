@@ -42,10 +42,9 @@ export class AcademicSubjectOriginComponent implements OnInit{
 
   additionalColumns = [
     {
-      header: 'Documento',
+      header: 'Agregar Unidades',
       buttons: [
-        { name: 'Unidades', iconSrc: 'assets/icons/icon-unit.svg', action: this.downloadDocument.bind(this) },
-        { name: 'Key', iconSrc: 'assets/icons/icon-unit.svg', action: this.getAllDocument.bind(this) },
+        { name: 'Unidades', iconSrc: 'assets/icons/add-units.svg', action: this.downloadDocument.bind(this) },
       ]
     }
   ];
@@ -59,12 +58,7 @@ export class AcademicSubjectOriginComponent implements OnInit{
     } else {
       console.error('academicUnitModal no está inicializado');
     }
-  }
-
-  getAllDocument(item: any) {
-    
-  }
-  
+  }  
   
 
   @ViewChild('academicUnitModal', { static: false }) academicUnitModal!: AcademicSourceUnitComponent;
@@ -73,10 +67,9 @@ export class AcademicSubjectOriginComponent implements OnInit{
   tableColumns = [
     { header: 'Nro. asignatura', field: 'code' },
     { header: 'Nombre', field: 'name' },
-    { header: 'Total Horas', field: 'status' },
-    { header: 'Semestre', field: 'semester' },
-    { header: 'Fecha de inicio', field: 'startDate' }
-  ];
+    { header: 'Horas', field: 'hourlyLoad' },
+    { header: 'Semestre', field: 'semester' }
+    ];
 
   constructor() {
     this.contractGroup = this.createFormGroup();
