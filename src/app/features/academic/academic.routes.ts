@@ -39,6 +39,10 @@ export const routes: Routes = [
         path: 'relation-subjects',
         loadComponent: () => import('./views/academic-relation-subjects/academic-relation-subjects.component').then(m => m.AcademicRelationSubjectsComponent),
       },
+      {
+        path: 'relation-units',
+        loadComponent: () => import('./views/academic-units/academic-units.component').then(m => m.AcademicUnitsComponent),
+      },
     ],
   },
 ];

@@ -19,8 +19,8 @@ export const menu_data: Array<{ title: string, menuItems: MenuItemInterface[] }>
             { icon: 'assets/icons/icon-estructura.svg', title: 'Universidades', url: 'university-origin' },
             { icon: 'assets/icons/icon-contrato.svg', title: 'Carreras', url: 'career-origin' },
             { icon: 'assets/icons/icon-estructura.svg', title: 'Asignaturas', url: 'subjects-origin' },
-            
             { icon: 'assets/icons/icon-estructura.svg', title: 'Estudiantes', url: 'student-enrollment' },
+            { icon: 'assets/icons/icon-estructura.svg', title: 'UNIDADES', url: 'relation-units' },
             
         ],
     }
