@@ -23,5 +23,8 @@ export class StudentEnrollmentService {
     return this.http.delete<any>(`${this.apiUrl}/Delete/${id}`);
   }
 
+  getStudentEnrollmentById(id: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/${id}`);
+  }
   
 }

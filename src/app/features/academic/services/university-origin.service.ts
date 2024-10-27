@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { UniversityOrigin } from '../views/academic-units/dataOrigin.model';
 
 @Injectable({
   providedIn: 'root'
@@ -32,8 +33,8 @@ export class UniversityOriginService {
     return this.http.get<any[]>(`${this.apiUrl}/${name}`);
   }
 
-  getUniversityById(id: number): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/${id}`);
+  getUniversityById(id: number): Observable<UniversityOrigin> {
+    return this.http.get<UniversityOrigin>(`${this.apiUrl}/${id}`);
   }
 
   updateUniversityOrigin(university: any): Observable<any> {

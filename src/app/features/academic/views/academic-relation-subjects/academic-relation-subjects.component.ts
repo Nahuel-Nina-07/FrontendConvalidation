@@ -5,11 +5,13 @@ import { SuintButtonComponent } from "../../../../shared/components/suint-button
 import { SuintPageHeaderComponent } from "../../../../shared/components/page-header/page-header.component";
 import { InputCustomComponent } from "../../../../shared/components/custom-input/custom-input.component";
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SubjectOriginService } from '../../services/subject-origin.service';
 import { CommonModule } from '@angular/common';
 import { UniversityOriginService } from '../../services/university-origin.service';
 import { AcademicSubjetRelationService } from '../../services/academic-subjet-relation.service';
+import { AcademicUnitsService } from '../../services/academic-units.service';
+import { AcademicSourceUnitService } from '../../services/academic-source-unit.service';
 
 @Component({
   selector: 'app-academic-relation-subjects',
@@ -42,6 +44,9 @@ export class AcademicRelationSubjectsComponent implements OnInit {
   private subjectService = inject(SubjectOriginService);
   private universityService = inject(UniversityOriginService);
   private relationSubjectService = inject(AcademicSubjetRelationService);
+  private unitService = inject(AcademicUnitsService);
+  private sourceUnitService = inject(AcademicSourceUnitService);
+  private router = inject(Router);
 
   @ViewChild('modalDestino') modalDestino!: ModalFormComponent;
   @ViewChild('modalOrigen') modalOrigen!: ModalFormComponent;
@@ -204,8 +209,6 @@ selectedOrigenId: number | null = null;   // ID de asignatura origen seleccionad
     });
   }
 
-  
-
   onDelete(item: any): void {
     const itemId = item.id;
     console.log('Delete item with ID:', itemId);
@@ -258,8 +261,50 @@ selectedOrigenId: number | null = null;   // ID de asignatura origen seleccionad
     }
   ];
 
-  convalidation(item: any) {
-    alert('No hay unidades en las materias');
-  }
+  isOpen = false;
+  errorMessage = ''; // Variable para almacenar el mensaje de error
+  showErrorModal = false;
 
+  convalidation(item: any) {
+    const { sourceSubjectOriginId, subjectId, sourceSubjectOriginName, subjectName } = item;
+  
+    this.unitService.getUnitBySubject(subjectId).subscribe(
+      (unitData) => {
+        const hasFewUnits = unitData.length < 5;
+  
+        this.sourceUnitService.getCareerByIdSubject(sourceSubjectOriginId).subscribe(
+          (careerData) => {
+            const hasFewCareers = careerData.length < 5;
+  
+            // Generar el mensaje de error según las condiciones
+            if (hasFewUnits && hasFewCareers) {
+              this.errorMessage = `${subjectName} y ${sourceSubjectOriginName} no tienen unidades suficientes para realizar la convalidación.`;
+            } else if (hasFewUnits) {
+              this.errorMessage = `${subjectName} no tiene unidades suficientes para realizar la convalidación.`;
+            } else if (hasFewCareers) {
+              this.errorMessage = `${sourceSubjectOriginName} no tiene unidades suficientes para realizar la convalidación.`;
+            } else {
+              // Si ambos tienen suficientes unidades, redirigir a la ruta
+              this.router.navigate(['/academico/relation-units'],{
+                queryParams: {
+                  studentId: this.studentData.id,
+                  sourceSubjectOriginId,
+                  subjectId
+                }
+              });
+              return;
+            }
+            this.showErrorModal = !!this.errorMessage;
+          },
+          (error) => console.error('Error al obtener carreras:', error)
+        );
+      },
+      (error) => console.error('Error al obtener unidades:', error)
+    );
+  }
+  
+  closeModal() {
+    this.showErrorModal = false;
+    this.errorMessage = '';
+  }
 }
