@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { StudentEnrollmentService } from '../../services/student-enrollment.service';
 import { UniversityOriginService } from '../../services/university-origin.service';
@@ -20,15 +20,14 @@ export class AcademicUnitsComponent implements OnInit {
   private studentEnrollmentService = inject(StudentEnrollmentService);
   private unitsService = inject(AcademicUnitsService);
 
-
-
   #_formBuilder: FormBuilder = inject(FormBuilder);
-  relationForm: FormGroup = this.#_formBuilder.group({});
+  relationForm: FormGroup;
 
-  //Estudiante
+  // Estudiante
   studentId!: number;
   studentName!: string;
-  //Universidad & Carrera de origen
+  
+  // Universidad & Carrera de origen
   originCareerId!: number;
   originCareerName!: string;
   facultyName!: string;
@@ -40,45 +39,96 @@ export class AcademicUnitsComponent implements OnInit {
   sourceSubjectOriginName!: string;
   code!: string;
 
-  subjeId!:number;
-  subjectName!:string;
-  subjectFaculty!:string;
-  subjectCareer!:string;
-  subjectCode!:string;
+  subjeId!: number;
+  subjectName!: string;
+  subjectFaculty!: string;
+  subjectCareer!: string;
+  subjectCode!: string;
 
-  //unitsOrigin
-  sourceUnits: SourceUnit[] = []; 
-  //units
+  // unitsOrigin
+  sourceUnits: SourceUnit[] = [];
+  // units
   Units: Units[] = [];
+  //subjectid
+  relationSubjectsId!: number;
 
-  constructor(private route: ActivatedRoute) { 
-    
+  constructor(private route: ActivatedRoute, private fb: FormBuilder) {
+    this.relationForm = this.fb.group({
+      units: this.fb.array([]), // Inicializa el FormArray
+    });
   }
+
+  get units(): FormArray {
+    return this.relationForm.get('units') as FormArray; // Getter para el FormArray
+  }
+
+  private createUnitGroup(unit: SourceUnit,unitdestino:Units): FormGroup {
+    return this.#_formBuilder.group({
+      sourceUnitId: [unit.id], // Añade el ID de la unidad
+      targetUnitId: [unitdestino.id], // Añade el ID de la unidad destino
+      percentageContent: [0, Validators.required] // Por defecto, inicia el porcentaje en 0 y requiere validación
+    });
+  }
+  
+  addUnitsToForm() {
+    this.sourceUnits.forEach((unit, index) => {
+      const unitdestino = this.Units[index]; // Assumes both arrays are the same length
+      if (unitdestino) { // Check if the destination unit exists
+        this.units.push(this.createUnitGroup(unit, unitdestino)); // Pass both units
+      }
+    });
+  }
+  
+  addUnitsDestinoToForm() {
+    // This might not be needed if the previous method covers it. 
+    // If you need a different logic, you can handle that similarly.
+    this.Units.forEach((unitdestino, index) => {
+      const unit = this.sourceUnits[index]; // Assumes both arrays are the same length
+      if (unit) { // Check if the source unit exists
+        this.units.push(this.createUnitGroup(unit, unitdestino)); // Pass both units
+      }
+    });
+  }
+  
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       this.studentId = params['studentId'];
       this.sourceSubjectOriginId = params['sourceSubjectOriginId'];
-      this.subjeId= params['subjectId'];
+      this.subjeId = params['subjectId'];
+      this.relationSubjectsId = params['relationSubjectsId'];      
       this.getStudentEnrollmentById(this.studentId);
       this.getSourceSubjectById(this.sourceSubjectOriginId);
       this.getSubjectById(this.subjeId);
     });
   }
 
-  onSubmit() {
-    
-  }
 
-  createUnitConvalidation(unit: any): FormGroup {
-    return this.#_formBuilder.group({
-      id: new FormControl(unit.id || 0),
-      percentageContent: new FormControl(unit.percentageContent || 0),
-      sourceUnitId: new FormControl(unit.sourceUnitId || ''),
-      targetUnitId: new FormControl(unit.targetUnitId || ''),
-      relationSubjectsId: new FormControl(unit.relationSubjectsId || ''),
+  onSubmit() {
+    const unitsArray = this.relationForm.get('units') as FormArray; // Cast to FormArray
+    const unitConvalidations: UnitConvalidation[] = unitsArray.controls.map((control) => {
+        return {
+            id: 0, // Assuming ID is not needed here
+            percentageContent: control.get('percentageContent')?.value || 0,
+            sourceUnitId: control.get('sourceUnitId')?.value,
+            targetUnitId: control.get('targetUnitId')?.value,
+            relationSubjectsId: this.relationSubjectsId
+        } as UnitConvalidation;
+    });
+
+    // Sequentially create each unit convalidation
+    unitConvalidations.forEach((unit) => {
+        this.unitsService.createUnitConvalidation(unit).subscribe(
+            response => {
+                console.log('Unit convalidation created successfully:', response);
+            },
+            error => {
+                console.error('Error creating unit convalidation:', error);
+            }
+        );
     });
   }
+
 
   getStudentEnrollmentById(studentId: number) {
     this.studentEnrollmentService.getStudentEnrollmentById(studentId).subscribe(
@@ -115,38 +165,38 @@ export class AcademicUnitsComponent implements OnInit {
       (careerData: CareerOrigin) => {
         this.originCareerName = careerData.name;
         this.facultyName = careerData.facultyName;
-        console.log('Datos de la universidad:', careerData);
+        console.log('Datos de la carrera:', careerData);
       },
       (error) => {
-        console.error('Error al obtener los datos de la universidad:', error);
+        console.error('Error al obtener los datos de la carrera:', error);
       }
     );
   }
 
   getSourceSubjectById(sourceSubjectOriginId: number) {
     this.unitsService.getSourceSubjectById(sourceSubjectOriginId).subscribe(
-      (sourceSubjectData:SourceSubject) => {
+      (sourceSubjectData: SourceSubject) => {
         this.sourceSubjectOriginName = sourceSubjectData.name;
         this.code = sourceSubjectData.code;
-        console.log('Datos de la universidad:', sourceSubjectData);
+        console.log('Datos del tema:', sourceSubjectData);
       },
       (error) => {
-        console.error('Error al obtener los datos de la universidad:', error);
+        console.error('Error al obtener los datos del tema:', error);
       }
     );
   }
 
   getSubjectById(subjectId: number) {
     this.unitsService.getSubjectById(subjectId).subscribe(
-      (subjectData:Subject) => {
+      (subjectData: Subject) => {
         this.subjectName = subjectData.subjectName;
         this.subjectFaculty = subjectData.subjectFaculty;
         this.subjectCareer = subjectData.subjectCareer;
         this.subjectCode = subjectData.subjectCode;
-        console.log('Datos de la universidad:', subjectData);
+        console.log('Datos de la asignatura:', subjectData);
       },
       (error) => {
-        console.error('Error al obtener los datos de la universidad:', error);
+        console.error('Error al obtener los datos de la asignatura:', error);
       }
     );
   }
@@ -154,12 +204,12 @@ export class AcademicUnitsComponent implements OnInit {
   getSourceUnitBySourceSubject(sourceSubjectOriginId: number) {
     this.unitsService.getSourceUnitBySourceSubject(sourceSubjectOriginId).subscribe(
       (sourceUnitData: SourceUnit[]) => {
-        // Ordenar por el campo `number`
         this.sourceUnits = sourceUnitData.sort((a, b) => a.number - b.number);
-        console.log('Datos de la universidad ordenados por unidad:', this.sourceUnits);
+        console.log('Datos de las unidades ordenadas por número:', this.sourceUnits);
+        this.addUnitsToForm(); // Llama a esta función después de obtener las unidades
       },
       (error) => {
-        console.error('Error al obtener los datos de la universidad:', error);
+        console.error('Error al obtener las unidades de la materia:', error);
       }
     );
   }
@@ -167,11 +217,13 @@ export class AcademicUnitsComponent implements OnInit {
   getUnitBySubject(subjectId: number) {
     this.unitsService.getUnitBySubject(subjectId).subscribe(
       (unitData: Units[]) => {
-        this.Units = unitData;
-        console.log('Datos de la universidad:', this.Units);
+        // Ordenar los datos por el campo 'number'
+        this.Units = unitData.sort((a, b) => a.number - b.number);
+        console.log('Datos de las unidades ordenados:', this.Units);
+        this.addUnitsDestinoToForm()
       },
       (error) => {
-        console.error('Error al obtener los datos de la universidad:', error);
+        console.error('Error al obtener los datos de las unidades:', error);
       }
     );
   }

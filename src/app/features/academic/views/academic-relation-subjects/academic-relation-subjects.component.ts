@@ -266,8 +266,8 @@ selectedOrigenId: number | null = null;   // ID de asignatura origen seleccionad
   showErrorModal = false;
 
   convalidation(item: any) {
-    const { sourceSubjectOriginId, subjectId, sourceSubjectOriginName, subjectName } = item;
-  
+    const { id: relationSubjectsId, sourceSubjectOriginId, subjectId, sourceSubjectOriginName, subjectName } = item; // Extraemos el ID de subjectRelation
+    
     this.unitService.getUnitBySubject(subjectId).subscribe(
       (unitData) => {
         const hasFewUnits = unitData.length < 5;
@@ -285,11 +285,12 @@ selectedOrigenId: number | null = null;   // ID de asignatura origen seleccionad
               this.errorMessage = `${sourceSubjectOriginName} no tiene unidades suficientes para realizar la convalidación.`;
             } else {
               // Si ambos tienen suficientes unidades, redirigir a la ruta
-              this.router.navigate(['/academico/relation-units'],{
+              this.router.navigate(['/academico/relation-units'], {
                 queryParams: {
                   studentId: this.studentData.id,
                   sourceSubjectOriginId,
-                  subjectId
+                  subjectId,
+                  relationSubjectsId // Aquí se envía el ID de la relación de asignatura
                 }
               });
               return;
@@ -301,7 +302,7 @@ selectedOrigenId: number | null = null;   // ID de asignatura origen seleccionad
       },
       (error) => console.error('Error al obtener unidades:', error)
     );
-  }
+  }  
   
   closeModal() {
     this.showErrorModal = false;

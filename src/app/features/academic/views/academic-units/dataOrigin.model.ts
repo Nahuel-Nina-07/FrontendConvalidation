@@ -24,12 +24,14 @@ export interface Subject{
 }
 
 export interface SourceUnit{
+    id: number;
     number: number,
     name: string,
     topic: string
 }
 
 export interface Units{
+    id: number;
     number: number,
     name: string,
     topic: string
