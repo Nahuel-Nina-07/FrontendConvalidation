@@ -62,37 +62,46 @@ export class AcademicUnitsComponent implements OnInit {
     this.getStudentEnrollmentById(this.studentId);
     this.getSourceSubjectById(this.sourceSubjectOriginId);
     this.getSubjectById(this.subjeId);
+    this.getUnitConvalidationByRelationSubject(this.relationSubjectsId);
   }
 
-  private createUnitGroup(unit: SourceUnit, unitDestino: Units): FormGroup {
+  private createUnitGroup(unit: SourceUnit, unitDestino: Units, percentageContent: number = 0): FormGroup {
     return this.fb.group({
       sourceUnitId: [unit.id], 
       targetUnitId: [unitDestino.id],
-      percentageContent: [0, Validators.required]
+      percentageContent: [percentageContent, Validators.required] // Asegúrate de que se acepta el porcentaje
     });
   }
+  
 
   private addUnitsToForm() {
     this.sourceUnits.forEach((unit, index) => {
       const unitDestino = this.Units[index];
       if (unitDestino) {
-        this.units.push(this.createUnitGroup(unit, unitDestino));
+        const percentageContent = this.getPercentageContent(unit.id); // Obtener el porcentaje basado en el ID
+        this.units.push(this.createUnitGroup(unit, unitDestino, percentageContent));
       }
     });
+  }
+  private getPercentageContent(sourceUnitId: number): number {
+    const unitConvalidation = this.unitConvalidationData.find(u => u.sourceUnitId === sourceUnitId);
+    return unitConvalidation ? unitConvalidation.percentageContent : 0; // Retornar el porcentaje si se encuentra, de lo contrario 0
   }
 
   private addUnitsDestinoToForm() {
     this.Units.forEach((unitDestino, index) => {
       const unit = this.sourceUnits[index];
       if (unit) {
-        this.units.push(this.createUnitGroup(unit, unitDestino));
+        const percentageContent = this.getPercentageContent(unit.id); // Obtener el porcentaje basado en el ID
+        this.units.push(this.createUnitGroup(unit, unitDestino, percentageContent));
       }
     });
   }
 
   get units(): FormArray {
-    return this.relationForm.get('units') as FormArray; 
+    return this.relationForm.get('units') as FormArray || this.fb.array([]);
   }
+  
 
   onSubmit() {
     const unitConvalidations: UnitConvalidation[] = this.units.controls.map(control => ({
@@ -193,4 +202,17 @@ export class AcademicUnitsComponent implements OnInit {
       error => console.error('Error fetching units:', error)
     );
   }
+
+  unitConvalidationData: UnitConvalidation[] = [];
+
+  getUnitConvalidationByRelationSubject(relationSubjectsId: number) { 
+    this.unitsService.getUnitConvalidationByRelationSubject(relationSubjectsId).subscribe(
+      (data: UnitConvalidation[]) => {
+        this.unitConvalidationData = data;
+        console.log('Unit convalidation data:', this.unitConvalidationData);
+      },
+      error => console.error('Error fetching unit convalidation data:', error)
+    );
+  }
+  
 }

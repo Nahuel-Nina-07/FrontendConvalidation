@@ -65,14 +65,21 @@
                   <div class="flex flex-grow">
                     <div class="flex items-start justify-between mb-1 flex-grow">
                       <div class="flex flex-col m-1">
-                        <label class="font-semibold">Unidad: <span class="font-normal inline">{{ sourceUnits[i].number }}</span></label>
+                        <label class="font-semibold">Unidad: 
+                          <span class="font-normal inline">{{ sourceUnits[i].number }}</span>
+                          <span class="font-normal inline"> (ID: {{ sourceUnits[i].id }})</span>
+                        </label>
+                        <label class="font-semibold">Porcentaje: <span class="font-normal inline">{{ unit.get('percentageContent')?.value }}</span></label>
+                        
                       </div>
                       <div class="flex items-center justify-start m-1">
-                        <label class="font-semibold ml-2">Nombre Unidad: <span class="font-normal inline">{{ sourceUnits[i].name }}</span></label>
+                        <label class="font-semibold ml-2">Nombre Unidad: 
+                          <span class="font-normal inline">{{ sourceUnits[i].name }}</span>
+                        </label>
                       </div>
                     </div>
                     <div class="flex items-start justify-end m-1 flex-grow">
-                        <input formControlName="percentageContent" type="number" placeholder="%" class="w-16 h-6 text-center border border-gray-300 rounded" />
+                      <input formControlName="percentageContent" type="number" placeholder="%" class="w-16 h-6 text-center border border-gray-300 rounded" />
                     </div>
                   </div>
                 </div>
