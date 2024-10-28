@@ -54,37 +54,35 @@ export class AcademicUnitsComponent implements OnInit {
 
   constructor(private route: ActivatedRoute, private fb: FormBuilder) {
     this.relationForm = this.fb.group({
-      units: this.fb.array([]), // Inicializa el FormArray
+      units: this.fb.array([]),
     });
   }
 
   get units(): FormArray {
-    return this.relationForm.get('units') as FormArray; // Getter para el FormArray
+    return this.relationForm.get('units') as FormArray; 
   }
 
   private createUnitGroup(unit: SourceUnit,unitdestino:Units): FormGroup {
     return this.#_formBuilder.group({
-      sourceUnitId: [unit.id], // Añade el ID de la unidad
-      targetUnitId: [unitdestino.id], // Añade el ID de la unidad destino
-      percentageContent: [0, Validators.required] // Por defecto, inicia el porcentaje en 0 y requiere validación
+      sourceUnitId: [unit.id], 
+      targetUnitId: [unitdestino.id],
+      percentageContent: [0, Validators.required]
     });
   }
-  
+
   addUnitsToForm() {
     this.sourceUnits.forEach((unit, index) => {
-      const unitdestino = this.Units[index]; // Assumes both arrays are the same length
-      if (unitdestino) { // Check if the destination unit exists
-        this.units.push(this.createUnitGroup(unit, unitdestino)); // Pass both units
+      const unitdestino = this.Units[index];
+      if (unitdestino) {
+        this.units.push(this.createUnitGroup(unit, unitdestino));
       }
     });
   }
-  
+
   addUnitsDestinoToForm() {
-    // This might not be needed if the previous method covers it. 
-    // If you need a different logic, you can handle that similarly.
     this.Units.forEach((unitdestino, index) => {
-      const unit = this.sourceUnits[index]; // Assumes both arrays are the same length
-      if (unit) { // Check if the source unit exists
+      const unit = this.sourceUnits[index];
+      if (unit) {
         this.units.push(this.createUnitGroup(unit, unitdestino)); // Pass both units
       }
     });
@@ -103,20 +101,17 @@ export class AcademicUnitsComponent implements OnInit {
     });
   }
 
-
   onSubmit() {
     const unitsArray = this.relationForm.get('units') as FormArray; // Cast to FormArray
     const unitConvalidations: UnitConvalidation[] = unitsArray.controls.map((control) => {
         return {
-            id: 0, // Assuming ID is not needed here
+            id: 0,
             percentageContent: control.get('percentageContent')?.value || 0,
             sourceUnitId: control.get('sourceUnitId')?.value,
             targetUnitId: control.get('targetUnitId')?.value,
             relationSubjectsId: this.relationSubjectsId
         } as UnitConvalidation;
     });
-
-    // Sequentially create each unit convalidation
     unitConvalidations.forEach((unit) => {
         this.unitsService.createUnitConvalidation(unit).subscribe(
             response => {
@@ -128,7 +123,6 @@ export class AcademicUnitsComponent implements OnInit {
         );
     });
   }
-
 
   getStudentEnrollmentById(studentId: number) {
     this.studentEnrollmentService.getStudentEnrollmentById(studentId).subscribe(
@@ -206,7 +200,7 @@ export class AcademicUnitsComponent implements OnInit {
       (sourceUnitData: SourceUnit[]) => {
         this.sourceUnits = sourceUnitData.sort((a, b) => a.number - b.number);
         console.log('Datos de las unidades ordenadas por número:', this.sourceUnits);
-        this.addUnitsToForm(); // Llama a esta función después de obtener las unidades
+        this.addUnitsToForm();
       },
       (error) => {
         console.error('Error al obtener las unidades de la materia:', error);
@@ -217,7 +211,6 @@ export class AcademicUnitsComponent implements OnInit {
   getUnitBySubject(subjectId: number) {
     this.unitsService.getUnitBySubject(subjectId).subscribe(
       (unitData: Units[]) => {
-        // Ordenar los datos por el campo 'number'
         this.Units = unitData.sort((a, b) => a.number - b.number);
         console.log('Datos de las unidades ordenados:', this.Units);
         this.addUnitsDestinoToForm()

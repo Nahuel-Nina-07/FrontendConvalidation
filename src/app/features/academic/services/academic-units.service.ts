@@ -44,4 +44,16 @@ export class AcademicUnitsService {
     return this.http.post<any>(this.unitConvalidationUrl, unitConvalidation);
   }
 
+  getUnitConvalidationByRelationSubject(id: number): Observable<UnitConvalidation[]> {
+    return this.http.get<UnitConvalidation[]>(`${this.unitConvalidationUrl}/RelationSubject/${id}`);
+  }
+
+  getUnitConvalidationByUnit(id: number): Observable<UnitConvalidation[]> {
+    return this.http.get<UnitConvalidation[]>(`${this.unitConvalidationUrl}/${id}`);
+  }
+
+  getallUnitConvalidation(): Observable<UnitConvalidation[]> {
+    return this.http.get<UnitConvalidation[]>(this.unitConvalidationUrl);
+  }
+
 }
