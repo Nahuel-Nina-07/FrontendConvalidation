@@ -65,24 +65,28 @@ export class AcademicUnitsComponent implements OnInit {
     this.getUnitConvalidationByRelationSubject(this.relationSubjectsId);
   }
 
-  private createUnitGroup(unit: SourceUnit, unitDestino: Units, percentageContent: number = 0): FormGroup {
+  private createUnitGroup(unit: SourceUnit, unitDestino: Units, percentageContent: number = 0, unitConvalidationId: number = 0): FormGroup {
     return this.fb.group({
-      sourceUnitId: [unit.id], 
-      targetUnitId: [unitDestino.id],
-      percentageContent: [percentageContent, Validators.required] // Asegúrate de que se acepta el porcentaje
+        sourceUnitId: [unit.id],
+        targetUnitId: [unitDestino.id],
+        percentageContent: [percentageContent, Validators.required],
+        unitConvalidationId: [unitConvalidationId] // Incluye el ID de convalidación aquí
     });
-  }
-  
+}
 
-  private addUnitsToForm() {
-    this.sourceUnits.forEach((unit, index) => {
+private addUnitsToForm() {
+  this.sourceUnits.forEach((unit, index) => {
       const unitDestino = this.Units[index];
+      const unitConvalidation = this.unitConvalidationData.find(uc => uc.sourceUnitId === unit.id && uc.targetUnitId === unitDestino?.id);
+
       if (unitDestino) {
-        const percentageContent = this.getPercentageContent(unit.id); // Obtener el porcentaje basado en el ID
-        this.units.push(this.createUnitGroup(unit, unitDestino, percentageContent));
+          const percentageContent = unitConvalidation ? unitConvalidation.percentageContent : 0;
+          const unitConvalidationId = unitConvalidation ? unitConvalidation.id : 0;
+          this.units.push(this.createUnitGroup(unit, unitDestino, percentageContent, unitConvalidationId));
       }
-    });
-  }
+  });
+}
+
   private getPercentageContent(sourceUnitId: number): number {
     const unitConvalidation = this.unitConvalidationData.find(u => u.sourceUnitId === sourceUnitId);
     return unitConvalidation ? unitConvalidation.percentageContent : 0; // Retornar el porcentaje si se encuentra, de lo contrario 0
@@ -105,7 +109,7 @@ export class AcademicUnitsComponent implements OnInit {
 
   onSubmit() {
     const unitConvalidations: UnitConvalidation[] = this.units.controls.map(control => ({
-      id: 0,
+      id: control.get('unitConvalidationId')?.value || 0, 
       percentageContent: control.get('percentageContent')?.value || 0,
       sourceUnitId: control.get('sourceUnitId')?.value,
       targetUnitId: control.get('targetUnitId')?.value,
@@ -113,10 +117,11 @@ export class AcademicUnitsComponent implements OnInit {
     }));
 
     unitConvalidations.forEach(unit => {
-      this.unitsService.createUnitConvalidation(unit).subscribe(
-        response => console.log('Unit convalidation created successfully:', response),
-        error => console.error('Error creating unit convalidation:', error)
-      );
+      console.log('Datos que se enviarán para crear la convalidación de unidades:', unitConvalidations);
+      // this.unitsService.createUnitConvalidation(unit).subscribe(
+      //   response => console.log('Unit convalidation created successfully:', response),
+      //   error => console.error('Error creating unit convalidation:', error)
+      // );
     });
   }
 
