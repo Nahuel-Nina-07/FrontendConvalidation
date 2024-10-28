@@ -44,8 +44,8 @@ export class AcademicUnitsService {
     return this.http.post<any>(this.unitConvalidationUrl, unitConvalidation);
   }
 
-  getUnitConvalidationByRelationSubject(id: number): Observable<UnitConvalidation[]> {
-    return this.http.get<UnitConvalidation[]>(`${this.unitConvalidationUrl}/RelationSubject/${id}`);
+  getUnitConvalidationByRelationSubject(relationSubjectsId: number): Observable<UnitConvalidation> {
+    return this.http.get<UnitConvalidation>(`${this.unitConvalidationUrl}/RelationSubject/${relationSubjectsId}`);
   }
 
   getUnitConvalidationByUnit(id: number): Observable<UnitConvalidation[]> {
@@ -56,4 +56,8 @@ export class AcademicUnitsService {
     return this.http.get<UnitConvalidation[]>(this.unitConvalidationUrl);
   }
 
+  updateUnitConvalidation(unitConvalidation: UnitConvalidation): Observable<UnitConvalidation> {
+    return this.http.put<UnitConvalidation>(this.unitConvalidationUrl, unitConvalidation);
+  }
+  
 }

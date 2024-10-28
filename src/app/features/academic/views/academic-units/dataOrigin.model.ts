@@ -27,11 +27,11 @@ export interface SourceUnit{
     id: number;
     number: number,
     name: string,
-    topic: string
+    topic: string,
 }
 
 export interface Units{
-    id: number;
+    id: number,
     number: number,
     name: string,
     topic: string
