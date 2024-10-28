@@ -1,0 +1,23 @@
+<div class="overflow-x-auto">
+    <table class="min-w-full bg-white border border-gray-300">
+      <thead>
+        <tr class="bg-gray-200 text-gray-600 uppercase text-sm">
+          <th class="py-3 px-4 border-b">Fecha</th>
+          <th class="py-3 px-4 border-b">Porcentaje de Contenido</th>
+          <th class="py-3 px-4 border-b">ID de Asignatura de Origen</th>
+          <th class="py-3 px-4 border-b">Nombre de Asignatura</th> <!-- Cambiado -->
+          <th class="py-3 px-4 border-b">Nombre del Estudiante</th> <!-- Cambiado -->
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let relation of filteredRelations" class="text-gray-700">
+          <td class="py-2 px-4 border-b">{{ relation.date }}</td>
+          <td class="py-2 px-4 border-b">{{ relation.percentageContent }}</td>
+          <td class="py-2 px-4 border-b">{{ relation.sourceSubjectOriginId }}</td>
+          <td class="py-2 px-4 border-b">{{ subjectNames[relation.subjectId] || 'Cargando...' }}</td> <!-- Nombre de la Asignatura -->
+          <td class="py-2 px-4 border-b">{{ studentNames[relation.studentEnrollmentId] || 'Cargando...' }}</td> <!-- Nombre del Estudiante -->
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  

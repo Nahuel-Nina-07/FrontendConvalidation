@@ -35,10 +35,13 @@ export class AcademicRelationSubjectsComponent implements OnInit {
     sourceSubjectOriginId: new FormControl(null),
   });
 
-  subjectList: any[] = [];
+  
   universitie: any = [];
   subjectsUAB: any[] = [];
+  
+  subjectList: any[] = [];
   filteredSubjectsUAB: any[] = [];
+
   subjectRelations: any[] = [];
   studentData: any = {};
   private subjectService = inject(SubjectOriginService);

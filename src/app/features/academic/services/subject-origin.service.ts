@@ -29,6 +29,12 @@ export class SubjectOriginService {
     return this.http.get<any[]>(`${this.apiUrl}/Career/${id}`);
   }
 
+  getSubjectById(id: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/${id}`);
+  }
+
+
+
   //Units
   getUnits(): Observable<any[]> {
     return this.http.get<any[]>(this.unitsUrl);
@@ -37,5 +43,9 @@ export class SubjectOriginService {
   //Subjects
   getSubjectsUAB(): Observable<any[]> {
     return this.http.get<any[]>(this.subjectUrl);
+  }
+
+  getSubjectByIdUAB(id: number): Observable<any> {
+    return this.http.get<any>(`${this.subjectUrl}/${id}`);
   }
 }

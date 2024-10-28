@@ -43,6 +43,10 @@ export const routes: Routes = [
         path: 'relation-units',
         loadComponent: () => import('./views/academic-units/academic-units.component').then(m => m.AcademicUnitsComponent),
       },
+      {
+        path: 'convalidatdos',
+        loadComponent: () => import('./views/academic-convalidations/academic-convalidations.component').then(m => m.AcademicConvalidationsComponent),
+      },
     ],
   },
 ];
