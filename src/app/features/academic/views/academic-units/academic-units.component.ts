@@ -70,14 +70,17 @@ export class AcademicUnitsComponent implements OnInit {
         sourceUnitId: [unit.id],
         targetUnitId: [unitDestino.id],
         percentageContent: [percentageContent, Validators.required],
-        unitConvalidationId: [unitConvalidationId] // Incluye el ID de convalidación aquí
+        unitConvalidationId: [unitConvalidationId]
     });
 }
+
 
 private addUnitsToForm() {
   this.sourceUnits.forEach((unit, index) => {
       const unitDestino = this.Units[index];
-      const unitConvalidation = this.unitConvalidationData.find(uc => uc.sourceUnitId === unit.id && uc.targetUnitId === unitDestino?.id);
+      const unitConvalidation = this.unitConvalidationData.find(
+          uc => uc.sourceUnitId === unit.id && uc.targetUnitId === unitDestino?.id
+      );
 
       if (unitDestino) {
           const percentageContent = unitConvalidation ? unitConvalidation.percentageContent : 0;
@@ -86,6 +89,7 @@ private addUnitsToForm() {
       }
   });
 }
+
 
   private getPercentageContent(sourceUnitId: number): number {
     const unitConvalidation = this.unitConvalidationData.find(u => u.sourceUnitId === sourceUnitId);
@@ -118,10 +122,10 @@ private addUnitsToForm() {
 
     unitConvalidations.forEach(unit => {
       console.log('Datos que se enviarán para crear la convalidación de unidades:', unitConvalidations);
-      // this.unitsService.createUnitConvalidation(unit).subscribe(
-      //   response => console.log('Unit convalidation created successfully:', response),
-      //   error => console.error('Error creating unit convalidation:', error)
-      // );
+      this.unitsService.createUnitConvalidation(unit).subscribe(
+        response => console.log('Unit convalidation created successfully:', response),
+        error => console.error('Error creating unit convalidation:', error)
+      );
     });
   }
 
@@ -145,7 +149,6 @@ private addUnitsToForm() {
     this.originUniversityService.getUniversityById(originUniversityId).subscribe(
       universityData => {
         this.originUniversityName = universityData.name;
-        console.log('University data:', universityData);
       },
       error => console.error('Error fetching university data:', error)
     );
@@ -156,7 +159,6 @@ private addUnitsToForm() {
       careerData => {
         this.originCareerName = careerData.name;
         this.facultyName = careerData.facultyName;
-        console.log('Career data:', careerData);
       },
       error => console.error('Error fetching career data:', error)
     );
@@ -167,7 +169,6 @@ private addUnitsToForm() {
       sourceSubjectData => {
         this.sourceSubjectOriginName = sourceSubjectData.name;
         this.code = sourceSubjectData.code;
-        console.log('Source subject data:', sourceSubjectData);
       },
       error => console.error('Error fetching source subject data:', error)
     );
@@ -180,7 +181,6 @@ private addUnitsToForm() {
         this.subjectFaculty = subjectData.subjectFaculty;
         this.subjectCareer = subjectData.subjectCareer;
         this.subjectCode = subjectData.subjectCode;
-        console.log('Subject data:', subjectData);
       },
       error => console.error('Error fetching subject data:', error)
     );
@@ -190,7 +190,6 @@ private addUnitsToForm() {
     this.unitsService.getSourceUnitBySourceSubject(sourceSubjectOriginId).subscribe(
       sourceUnitData => {
         this.sourceUnits = sourceUnitData.sort((a, b) => a.number - b.number);
-        console.log('Sorted source units:', this.sourceUnits);
         this.addUnitsToForm();
       },
       error => console.error('Error fetching source units:', error)
@@ -201,7 +200,6 @@ private addUnitsToForm() {
     this.unitsService.getUnitBySubject(subjectId).subscribe(
       unitData => {
         this.Units = unitData.sort((a, b) => a.number - b.number);
-        console.log('Sorted units:', this.Units);
         this.addUnitsDestinoToForm();
       },
       error => console.error('Error fetching units:', error)
