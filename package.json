@@ -21,6 +21,8 @@
     "@angular/router": "^17.3.0",
     "angular-svg-icon": "^17.0.0",
     "cors": "^2.8.5",
+    "html2pdf.js": "^0.10.2",
+    "jspdf": "^2.5.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.3"

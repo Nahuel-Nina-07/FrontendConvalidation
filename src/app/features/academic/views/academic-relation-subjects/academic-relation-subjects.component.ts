@@ -12,6 +12,7 @@ import { UniversityOriginService } from '../../services/university-origin.servic
 import { AcademicSubjetRelationService } from '../../services/academic-subjet-relation.service';
 import { AcademicUnitsService } from '../../services/academic-units.service';
 import { AcademicSourceUnitService } from '../../services/academic-source-unit.service';
+import jsPDF from 'jspdf';
 
 @Component({
   selector: 'app-academic-relation-subjects',
@@ -87,12 +88,14 @@ export class AcademicRelationSubjectsComponent implements OnInit {
         this.subjectRelations = subjectRelation.map(relation => {
           const subjectDestino = this.subjectsUAB.find(subject => subject.id === relation.subjectId);
           const subjectOrigen = this.subjectList.find(subject => subject.id === relation.sourceSubjectOriginId);
+
           return {
             ...relation,
             subjectName: subjectDestino ? subjectDestino.subjectName : 'No asignada',
             sourceSubjectOriginName: subjectOrigen ? subjectOrigen.name : 'No asignada'
           };
         });
+        
         console.log('Relación de asignaturas con nombres:', this.subjectRelations);
         this.updateFilteredSubjects();
       },
@@ -100,7 +103,25 @@ export class AcademicRelationSubjectsComponent implements OnInit {
         console.error('Error al obtener la relación de asignaturas:', error);
       }
     );
-  }
+}
+
+// Esta función se debe llamar cuando se presione un botón con el ID del objeto correspondiente
+percentage(id: number): void {
+    const relation = this.subjectRelations.find(relation => relation.id === id);
+    if (relation) {
+        console.log('Porcentaje de contenido para el ID', id, ':', relation.percentageContent);
+    } else {
+        console.log('No se encontró la relación con el ID proporcionado:', id);
+    }
+}
+
+
+percentageIndividual(percentage: number): void {
+  console.log('Porcentaje individual recibido:', percentage);
+  // Aquí puedes hacer lo que necesites con el porcentaje
+  // Por ejemplo, almacenarlo en una variable, mostrarlo en una alerta, etc.
+}
+
 
   private updateFilteredSubjects(): void {
     const relatedSubjectIds = this.subjectRelations.map(relation => relation.subjectId);
@@ -257,12 +278,75 @@ selectedOrigenId: number | null = null;   // ID de asignatura origen seleccionad
       ]
     },
     {
-      header: 'Comparacion de Asignaturas',
+      header: 'Comparacion y Reporte',
       buttons: [
         { name: 'Comparar', iconSrc: 'assets/icons/add-comparation.svg', action: this.convalidation.bind(this) },
+        { name: 'Reporte', iconSrc: 'assets/icons/icon-printer.svg', action: this.getBySubjectId.bind(this) },
       ]
     }
   ];
+
+  studentName = 'Nombre del estudiante';
+  subjectFaculty = 'Nombre de la facultad';
+  subjectCode = 'Código de la asignatura';
+  subjectName = 'Nombre de la asignatura';
+  originUniversityName = 'Nombre de la universidad de origen';
+  facultyName = 'Nombre de la facultad de origen';
+  code = 'Código de la asignatura de origen';
+  sourceSubjectOriginName = 'Nombre de la asignatura de origen';
+
+  getBySubjectId(item: any): void {
+    console.log('Datos del sujeto:', item);
+  
+    if (item.percentageContent > 74) {
+      // Generación del PDF
+      const doc = new jsPDF();
+      
+      // Título
+      doc.setFontSize(16);
+      doc.text('INFORME TECNICO DE CONVALIDACION POR ASIGNATURA', 10, 10);
+      doc.setFontSize(12);
+      const studentName = this.studentData.name; // Obtener el nombre del estudiante
+      doc.setFontSize(12);
+      doc.text(`Estudiante: ${studentName}`, 10, 20);
+      
+      // Espacio entre el título y los cuadros
+      doc.setLineWidth(0.5);
+      doc.line(10, 25, 200, 25); // Línea de separación
+      doc.text('Detalles de Asignatura', 10, 30);
+      
+      // Cuadro de la Universidad Adventista de Bolivia
+      const startY = 40;
+      const boxWidth = 190;
+      const boxHeight = 50;
+  
+      // Dibuja el cuadro
+      doc.rect(10, startY, boxWidth, boxHeight);
+      doc.text('Universidad Adventista de Bolivia', 12, startY + 10);
+      doc.text(`Facultad: ${this.subjectFaculty}`, 12, startY + 20);
+      doc.text(`Código: ${this.subjectCode}`, 12, startY + 30);
+      doc.text(`Asignatura: ${this.subjectName}`, 12, startY + 40);
+      
+      // Espacio para el siguiente cuadro
+      const nextBoxY = startY + boxHeight + 10;
+  
+      // Cuadro de la Universidad de Origen
+      doc.rect(10, nextBoxY, boxWidth, boxHeight);
+      doc.text(this.originUniversityName, 12, nextBoxY + 10);
+      doc.text(`Facultad: ${this.facultyName}`, 12, nextBoxY + 20);
+      doc.text(`Código: ${this.code}`, 12, nextBoxY + 30);
+      doc.text(`Asignatura: ${this.sourceSubjectOriginName}`, 12, nextBoxY + 40);
+      
+      // Finaliza el PDF
+      const pdfBlob = doc.output('blob');
+      const pdfUrl = URL.createObjectURL(pdfBlob);
+      window.open(pdfUrl);
+    } else {
+      // Mostrar un mensaje de error en el modal
+      this.errorMessage = 'El porcentaje es menor o igual a 74. No se generará el PDF.';
+      this.showErrorModal = true; // Mostrar el modal
+    }
+  }
 
   isOpen = false;
   errorMessage = ''; // Variable para almacenar el mensaje de error
