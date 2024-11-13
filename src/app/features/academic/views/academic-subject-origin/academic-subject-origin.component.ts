@@ -15,7 +15,7 @@ import { AcademicSourceUnitComponent } from '../academic-source-unit/academic-so
 @Component({
   selector: 'app-academic-subject-origin',
   standalone: true,
-  imports: [FormsModule, SuintPageHeaderComponent, InputCustomComponent, SuintButtonComponent, ModalFormComponent, CommonModule, ListAllComponent,ReactiveFormsModule,InputDirective,AcademicSourceUnitComponent],
+  imports: [FormsModule, SuintPageHeaderComponent, InputCustomComponent, SuintButtonComponent, ModalFormComponent, CommonModule, ListAllComponent, ReactiveFormsModule, AcademicSourceUnitComponent],
   templateUrl: './academic-subject-origin.component.html',
   styleUrl: './academic-subject-origin.component.scss'
 })

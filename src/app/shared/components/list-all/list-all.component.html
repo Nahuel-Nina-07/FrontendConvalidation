@@ -1,94 +1,69 @@
-<div class="bg-gray-100 min-h-screen p-5">
-  <div class="flex items-center justify-between w-full h-16 px-5 bg-white rounded-t-md shadow-sm">
-    <div class="flex flex-col gap-1">
-      <h1 class="leading-none font-primaryBold text-secondary">{{ title }}</h1>
-      <span class="text-xs leading-none text-enable">{{ description }}</span>
-    </div>
-
-    <!-- Botón "Nuevo" que está dentro del componente suint-list-all -->
-    <app-suint-button
-      *ngIf="isNewVisible"
-      [text]="text"
-      [iconSrc]="iconSrc"
-      (click)="addNewGroup()"
-    ></app-suint-button>
-
-    <!-- Aquí es donde se permitirá inyectar contenido adicional -->
-    <ng-content></ng-content>
-  </div>
-
-  <div class="shadow-sm bg-white rounded-b-md p-5">
-    <table class="w-full text-left border-collapse">
-      <thead>
-        <tr class="border-b border-gray-200">
-          <th
-            *ngFor="let column of columns"
-            class="p-4 text-sm font-semibold text-gray-600 text-center"
-          >
-            {{ column.header }}
-          </th>
-          <th
-            *ngFor="let additionalColumn of additionalColumns"
-            class="p-4 text-sm font-semibold text-gray-600 text-center"
-          >
-            {{ additionalColumn.header }}
-          </th>
-          <th class="p-4 text-sm font-semibold text-gray-600 text-center">Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-          *ngFor="let item of data"
-          class="border-b border-gray-100 hover:bg-gray-50"
+<div class="shadow-sm bg-white rounded-b-md p-5">
+  <table class="w-full text-left border-collapse">
+    <thead>
+      <tr class="border-b border-gray-200">
+        <th
+          *ngFor="let column of columns"
+          class="p-4 text-sm font-semibold text-gray-600 text-center"
         >
-          <td *ngFor="let column of columns" class="p-4 text-gray-700">
-            {{ item[column.field] }}
-          </td>
+          {{ column.header }}
+        </th>
+        <th
+          *ngFor="let additionalColumn of additionalColumns"
+          class="p-4 text-sm font-semibold text-gray-600 text-center"
+        >
+          {{ additionalColumn.header }}
+        </th>
+        <th
+          *ngIf="isEditVisible || isDeleteVisible"
+          class="p-4 text-sm font-semibold text-gray-600 text-center"
+        >
+          Acciones
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        *ngFor="let item of data"
+        class="border-b border-gray-100 hover:bg-gray-50"
+      >
+        <td *ngFor="let column of columns" class="p-4 text-gray-700 text-center">
+          {{ getValue(item, column.field) }}
+        </td>
 
-          <!-- Renderiza las columnas adicionales -->
-          <td *ngFor="let additionalColumn of additionalColumns" class="p-4 text-center">
-            <div class="flex justify-center items-center space-x-2">
-              <button
-                *ngFor="let button of additionalColumn.buttons"
-                (click)="onActionButtonClick(button, item)"
-                class="flex items-center justify-center w-10 h-10 bg-gray-300 hover:bg-gray-400 rounded transition duration-300"
-                title="{{ button.name }}"
-              >
-                <svg-icon class="text-white" [src]="button.iconSrc"></svg-icon>
-              </button>
-            </div>
-          </td>
+        <td *ngFor="let additionalColumn of additionalColumns" class="p-4 text-center">
+          <div class="flex justify-center items-center space-x-2">
+            <button
+              *ngFor="let button of additionalColumn.buttons"
+              (click)="onActionButtonClick(button, item)"
+              class="flex items-center justify-center w-10 h-10 bg-gray-300 hover:bg-gray-400 rounded transition duration-300"
+              title="{{ button.name }}"
+            >
+              <svg-icon class="text-white" [src]="button.iconSrc"></svg-icon>
+            </button>
+          </div>
+        </td>
 
-          <!-- Columna para acciones comunes -->
-          <td class="p-4 text-center">
-            <div class="flex justify-center items-center space-x-2">
-              <button
-                *ngIf="isEditVisible"
-                (click)="onEdit(item)"
-                class="flex items-center justify-center w-10 h-10 bg-blue-500 hover:bg-blue-600 rounded transition duration-300"
-              >
-                <svg-icon class="text-white" src="assets/icons/icon-edit.svg"></svg-icon>
-              </button>
+        <td *ngIf="isEditVisible || isDeleteVisible" class="p-4 text-center">
+          <div class="flex justify-center items-center space-x-2">
+            <button
+              *ngIf="isEditVisible"
+              (click)="onEdit(item)"
+              class="flex items-center justify-center w-10 h-10 bg-blue-500 hover:bg-blue-600 rounded transition duration-300"
+            >
+              <svg-icon class="text-white" src="assets/icons/icon-edit.svg"></svg-icon>
+            </button>
 
-              <button
-                *ngIf="isDeleteVisible"
-                (click)="onDelete(item)"
-                class="flex items-center justify-center w-10 h-10 bg-red-500 hover:bg-red-600 rounded transition duration-300"
-              >
-                <svg-icon class="text-white" src="assets/icons/icon-trash.svg"></svg-icon>
-              </button>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- Modal para confirmar la eliminación -->
-  <app-modal-option
-    [isOpen]="isModalOpen"
-    [itemName]="itemToDelete?.name"
-    (confirmDelete)="confirmDelete()"
-    (closeModal)="closeModal()"
-  ></app-modal-option>
+            <button
+              *ngIf="isDeleteVisible"
+              (click)="onDelete(item)"
+              class="flex items-center justify-center w-10 h-10 bg-red-500 hover:bg-red-600 rounded transition duration-300"
+            >
+              <svg-icon class="text-white" src="assets/icons/icon-trash.svg"></svg-icon>
+            </button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </div>

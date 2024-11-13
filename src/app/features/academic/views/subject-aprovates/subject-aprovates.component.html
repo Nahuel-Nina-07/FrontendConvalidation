@@ -1,0 +1,31 @@
+<div class="container mx-auto p-4">
+    <h1 class="text-3xl font-bold mb-4">Detalles del Estudiante</h1>
+  
+    <div *ngIf="studentData; else noData" class="bg-white shadow-md rounded-lg p-6">
+      <h2 class="text-2xl font-semibold mb-2">{{ studentData.nombre }} {{ studentData.apellido }}</h2>
+      <p class="text-gray-700 mb-4"><strong>Carrera:</strong> {{ studentData.carrera.careerName }}</p>
+      
+      <h3 class="text-xl font-bold mb-2">Materias Aprobadas por el estudiante</h3>
+      <table class="min-w-full bg-white border border-gray-300">
+        <thead>
+          <tr class="bg-gray-100 border-b">
+            <th class="py-2 px-4 text-left">Materia ID</th>
+            <th class="py-2 px-4 text-left">Fecha de Aprobación</th>
+            <th class="py-2 px-4 text-left">Calificación</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let materia of studentData.materiasAprobadas" class="border-b hover:bg-gray-50">
+            <td class="py-2 px-4">{{ materia.materiaId }}</td>
+            <td class="py-2 px-4">{{ materia.fechaAprobacion }}</td>
+            <td class="py-2 px-4">{{ materia.calificacion }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  
+    <ng-template #noData>
+      <p class="text-red-500">No se encontraron datos del estudiante.</p>
+    </ng-template>
+  </div>
+  

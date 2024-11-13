@@ -12,7 +12,7 @@ import { SuintButtonComponent } from "../suint-button/suint-button.component";
 })
 export class ListAllComponent {
   @Input() isNewVisible: boolean = false; 
-  @Input() isEditVisible: boolean = true;  // Controla la visibilidad del botón de editar
+  @Input() isEditVisible: boolean = true;  
   @Input() isDeleteVisible: boolean = true;
 
   @Input() title = '';
@@ -25,19 +25,22 @@ export class ListAllComponent {
   @Output() deleteItem: EventEmitter<any> = new EventEmitter();
   @Output() editItem: EventEmitter<any> = new EventEmitter();
 
-  // Configuración de botones personalizados que se pueden agregar dinámicamente
   @Input() additionalColumns: any[] = [];
 
   public itemToDelete: any = null;
   public isModalOpen: boolean = false;
 
   ngOnInit() {
-    // Puedes inicializar cualquier lógica adicional aquí
+  }
+
+  // Función para acceder a valores anidados
+  getValue(item: any, field: string): any {
+    return field.split('.').reduce((acc, key) => acc && acc[key], item);
   }
 
   onActionButtonClick(action: any, item: any) {
     if (action && action.action) {
-      action.action(item); // Llama a la acción correspondiente
+      action.action(item);
     }
   }
 
@@ -62,16 +65,13 @@ export class ListAllComponent {
     this.isModalOpen = false;
   }
 
-  // Nuevo método para agregar un grupo a la lista
   addNewGroup() {
     if (this.isNewVisible) {
       const newGroup = {
-        // Aquí puedes definir la estructura de tu nuevo grupo
-        id: this.data.length + 1, // Genera un nuevo ID
-        name: 'Nuevo Grupo ' + (this.data.length + 1) // Cambia el nombre si es necesario
+        id: this.data.length + 1,
+        name: 'Nuevo Grupo ' + (this.data.length + 1)
       };
 
-      // Agrega el nuevo grupo a la lista de datos
       this.data.push(newGroup);
     }
   }

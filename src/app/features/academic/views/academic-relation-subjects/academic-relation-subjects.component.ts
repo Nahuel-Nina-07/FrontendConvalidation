@@ -17,7 +17,7 @@ import jsPDF from 'jspdf';
 @Component({
   selector: 'app-academic-relation-subjects',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, ListAllComponent, SuintButtonComponent, SuintPageHeaderComponent, InputCustomComponent, ModalFormComponent],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, ListAllComponent, SuintButtonComponent, InputCustomComponent, ModalFormComponent],
   templateUrl: './academic-relation-subjects.component.html',
   styleUrl: './academic-relation-subjects.component.scss'
 })

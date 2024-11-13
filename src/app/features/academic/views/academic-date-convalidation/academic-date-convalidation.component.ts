@@ -8,7 +8,7 @@ import { InputCustomComponent } from "../../../../shared/components/custom-input
 @Component({
   selector: 'app-academic-date-convalidation',
   standalone: true,
-  imports: [ReactiveFormsModule, ModalFormComponent, SvgIconComponent, SuintButtonComponent, ModalFormComponent, InputCustomComponent],
+  imports: [ReactiveFormsModule, ModalFormComponent, SuintButtonComponent, ModalFormComponent, InputCustomComponent],
   templateUrl: './academic-date-convalidation.component.html',
 })
 export class AcademicDateConvalidationComponent {

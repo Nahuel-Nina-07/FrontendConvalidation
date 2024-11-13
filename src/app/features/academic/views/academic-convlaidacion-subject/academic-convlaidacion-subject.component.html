@@ -1,0 +1,78 @@
+<div class="subject-relation-container p-6 bg-gray-100 rounded-lg shadow-md">
+  <h2 class="text-2xl font-semibold text-gray-800 mb-4 text-center">Administración de Relaciones Académicas</h2>
+
+  <!-- Select para elegir al estudiante -->
+  <div class="mb-4">
+    <label for="studentSelect" class="block text-gray-700 font-medium mb-2">Selecciona un Estudiante:</label>
+    <select 
+      [(ngModel)]="newSubjectRelation.studentEnrollmentId" 
+      id="studentSelect" 
+      class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-indigo-500"
+    >
+      <option *ngFor="let student of students" [value]="student.id">
+        {{ student.name }}
+      </option>
+    </select>
+  </div>
+
+  <!-- Select para elegir la Asignatura -->
+  <div class="mb-4">
+    <label for="subjectSelect" class="block text-gray-700 font-medium mb-2">Selecciona una Asignatura:</label>
+    <select 
+      [(ngModel)]="newSubjectRelation.subjectId" 
+      id="subjectSelect" 
+      class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-indigo-500"
+    >
+      <option *ngFor="let subject of subjects" [value]="subject.id">
+        {{ subject.subjectName }}
+      </option>
+    </select>
+  </div>
+
+  <!-- Select para elegir la Asignatura de Origen -->
+  <div class="mb-4">
+    <label for="sourceSubjectSelect" class="block text-gray-700 font-medium mb-2">Selecciona una Asignatura de Origen:</label>
+    <select 
+      [(ngModel)]="newSubjectRelation.sourceSubjectOriginId" 
+      id="sourceSubjectSelect" 
+      class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-indigo-500"
+    >
+      <option *ngFor="let sourceSubject of sourceSubjects" [value]="sourceSubject.id">
+        {{ sourceSubject.name }}
+      </option>
+    </select>
+  </div>
+
+  <!-- Botón para iniciar el proceso -->
+  <div class="flex justify-center">
+    <button 
+      (click)="openModal()" 
+      class="bg-indigo-500 text-white px-6 py-2 rounded-lg hover:bg-indigo-600 transition duration-300 shadow-lg"
+    >
+      Iniciar Proceso
+    </button>
+  </div>
+</div>
+
+<!-- Modal -->
+<ng-container *ngIf="isModalOpen">
+  <div class="fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-50 p-4">
+    <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-lg">
+      <h2 class="text-lg font-bold text-gray-800 mb-4 text-center">
+        Esta convalidación ya existe, ¿quieres convalidar automáticamente?
+      </h2>
+      <div class="flex justify-center space-x-4 mt-6">
+        <button 
+          (click)="onConfirm(true)" 
+          class="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition duration-300 shadow">
+          Sí
+        </button>
+        <button 
+          (click)="onConfirm(false)" 
+          class="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600 transition duration-300 shadow">
+          No
+        </button>
+      </div>
+    </div>
+  </div>
+</ng-container>

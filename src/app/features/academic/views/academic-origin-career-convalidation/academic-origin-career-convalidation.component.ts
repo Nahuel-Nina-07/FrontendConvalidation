@@ -17,7 +17,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 @Component({
   selector: 'app-academic-origin-career-convalidation',
   standalone: true,
-  imports: [SvgIconComponent, SuintPageHeaderComponent, CommonModule, ModalFormComponent, ReactiveFormsModule, InputCustomComponent,SuintButtonComponent, ListAllComponent],
+  imports: [ SuintPageHeaderComponent, CommonModule, ModalFormComponent, ReactiveFormsModule, InputCustomComponent,SuintButtonComponent, ListAllComponent],
   templateUrl: './academic-origin-career-convalidation.component.html',
   styleUrl: './academic-origin-career-convalidation.component.scss',
 })

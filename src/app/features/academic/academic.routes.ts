@@ -47,6 +47,18 @@ export const routes: Routes = [
         path: 'convalidatdos',
         loadComponent: () => import('./views/academic-convalidations/academic-convalidations.component').then(m => m.AcademicConvalidationsComponent),
       },
+      {
+        path: 'convalidatdos-subjects',
+        loadComponent: () => import('./views/academic-convlaidacion-subject/academic-convlaidacion-subject.component').then(m => m.AcademicConvlaidacionSubjectComponent),
+      },
+      {
+        path: 'LisStudents',
+        loadComponent: () => import('./views/academic-list-students-homologation/academic-list-students-homologation.component').then(m => m.AcademicListStudentsHomologationComponent),
+      },
+      {
+        path: 'LisAprovelSubjectsStudents',
+        loadComponent: () => import('./views/subject-aprovates/subject-aprovates.component').then(m => m.SubjectAprovatesComponent),
+      },
     ],
   },
 ];

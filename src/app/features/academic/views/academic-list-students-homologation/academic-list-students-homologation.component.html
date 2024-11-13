@@ -1,0 +1,13 @@
+<suint-page-header title="Lista de Etudiante a Homologar">
+</suint-page-header>
+<suint-list-all
+    
+      [data]="estudiantes"
+      [columns]="tableColumns"
+      [additionalColumns]="additionalColumns"
+      title="Asignaturas"
+      (deleteItem)="onDelete($event)"
+      [isEditVisible]="false" 
+      (editItem)="onEdit($event)"
+      [isDeleteVisible]="false"
+      ></suint-list-all>
