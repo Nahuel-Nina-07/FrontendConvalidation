@@ -26,7 +26,7 @@ export class AcademicListStudentsHomologationComponent  implements OnInit {
   }
 
   tableColumns = [
-    { header: 'Nombre', field: 'fullName' },
+    { header: 'Nombre', field: 'nombre' },
     { header: 'Universidad', field: 'carrera.careerName' },
   ];
 

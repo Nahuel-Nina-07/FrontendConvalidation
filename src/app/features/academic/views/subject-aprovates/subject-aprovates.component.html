@@ -9,15 +9,13 @@
       <table class="min-w-full bg-white border border-gray-300">
         <thead>
           <tr class="bg-gray-100 border-b">
-            <th class="py-2 px-4 text-left">Materia ID</th>
-            <th class="py-2 px-4 text-left">Fecha de Aprobación</th>
+            <th class="py-2 px-4 text-left">Materia</th>
             <th class="py-2 px-4 text-left">Calificación</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let materia of studentData.materiasAprobadas" class="border-b hover:bg-gray-50">
-            <td class="py-2 px-4">{{ materia.materiaId }}</td>
-            <td class="py-2 px-4">{{ materia.fechaAprobacion }}</td>
+            <td class="py-2 px-4">{{ materia.nombre }}</td>
             <td class="py-2 px-4">{{ materia.calificacion }}</td>
           </tr>
         </tbody>

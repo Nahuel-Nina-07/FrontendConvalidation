@@ -2,13 +2,13 @@ export interface Career {
     id: number;
     careerName: string;
     materias: any[]; // Define `materias` structure if you know the details
+    pensums: Pensum[];
   }
   
   export interface MateriaAprobada {
     id: number;
-    materiaId: number;
-    fechaAprobacion: string;
     calificacion: number;
+    nombre: string;
   }
   
   export interface Student {
@@ -17,4 +17,22 @@ export interface Career {
     apellido: string;
     carrera: Career;
     materiasAprobadas: MateriaAprobada[];
+  }
+
+  export interface Materia {
+    id: number;
+    codigo: string;
+    nombre: string;
+  }
+
+  export interface Pensum{
+    id: number;
+    anio: number;
+    materias: Materia[];
+  }
+
+  export interface Homologacion{
+    id: number;
+    materiaOrigenId: number;
+    materiaDestinoId: number;
   }

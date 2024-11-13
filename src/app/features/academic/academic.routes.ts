@@ -59,6 +59,10 @@ export const routes: Routes = [
         path: 'LisAprovelSubjectsStudents',
         loadComponent: () => import('./views/subject-aprovates/subject-aprovates.component').then(m => m.SubjectAprovatesComponent),
       },
+      {
+        path: 'TableEquivalence',
+        loadComponent: () => import('./views/homologation-table-equivalence/homologation-table-equivalence.component').then(m => m.HomologationTableEquivalenceComponent)
+      },
     ],
   },
 ];
