@@ -90,16 +90,19 @@ private resetPensumData(): void {
     const currentPensum = this.selectedPensumOrigen;
     console.log('Loading materias for Pensum:', currentPensum);
   
-    this.materiasOrigen = currentPensum.materias.filter(materia => 
-      !this.homologations.some(h => h.materiaOrigenId === materia.id)
+    // Filtrar materias origen: Solo materias que no estén en las homologaciones
+    this.materiasOrigen = currentPensum.materias.filter(materia =>
+      !this.homologations.some(h => h.codigoMateriaOrigen === materia.codigo)  // Usar el código de la materia
     );
     console.log('Materias Origen:', this.materiasOrigen);
   
     const nextPensumIndex = this.pensums.indexOf(currentPensum) + 1;
     if (nextPensumIndex < this.pensums.length) {
       const nextPensum = this.pensums[nextPensumIndex];
+  
+      // Filtrar materias destino: Solo materias que no estén en las homologaciones
       this.materiasDestino = nextPensum.materias.filter(materia =>
-        !this.homologations.some(h => h.materiaDestinoId === materia.id)
+        !this.homologations.some(h => h.codigoMateriaDestino === materia.codigo)  // Usar el código de la materia
       );
       console.log('Materias Destino:', this.materiasDestino);
       this.updatePensumDestino(nextPensum);
@@ -108,6 +111,7 @@ private resetPensumData(): void {
       this.pensumDestinoValue = 'No hay más pensums';
     }
   }
+  
 
   private updatePensumDestino(pensum: Pensum): void {
     this.pensumDestinoValue = `Pensum ${pensum.anio}`;
@@ -171,37 +175,39 @@ private resetPensumData(): void {
     this.modalMessage = `¿Estás seguro de eliminar la homologación de "${materiaOrigen}" y "${materiaDestino}"?`;
   }
   
-onConfirmDelete(): void {
-  if (this.homologationToDelete) {
-    this.homologationService.deleteHomologation(this.homologationToDelete.id).subscribe(
-      () => {
-        this.homologations = this.homologations.filter(h => h.id !== this.homologationToDelete?.id);
-        this.loadMaterias(); 
-        this.isOpen = false; 
-      },
-      error => console.error('Error al eliminar la homologación:', error)
-    );
+  onConfirmDelete(): void {
+    if (this.homologationToDelete) {
+      this.homologationService.deleteHomologation(this.homologationToDelete.id).subscribe(
+        () => {
+          this.homologations = this.homologations.filter(h => h.id !== this.homologationToDelete?.id);
+          this.loadMaterias();  // Recargar las materias después de eliminar
+          this.isOpen = false;
+        },
+        error => console.error('Error al eliminar la homologación:', error)
+      );
+    }
   }
-}
 
 onCancelDelete(): void {
   this.isOpen = false; 
 }
 
-    loadHomologatedSubjects(pensumOrigenId: number): void {
-      const pensumDestinoId = this.selectedPensumOrigen ? this.pensums[this.pensums.indexOf(this.selectedPensumOrigen) + 1]?.id : null;
-      if (!pensumDestinoId) return;  
-    
-      console.log('Cargando homologaciones para Pensum Origen:', pensumOrigenId, 'y Pensum Destino:', pensumDestinoId);
-      
-      this.homologationService.getHomologatedSubjects(pensumOrigenId, pensumDestinoId).subscribe(
-        (data: Homologacion[]) => {
-          console.log('Datos de homologaciones recibidos:', data);
-          this.homologations = data;
-        },
-        error => {
-          console.error('Error al obtener homologaciones:', error);
-        }
-      );
+loadHomologatedSubjects(pensumOrigenId: number): void {
+  const pensumDestinoId = this.selectedPensumOrigen ? this.pensums[this.pensums.indexOf(this.selectedPensumOrigen) + 1]?.id : null;
+  if (!pensumDestinoId) return;
+
+  console.log('Cargando homologaciones para Pensum Origen:', pensumOrigenId, 'y Pensum Destino:', pensumDestinoId);
+
+  this.homologationService.getHomologatedSubjects(pensumOrigenId, pensumDestinoId).subscribe(
+    (data: Homologacion[]) => {
+      console.log('Datos de homologaciones recibidos:', data);
+      this.homologations = data;
+      this.loadMaterias(); // Llamar a loadMaterias para actualizar las listas después de obtener las homologaciones
+    },
+    error => {
+      console.error('Error al obtener homologaciones:', error);
     }
+  );
+}
+
 }
