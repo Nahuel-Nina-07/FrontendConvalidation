@@ -52,7 +52,7 @@
             id="materiaOrigen"
             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <option value="" disabled selected>Selecciona una Materia de Origen</option>
+            <option value=""  selected>Selecciona una Materia de Origen</option>
             <option *ngFor="let materia of materiasOrigen" [value]="materia.nombre">
               {{ materia.nombre }}
             </option>
@@ -65,7 +65,7 @@
             id="materiaDestino"
             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <option value="" disabled selected>Selecciona una Materia de Destino</option>
+            <option value=""  selected>Selecciona una Materia de Destino</option>
             <option *ngFor="let materia of materiasDestino" [value]="materia.nombre">
               {{ materia.nombre }}
             </option>
@@ -105,15 +105,43 @@
             </td>
             <td class="py-3 px-6 text-center">
               <button
-                (click)="deleteHomologation(homologation.id)"
+                (click)="deleteHomologation(homologation.id, homologation.nombreMateriaOrigen, homologation.nombreMateriaDestino)"
                 class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 transition duration-200 ease-in-out"
               >
                 Eliminar
               </button>
-            </td>
+            </td>            
           </tr>
         </tbody>
       </table>
     </div>
   </div>
 </div>
+<ng-container *ngIf="isModalOpen">
+  <div class="fixed top-0 left-0 z-30 flex items-center justify-center w-full h-full p-4 bg-black bg-opacity-25">
+    <div class="bg-white rounded-lg shadow-lg p-6">
+      <h2 class="text-lg font-bold text-center">{{ modalMessage }}</h2>
+      <div class="mt-4 flex justify-center">
+        <button (click)="closeModal()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">
+          Aceptar
+        </button>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="isOpen">
+  <div class="fixed top-0 left-0 z-30 flex items-center justify-center w-full h-full p-4 bg-black bg-opacity-25">
+    <div class="bg-white rounded-lg shadow-lg p-6">
+      <h2 class="text-lg font-bold">{{ modalMessage }}</h2>
+      <div class="mt-4 flex justify-center space-x-4">
+        <button (click)="onConfirmDelete()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">
+          Sí
+        </button>
+        <button (click)="onCancelDelete()" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition">
+          No
+        </button>
+      </div>
+    </div>
+  </div>
+</ng-container>

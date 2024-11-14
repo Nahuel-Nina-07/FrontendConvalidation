@@ -22,6 +22,10 @@ export class HomologationTableEquivalenceComponent implements OnInit {
   materiasOrigen: Materia[] = [];
   materiasDestino: Materia[] = [];
   homologations: Homologacion[] = [];
+  isModalOpen: boolean = false;
+  modalMessage: string = '';
+  isOpen: boolean = false;
+  homologationToDelete: Homologacion | null = null;
 
   constructor(private homologationService: HomologationAcademicTableEquivalenceService) {}
 
@@ -29,9 +33,6 @@ export class HomologationTableEquivalenceComponent implements OnInit {
     this.loadCareers();
   }
 
-  /**
-   * Cargar las carreras desde el servicio.
-   */
   private loadCareers(): void {
     this.homologationService.getCareers().subscribe(
       (data: Career[]) => this.careers = data,
@@ -39,10 +40,6 @@ export class HomologationTableEquivalenceComponent implements OnInit {
     );
   }
 
-  /**
-   * Maneja el cambio de carrera seleccionada.
-   * Carga los pensums correspondientes.
-   */
   onCareerChange(event: Event): void {
     const selectedCareerId = (event.target as HTMLSelectElement).value;
     if (selectedCareerId) {
@@ -51,9 +48,6 @@ export class HomologationTableEquivalenceComponent implements OnInit {
     }
   }
 
-  /**
-   * Cargar los pensums de la carrera seleccionada.
-   */
   private loadPensums(): void {
     const selectedCareer = this.careers.find(career => career.id === this.selectedCareerId);
     if (selectedCareer) {
@@ -64,18 +58,13 @@ export class HomologationTableEquivalenceComponent implements OnInit {
     this.resetPensumData();
   }
 
-  /**
-   * Restablecer los datos relacionados con los pensums.
-   */
-  private resetPensumData(): void {
-    this.pensumDestinoValue = 'Elige el pensum de origen';
-    this.materiasOrigen = [];
-    this.materiasDestino = [];
-  }
+private resetPensumData(): void {
+  this.pensumDestinoValue = 'Elige el pensum de origen';
+  this.materiasOrigen = [];
+  this.materiasDestino = [];
+  this.homologations = [];
+}
 
-  /**
-   * Maneja el cambio del pensum seleccionado.
-   */
   onPensumChange(event: Event): void {
     const selectElement = event.target as HTMLSelectElement;
     const selectedPensumAnio = selectElement.value;
@@ -91,13 +80,10 @@ export class HomologationTableEquivalenceComponent implements OnInit {
   
     if (this.selectedPensumOrigen) {
       this.loadMaterias();
-      this.loadHomologatedSubjects(this.selectedPensumOrigen.id);  // Se pasa el ID del pensum origen
+      this.loadHomologatedSubjects(this.selectedPensumOrigen.id);
     }
   }
 
-  /**
-   * Cargar las materias relacionadas con el pensum seleccionado.
-   */
   loadMaterias(): void {
     if (!this.selectedPensumOrigen) return;
   
@@ -123,37 +109,32 @@ export class HomologationTableEquivalenceComponent implements OnInit {
     }
   }
 
-  /**
-   * Actualizar el valor del pensum destino.
-   */
   private updatePensumDestino(pensum: Pensum): void {
     this.pensumDestinoValue = `Pensum ${pensum.anio}`;
   }
 
-  /**
-   * Guardar una homologación.
-   */
   saveHomologation(): void {
     const selectedMateriaOrigen = this.materiasOrigen.find(materia => materia.nombre === this.selectedMateriaNombre('materiaOrigen'));
     const selectedMateriaDestino = this.materiasDestino.find(materia => materia.nombre === this.selectedMateriaNombre('materiaDestino'));
 
-    if (selectedMateriaOrigen && selectedMateriaDestino) {
-      this.createHomologation(selectedMateriaOrigen, selectedMateriaDestino);
-    } else {
-      console.error('No se seleccionaron las materias de origen o destino');
+    if (!selectedMateriaOrigen || !selectedMateriaDestino) {
+      this.modalMessage = 'Debes seleccionar una materia de ' + 
+                          (!selectedMateriaOrigen ? 'origen' : 'destino') + '.';
+      this.isModalOpen = true;
+      return;
     }
+
+    this.createHomologation(selectedMateriaOrigen, selectedMateriaDestino);
   }
 
-  /**
-   * Obtener el nombre de la materia seleccionada desde el formulario.
-   */
+  closeModal(): void {
+    this.isModalOpen = false;
+  }
+
   private selectedMateriaNombre(id: string): string {
     return (document.getElementById(id) as HTMLSelectElement).value;
   }
 
-  /**
-   * Crear una homologación y enviarla al servicio.
-   */
   private createHomologation(materiaOrigen: Materia, materiaDestino: Materia): void {
     const homologation: Homologacion = {
       id: 0,
@@ -168,31 +149,48 @@ export class HomologationTableEquivalenceComponent implements OnInit {
     this.homologationService.createHomologation(homologation).subscribe(
       newHomologation => {
         this.homologations.push(newHomologation);
-        this.loadMaterias(); // Refresh materias after saving
+        const pensumOrigenId = this.selectedPensumOrigen ? this.selectedPensumOrigen.id : null;
+        if (pensumOrigenId !== null) {
+          this.loadHomologatedSubjects(pensumOrigenId); 
+        }
       },
       error => console.error('Error al guardar la homologación:', error)
     );
   }
 
-  /**
-   * Eliminar una homologación.
-   */
-  deleteHomologation(id: number): void {
-    this.homologationService.deleteHomologation(id).subscribe(
+  deleteHomologation(id: number, nombreMateriaOrigen: string, nombreMateriaDestino: string): void {
+    this.homologationToDelete = this.homologations.find(h => h.id === id) || null;
+  
+    if (this.homologationToDelete) {
+      this.showDeleteConfirmation(nombreMateriaOrigen, nombreMateriaDestino);
+    }
+  }
+  
+  showDeleteConfirmation(materiaOrigen: string, materiaDestino: string): void {
+    this.isOpen = true;
+    this.modalMessage = `¿Estás seguro de eliminar la homologación de "${materiaOrigen}" y "${materiaDestino}"?`;
+  }
+  
+onConfirmDelete(): void {
+  if (this.homologationToDelete) {
+    this.homologationService.deleteHomologation(this.homologationToDelete.id).subscribe(
       () => {
-        this.homologations = this.homologations.filter(h => h.id !== id);
-        this.loadMaterias(); // Refresh materias after deletion
+        this.homologations = this.homologations.filter(h => h.id !== this.homologationToDelete?.id);
+        this.loadMaterias(); 
+        this.isOpen = false; 
       },
       error => console.error('Error al eliminar la homologación:', error)
     );
   }
+}
 
-  /**
-   * Cargar las homologaciones entre pensums.
-   */
+onCancelDelete(): void {
+  this.isOpen = false; 
+}
+
     loadHomologatedSubjects(pensumOrigenId: number): void {
       const pensumDestinoId = this.selectedPensumOrigen ? this.pensums[this.pensums.indexOf(this.selectedPensumOrigen) + 1]?.id : null;
-      if (!pensumDestinoId) return;  // Si no hay un pensum destino, no cargar materias homologadas
+      if (!pensumDestinoId) return;  
     
       console.log('Cargando homologaciones para Pensum Origen:', pensumOrigenId, 'y Pensum Destino:', pensumDestinoId);
       
