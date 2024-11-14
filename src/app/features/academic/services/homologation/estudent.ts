@@ -35,4 +35,8 @@ export interface Career {
     id: number;
     materiaOrigenId: number;
     materiaDestinoId: number;
+    codigoMateriaOrigen: string;  // Add these fields
+  nombreMateriaOrigen: string;
+  codigoMateriaDestino: string;
+  nombreMateriaDestino: string;
   }
