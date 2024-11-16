@@ -147,7 +147,9 @@ private resetPensumData(): void {
       codigoMateriaOrigen: materiaOrigen.codigo,
       nombreMateriaOrigen: materiaOrigen.nombre,
       codigoMateriaDestino: materiaDestino.codigo,
-      nombreMateriaDestino: materiaDestino.nombre
+      nombreMateriaDestino: materiaDestino.nombre,
+      idMateriaDestino: materiaDestino.id,
+      idMateriaOrigen: materiaOrigen.id    
     };
 
     this.homologationService.createHomologation(homologation).subscribe(

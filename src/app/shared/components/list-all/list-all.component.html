@@ -1,3 +1,21 @@
+<div class="bg-gray-100 min-h-screen p-5">
+  <div class="flex items-center justify-between w-full h-16 px-5 bg-white rounded-t-md shadow-sm">
+    <div class="flex flex-col gap-1">
+      <h1 class="leading-none font-primaryBold text-secondary">{{ title }}</h1>
+      <span class="text-xs leading-none text-enable">{{ description }}</span>
+    </div>
+
+    <!-- Botón "Nuevo" que está dentro del componente suint-list-all -->
+    <app-suint-button
+      *ngIf="isNewVisible"
+      [text]="text"
+      [iconSrc]="iconSrc"
+      (click)="addNewGroup()"
+    ></app-suint-button>
+
+    <!-- Aquí es donde se permitirá inyectar contenido adicional -->
+    <ng-content></ng-content>
+  </div>
 <div class="shadow-sm bg-white rounded-b-md p-5">
   <table class="w-full text-left border-collapse">
     <thead>
@@ -66,4 +84,11 @@
       </tr>
     </tbody>
   </table>
+</div>
+<app-modal-option
+    [isOpen]="isModalOpen"
+    [itemName]="itemToDelete?.name"
+    (confirmDelete)="confirmDelete()"
+    (closeModal)="closeModal()"
+  ></app-modal-option>
 </div>

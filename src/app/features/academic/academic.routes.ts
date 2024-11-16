@@ -63,6 +63,11 @@ export const routes: Routes = [
         path: 'TableEquivalence',
         loadComponent: () => import('./views/homologation-table-equivalence/homologation-table-equivalence.component').then(m => m.HomologationTableEquivalenceComponent)
       },
+      {
+        path: 'HomologationMaterias',
+        loadComponent: () => import('./views/homologation-materias/homologation-materias.component').then(m => m.HomologationMateriasComponent)
+      },
+
     ],
   },
 ];

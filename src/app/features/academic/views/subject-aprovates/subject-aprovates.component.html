@@ -1,29 +1,119 @@
-<div class="container mx-auto p-4">
-    <h1 class="text-3xl font-bold mb-4">Detalles del Estudiante</h1>
-  
-    <div *ngIf="studentData; else noData" class="bg-white shadow-md rounded-lg p-6">
-      <h2 class="text-2xl font-semibold mb-2">{{ studentData.nombre }} {{ studentData.apellido }}</h2>
-      <p class="text-gray-700 mb-4"><strong>Carrera:</strong> {{ studentData.carrera.careerName }}</p>
-      
-      <h3 class="text-xl font-bold mb-2">Materias Aprobadas por el estudiante</h3>
-      <table class="min-w-full bg-white border border-gray-300">
-        <thead>
-          <tr class="bg-gray-100 border-b">
-            <th class="py-2 px-4 text-left">Materia</th>
-            <th class="py-2 px-4 text-left">Calificación</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let materia of studentData.materiasAprobadas" class="border-b hover:bg-gray-50">
-            <td class="py-2 px-4">{{ materia.nombre }}</td>
-            <td class="py-2 px-4">{{ materia.calificacion }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  
-    <ng-template #noData>
-      <p class="text-red-500">No se encontraron datos del estudiante.</p>
-    </ng-template>
+<suint-page-header title="Datos del Estudiante"> </suint-page-header>
+
+<div class="p-6 mt-4 rounded-lg shadow-lg bg-white">
+  <div class="flex items-center justify-between">
+    <h2 class="text-2xl font-semibold">
+      {{ studentData?.nombre || "Cargando..." }}
+    </h2>
+    <button
+      class="px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition duration-200 ease-in-out"
+      (click)="onHomologation()"
+    >
+      <!-- Vinculamos el click al método HomologarStudent -->
+      Homologar
+    </button>
   </div>
-  
+  <p class="text-gray-700 mb-4">
+    <strong>Carrera:</strong>
+    {{ studentData?.carrera?.carreraNombre || "Cargando..." }}
+  </p>
+
+  <h3 class="text-2xl font-bold text-blue-800">Pensums del Estudiante</h3>
+  <div class="mt-4 rounded-lg shadow-lg overflow-hidden">
+    <table class="min-w-full table-auto border border-gray-300 rounded-lg">
+      <thead>
+        <tr class="bg-blue-600 text-white text uppercase font-bold">
+          <th class="py-3 px-6 text-left">Pensum de Origen</th>
+          <th class="py-3 px-6 text-left">Pensum de Destino</th>
+          <th class="py-3 px-6 text-left">Estado</th>
+          <th class="py-3 px-6 text-center">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngIf="pensumss.length === 0" class="text-center">
+          <td colspan="3" class="py-3 px-6 text-gray-700">
+            No hay pensums disponibles
+          </td>
+        </tr>
+
+        <tr
+          *ngFor="let pensum of pensumss"
+          class="hover:bg-gray-100 transition duration-300 ease-in-out"
+        >
+          <td class="py-3 px-6 text-gray-700 font-medium">
+            Año pensum origen - {{ pensum.anioPensumOrigen }}
+          </td>
+          <td class="py-3 px-6 text-gray-700 font-medium">
+            Año pensum destino - {{ pensum.anioPensumDestino }}
+          </td>
+          <td class="py-3 px-6 text-gray-700 font-medium">
+            {{ pensum.estado ? 'Completado' : 'En proceso' }} <!-- Mostrar estado -->
+          </td>
+          <td class="py-3 px-6 text-center">
+            <div class="flex justify-center space-x-2">
+              <!-- Botones condicionales -->
+              <button *ngIf="!pensum.estado"
+                      (click)="redirectToHomologation();"
+                      class="px-4 py-3 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 text-xs transition duration-200 ease-in-out">
+                Editar
+              </button>
+              <button *ngIf="!pensum.estado"
+              (click)="onDelete(pensum.id)"
+                      class="px-4 py-3 bg-red-500 text-white rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 text-xs transition duration-200 ease-in-out">
+                Eliminar
+              </button>
+              <button *ngIf="!pensum.estado"
+              (click)="onConfirmHomologate(pensum.id)"
+                      class="px-4 py-3 bg-yellow-500 text-white rounded hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 text-xs transition duration-200 ease-in-out">
+                Confirmar Homologación
+              </button>
+              <button *ngIf="pensum.estado"
+                      class="px-4 py-3 bg-green-500 text-white rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 text-xs transition duration-200 ease-in-out">
+                Generar Reporte
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<ng-container *ngIf="isOpen">
+  <div class="fixed top-0 left-0 z-30 flex items-center justify-center w-full h-full p-4 bg-black bg-opacity-25">
+    <div class="bg-white rounded-lg shadow-lg p-6">
+      <h2 class="text-lg font-bold">{{ modalMessage }}</h2>
+      <div class="mt-4 flex justify-center space-x-4">
+        <button
+          (click)="onConfirm()"
+          class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+        >
+          Sí
+        </button>
+        <button
+          (click)="onCancel()"
+          class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
+        >
+          No
+        </button>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="isDuplicateHomologationOpen">
+  <div class="fixed top-0 left-0 z-30 flex items-center justify-center w-full h-full p-4 bg-black bg-opacity-25">
+    <div class="bg-white rounded-lg shadow-lg p-6">
+      <h2 class="text-lg font-bold">Ya existe un proceso de homologación para este pensum</h2>
+      <div class="mt-4 flex justify-center">
+        <button
+          (click)="onCancel()"
+          class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
+        >
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+</ng-container>
+

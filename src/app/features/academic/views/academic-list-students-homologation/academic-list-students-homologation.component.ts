@@ -32,7 +32,7 @@ export class AcademicListStudentsHomologationComponent  implements OnInit {
 
   additionalColumns = [
     {
-      header: 'Asignaturas',
+      header: 'Pensums',
       buttons: [
         { name: 'Unidades', iconSrc: 'assets/icons/icon-subject.svg', action: this.downloadDocument.bind(this) },
       ]
@@ -66,7 +66,7 @@ export class AcademicListStudentsHomologationComponent  implements OnInit {
       (data: Student[]) => {
         this.estudiantes = data.map(student => ({
           ...student,
-          fullName: `${student.nombre} ${student.apellido}`  // Agrega el nombre completo al objeto
+          fullName: `${student.nombre}`  // Agrega el nombre completo al objeto
         }));
       },
       (error) => {
