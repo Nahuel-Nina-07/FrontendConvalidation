@@ -20,12 +20,15 @@ export interface Career {
     id: number;
     materiaId: number;
     nombre: string;
-    apellido: string;
     carrera: Career; // Aquí se espera un objeto Career
     pensum:Pensum;
     materiasAprobadas: MateriaAprobada[];
     pensums: Pensum[];
     materias: Materia[];  
+    estado: boolean;
+    pensumId: number;
+    carreraId: number;
+
   }
 
   export interface Materia {
@@ -66,4 +69,13 @@ export interface Career {
     pensumOrigenId: number;
     pensumDestinoId: number;
     estado: boolean;
+  }
+
+  export interface UpdatedStudent {
+    id: number;
+    nombre: string;
+    carreraId: number;
+    estado: boolean;
+    pensumId: number;
+    // Agrega las propiedades adicionales que necesites, como `materiaId`, `pensum`, etc.
   }

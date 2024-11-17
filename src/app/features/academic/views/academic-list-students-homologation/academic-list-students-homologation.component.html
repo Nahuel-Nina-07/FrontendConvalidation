@@ -1,13 +1,81 @@
 <suint-page-header title="Lista de Etudiante a Homologar">
+  <div class="flex items-center space-x-2">
+    <label for="searchInput" class="text-gray-700 font-medium"
+      >Buscar estudiante por nombre:</label
+    >
+    <input
+      id="searchMain"
+      type="text"
+      placeholder="Buscar por nombre"
+      class="w-80 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+      [(ngModel)]="searchQueryMain"
+      (input)="filterMainList()"
+    />
+  </div>
 </suint-page-header>
 <suint-list-all
-    
-      [data]="estudiantes"
-      [columns]="tableColumns"
-      [additionalColumns]="additionalColumns"
-      title="Estudiantes"
-      (deleteItem)="onDelete($event)"
-      [isEditVisible]="false" 
-      (editItem)="onEdit($event)"
-      [isDeleteVisible]="false"
-      ></suint-list-all>
+  [data]="filteredStudents"
+  [columns]="tableColumns"
+  [additionalColumns]="additionalColumns"
+  title="Homologacion de estudiantes"
+  [isEditVisible]="false"
+  [isDeleteVisible]="false"
+>
+  <app-suint-button
+    [text]="'Nuevo'"
+    [iconSrc]="'assets/icons/icon-add.svg'"
+    (onClickButton)="openAddModal()"
+  ></app-suint-button>
+</suint-list-all>
+<suit-modal-form
+  titleModal="Lista de estudaintes"
+  #modal
+  [width]="'800px'"
+  [maxWidth]="'100%'"
+>
+  <div class="p-6">
+    <div class="mb-4">
+      <input
+        type="text"
+        placeholder="Buscar por nombre"
+        class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        [(ngModel)]="searchQueryModal"
+        (input)="filterModalStudents()"
+      />
+    </div>
+
+    <div class="overflow-x-auto">
+      <table
+        class="w-full border-collapse border border-gray-200 rounded-lg shadow-md"
+      >
+        <thead class="bg-gray-100">
+          <tr>
+            <th class="p-3 text-left border border-gray-300">Nombre</th>
+            <th class="p-3 text-left border border-gray-300">Carrera</th>
+            <th class="p-3 text-left border border-gray-300">Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="let student of filteredModalStudents"
+            class="hover:bg-gray-50"
+          >
+            <td class="p-3 border border-gray-300">{{ student.nombre }}</td>
+            <td class="p-3 border border-gray-300">
+              {{ student.carrera.careerName }}
+            </td>
+            <td class="p-3 border border-gray-300">
+              <button
+                *ngIf="!student.estado"
+                class="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                (click)="updateStudentToTrue(student)"
+              >
+                Agregar
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</suit-modal-form>

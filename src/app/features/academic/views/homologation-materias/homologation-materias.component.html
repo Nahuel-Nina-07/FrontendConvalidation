@@ -6,11 +6,12 @@
 
 <div class="p-4 mt-3 rounded-lg shadow-lg bg-white">
   <div class="text-center mb-6">
-    <h3 class="text-2xl font-semibold text-indigo-600">Homologación de Materias</h3>
+    <h3 class="text-2xl font-semibold text-blue-800">Homologación de Materias</h3>
   </div>
+  <div class="mt-4 rounded-lg shadow-lg overflow-hidden">
   <table class="min-w-full table-auto border border-gray-300 rounded-lg">
     <thead>
-      <tr class="bg-indigo-600 text-white text-sm uppercase font-bold">
+      <tr class="bg-blue-600 text-white text uppercase font-bold">
         <th class="py-3 px-6 text-left">Código Origen</th>
         <th class="py-3 px-6 text-left">Nombre Asignatura Origen</th>
         <th class="py-3 px-6 text-left">Código Destino</th>
@@ -41,7 +42,7 @@
       </tr>
     </tbody>
   </table>
-
+</div>
   <div *ngIf="materiasDeshabilitadas.length > 0" class="mt-6 p-4 bg-red-100 border border-red-300 rounded-lg">
     <h4 class="text-xl font-semibold text-red-800">Materias Deshabilitadas</h4>
     <ul class="mt-4 space-y-2">
@@ -72,7 +73,7 @@
 <!-- Botón Homologar -->
 <div class="mt-6 text-center">
   <button 
-    class="px-6 py-3 bg-indigo-600 text-white text-lg font-semibold rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition duration-200 ease-in-out"
+    class="px-6 py-3 bg-blue-600 text-white text-lg font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition duration-200 ease-in-out"
     onclick="alert('Homologar')"
   >
     Homologar

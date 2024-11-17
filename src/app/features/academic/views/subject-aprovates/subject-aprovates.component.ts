@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AcadeicListStudentsService } from '../../services/homologation/acadeic-list-students.service';
-import { HomologationPensumEstudent, Pensum, Student } from '../../services/homologation/estudent';
+import { HomologationPensumEstudent, Pensum, Student, UpdatedStudent } from '../../services/homologation/estudent';
 import { CommonModule } from '@angular/common';
 import { SuintPageHeaderComponent } from "../../../../shared/components/page-header/page-header.component";
 import { HomologationMateriasService } from '../../services/homologation/homologation-materias.service';
@@ -16,12 +16,13 @@ import { HomologationMateriasService } from '../../services/homologation/homolog
 export class SubjectAprovatesComponent implements OnInit {
   studentData: Student | null = null;
   studentId: string | null = null; 
-  pensums: {id: number }[] = [];
+  pensums: {id: number,anio:number }[] = [];
   isOpen: boolean = false; // Para controlar la visibilidad del modal
   modalMessage: string = "¿Estás seguro de realizar el proceso de este estudiante?"; // Mensaje que se mostrará en el modal
   pensumss: Pensum[] = [];
   modalAction: 'Delete' | 'ConfirmHomologate' | 'Homologation' | null = null;
   isDuplicateHomologationOpen: boolean = false;
+  extraStudentData: any; 
 
   constructor(
     private route: ActivatedRoute, 
@@ -37,33 +38,29 @@ export class SubjectAprovatesComponent implements OnInit {
       this.academicListStudentsService.getPensumActual(studentId).subscribe(studentResponse => {
         this.studentData = studentResponse;
         console.log("Student Data:", this.studentData); // Imprime los datos del estudiante
-  
+
+        // Obtén los datos adicionales del estudiante
+        this.homologationMateriasService.getByIdEstudainte(Number(studentId)).subscribe(extraStudentData => {
+          console.log('Datos adicionales del estudiante:', extraStudentData);
+          const { pensumId, ...otherData } = extraStudentData;
+          this.extraStudentData = otherData;
+          
+        });
+
         this.academicListStudentsService.getGetByIdEstudiantePensum(Number(studentId)).subscribe(pensumResponse => {
           console.log('Pensum Data:', pensumResponse); // Imprime los datos del pensum
-  
           if (pensumResponse?.pensums) {
             // Asegúrate de que los datos están en el formato correcto
             this.pensumss = pensumResponse.pensums;
-  
-            // Obtener y mostrar en consola los valores de pensumDestinoId y pensumOrigenId
-            const pensum = pensumResponse.pensums[0];
-            const pensumDestinoId = pensum.pensumDestinoId;
-            const pensumOrigenId = pensum.pensumOrigenId;
-  
-            // Mostrar los valores en consola
-            console.log('pensumDestinoId:', pensumDestinoId);
-            console.log('pensumOrigenId:', pensumOrigenId);
           }
         }, error => {
           console.error('Error al obtener los datos del pensum:', error);
         });
-  
+
         this.loadCareerPensums();
       });
     }
   }
-  
-  
 
   private loadCareerPensums(): void {
     const careerId = this.studentData?.carrera?.carreraId;
@@ -72,7 +69,8 @@ export class SubjectAprovatesComponent implements OnInit {
     if (careerId && currentPensumId !== undefined) {  // Verifica que currentPensumId esté definido
       this.homologationMateriasService.getHomologationSubjectbyId(careerId).subscribe(careerResponse => {
         this.pensums = careerResponse.pensums.map(pensum => ({
-          id: pensum.id
+          id: pensum.id,
+          anio:pensum.anio
         }));
         console.log("Pensums:", this.pensums);
         const nextPensum = this.pensums.find(pensum => pensum.id > currentPensumId);
@@ -101,6 +99,7 @@ export class SubjectAprovatesComponent implements OnInit {
       });
     } else if (this.modalAction === 'ConfirmHomologate'  && this.selectedPensumId !== undefined && this.selectedPensumId !== null) {
       this.onConfirmHomologationWithTrue(); // Llamar a la función con estado true
+      this.loadCareerPensums();
     } else if (this.modalAction === 'Homologation') {
       this.onConfirmHomologation();
     } else {
@@ -125,24 +124,45 @@ export class SubjectAprovatesComponent implements OnInit {
   
       if (nextPensum) {
         const homologationData: HomologationPensumEstudent = {
-          id: this.selectedPensumId || 0, // Usar this.selectedPensumId como id
+          id: this.selectedPensumId || 0,
           estudianteId: parseInt(this.studentId),
           pensumOrigenId: currentPensumId,
           pensumDestinoId: nextPensum.id,
-          estado: true // Cambiado a true
+          estado: true
         };
   
         console.log('Datos enviados al backend (estado true):', homologationData);
   
-        this.academicListStudentsService.createHomologationSubject(homologationData).subscribe({
+        const updatedStudentData: UpdatedStudent = {
+          id: this.studentData.id,
+          nombre: this.studentData.nombre,
+          carreraId: this.studentData.carreraId,
+          estado: this.studentData.estado,
+          pensumId: nextPensum.id,
+          ...this.extraStudentData
+        };
+  
+        console.log('Datos enviados al backend:', updatedStudentData);
+  
+        // Actualizar el estudiante
+        this.homologationMateriasService.updateEstudainte(updatedStudentData).subscribe({
           next: response => {
-            console.log('Homologación creada con estado true:', response);
-            this.loadUpdatedPensums(); // Cargar la tabla actualizada
-            this.isOpen = false; // Cerrar el modal
+            console.log('Estudiante actualizado:', response);
+  
+            // Llamada para crear la homologación
+            this.academicListStudentsService.createHomologationSubject(homologationData).subscribe({
+              next: response => {
+                console.log('Homologación creada con estado true:', response);
+  
+                 window.location.reload(); // Recarga la página para actualizar el estado
+              },
+              error: error => {
+                console.error('Error al crear la homologación:', error);
+              }
+            });
           },
           error: error => {
-            console.error('Error al crear la homologación:', error);
-            this.isOpen = false;
+            console.error('Error al actualizar el estudiante:', error);
           }
         });
       } else {
@@ -238,8 +258,16 @@ export class SubjectAprovatesComponent implements OnInit {
   }
 
   onHomologation() {
-    this.modalMessage = '¿Estás seguro de realizar el proceso de este estudiante?'; // Establecer el mensaje para homologación
-    this.modalAction = 'Homologation'; // Definir que la acción es homologar
-    this.isOpen = true;
+    if (this.studentData && this.studentData.pensums && this.studentData.pensums[0]) {
+      const anio = this.studentData.pensums[0].anio;  // Obtener el anio del pensum
+      const nombreEstudiante = this.studentData.nombre;  // Obtener el nombre del estudiante
+  
+      this.modalMessage = `¿Estás seguro de realizar la homologación del pensum ${anio} del estudiante ${nombreEstudiante}?`;
+      this.modalAction = 'Homologation';  // Definir que la acción es homologar
+      this.isOpen = true;
+    } else {
+      console.error("Datos de estudiante no disponibles o pensum no encontrado");
+    }
   }
+  
 }

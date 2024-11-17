@@ -6,7 +6,7 @@
       {{ studentData?.nombre || "Cargando..." }}
     </h2>
     <button
-      class="px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition duration-200 ease-in-out"
+      class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition duration-200 ease-in-out"
       (click)="onHomologation()"
     >
       <!-- Vinculamos el click al método HomologarStudent -->
@@ -104,7 +104,7 @@
 <ng-container *ngIf="isDuplicateHomologationOpen">
   <div class="fixed top-0 left-0 z-30 flex items-center justify-center w-full h-full p-4 bg-black bg-opacity-25">
     <div class="bg-white rounded-lg shadow-lg p-6">
-      <h2 class="text-lg font-bold">Ya existe un proceso de homologación para este pensum</h2>
+      <h2 class="text-lg font-bold">Nose pudo crear. Ya existe este proceso de homologación</h2>
       <div class="mt-4 flex justify-center">
         <button
           (click)="onCancel()"
