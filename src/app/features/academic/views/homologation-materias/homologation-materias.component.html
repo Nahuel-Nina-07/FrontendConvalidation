@@ -21,62 +21,69 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let materia of materiasHomologables" class="hover:bg-gray-100 transition duration-300 ease-in-out">
-        <td class="py-3 px-6 text-gray-700">{{ materia.codigoOrigen }}</td>
-        <td class="py-3 px-6 text-gray-700">{{ materia.materiaOrigen }}</td>
-        <td class="py-3 px-6 text-gray-700">{{ materia.codigoDestino }}</td>
-        <td class="py-3 px-6 text-gray-700">{{ materia.materiaDestino }}</td>
+      <tr *ngFor="let materia of materiasHomologadas" class="hover:bg-gray-100 transition duration-300 ease-in-out">
+        <td class="py-3 px-6 text-gray-700">{{ materia.codigoMateriaOrigen }}</td>
+        <td class="py-3 px-6 text-gray-700">{{ materia.nombreMateriaOrigen }}</td>
+        <td class="py-3 px-6 text-gray-700">{{ materia.codigoMateriaDestino }}</td>
+        <td class="py-3 px-6 text-gray-700">{{ materia.nombreMateriaDestino }}</td>
         <td class="py-3 px-6 text-center">
           <span class="text-lg text-gray-700">{{ materia.calificacion }}</span>
         </td>
         <td class="py-3 px-6 text-center">
           <button 
           class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 transition duration-200 ease-in-out"
-          (click)="confirmDeshabilitar(materia)">
+          (click)="confirmDeshabilitar(materia.id)">
           Deshabilitar
         </button>
         </td>
       </tr>
-      <tr *ngIf="materiasHomologables.length === 0" class="text-center">
+      <tr *ngIf="materiasHomologadas.length === 0" class="text-center">
         <td colspan="6" class="py-3 px-6 text-gray-700">No hay más asignaturas disponibles</td>
       </tr>
     </tbody>
   </table>
 </div>
-  <div *ngIf="materiasDeshabilitadas.length > 0" class="mt-6 p-4 bg-red-100 border border-red-300 rounded-lg">
-    <h4 class="text-xl font-semibold text-red-800">Materias Deshabilitadas</h4>
-    <ul class="mt-4 space-y-2">
-      <li *ngFor="let materia of materiasDeshabilitadas" class="flex justify-between items-center text-gray-700">
-        <span>
-          {{ materia.nombreDestino }} (Código: {{ materia.codigoOrigen }}) - (Calificación: {{ materia.calificacion }})
-        </span>
+<div *ngIf="materiasDeshabilitadas.length > 0" class="mt-6 p-4 bg-red-100 border border-red-300 rounded-lg">
+  <h4 class="text-xl font-semibold text-red-800">Materias Deshabilitadas</h4>
+  <ul class="mt-4 space-y-2">
+    <li *ngFor="let materia of materiasDeshabilitadas" class="flex justify-between items-center text-gray-700">
+      <span class="flex-1">
+        {{ materia.nombreMateriaOrigen }} (Código: {{ materia.codigoMateriaOrigen }}) - (Calificación: {{ materia.calificacion }})
+      </span>
+      <div class="flex space-x-2">
         <button 
-          class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 transition duration-200 ease-in-out"
+          class="px-2 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 transition duration-200 ease-in-out"
           (click)="habilitarMateria(materia)">
           Habilitar
         </button>
-      </li>
-    </ul>
-  </div>
+        <button 
+          class="px-2 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 ease-in-out"
+          (click)="verJustificacion(materia.id)">
+          Ver justificación
+        </button>
+      </div>
+    </li>
+  </ul>
+</div>
 
   <!-- Sección de Materias No Disponibles para Homologar -->
-  <div *ngIf="materiasNoHomologables.length > 0" class="mt-6 p-4 bg-yellow-100 border border-yellow-300 rounded-lg">
+  <div *ngIf="materiasNoHomologadas.length > 0" class="mt-6 p-4 bg-yellow-100 border border-yellow-300 rounded-lg">
     <h4 class="text-xl font-semibold text-yellow-800">No disponible para homologación</h4>
     <ul class="mt-4 space-y-2">
-      <li *ngFor="let materia of materiasNoHomologables" class="text-gray-700">
-        {{ materia.materiaOrigen }} (Código: {{ materia.codigoOrigen }} ) - (Calificación: {{ materia.calificacion }} )
+      <li *ngFor="let materia of materiasNoHomologadas" class="text-gray-700">
+        {{ materia.nombreMateria }} (Código: {{ materia.codigoMateria  }} ) - (Calificación: {{ materia.calificacion }} )
       </li>
     </ul>
-  </div>
+</div>
+
 </div>
 
 <!-- Botón Homologar -->
 <div class="mt-6 text-center">
   <button 
     class="px-6 py-3 bg-blue-600 text-white text-lg font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition duration-200 ease-in-out"
-    onclick="alert('Homologar')"
-  >
-    Homologar
+    (click)="openConfirmModal()">
+    Terminar Homologación
   </button>
 </div>
 
@@ -87,13 +94,48 @@
       <div class="mt-4 flex flex-col">
         <textarea [(ngModel)]="justificacion" class="p-2 border border-gray-300 rounded-md" placeholder="Escriba la justificación aquí"></textarea>
         <div class="mt-4 flex justify-center space-x-4">
-          <button (click)="onConfirmDelete()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">
+          <button (click)="deshabilitarMateria()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">
             Aceptar
           </button>
           <button (click)="onCancelDelete()" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition">
             Cancelar
           </button>
         </div>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="isOpenJustificacionModal">
+  <div class="fixed top-0 left-0 z-30 flex items-center justify-center w-full h-full p-4 bg-black bg-opacity-25">
+    <div class="bg-white rounded-lg shadow-lg p-6">
+      <h2 class="text-lg font-bold">Justificación de la Materia</h2>
+      <div class="mt-4 flex flex-col">
+        <textarea [(ngModel)]="justificacion" class="p-2 border border-gray-300 rounded-md" placeholder="Escriba la justificación aquí"></textarea>
+        <div class="mt-4 flex justify-center space-x-4">
+          <button (click)="guardarJustificacion()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">
+            Guardar
+          </button>
+          <button (click)="isOpenJustificacionModal = false" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition">
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="isModalOpen">
+  <div class="fixed top-0 left-0 z-30 flex items-center justify-center w-full h-full p-4 bg-black bg-opacity-25">
+    <div class="bg-white rounded-lg shadow-lg p-6">
+      <h2 class="text-lg font-bold">Si estas seguro de no hacer mas cambios. Entonces puedes Confrmar la Homologacion</h2>
+      <div class="mt-4 flex justify-center space-x-4">
+        <button (click)="confirmarHomologacion()" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition">
+          Sí
+        </button>
+        <button (click)="cancelarConfirmacion()" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition">
+          No
+        </button>
       </div>
     </div>
   </div>

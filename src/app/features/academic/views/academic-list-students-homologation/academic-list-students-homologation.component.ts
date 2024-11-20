@@ -49,7 +49,7 @@ export class AcademicListStudentsHomologationComponent implements OnInit {
       header: 'Pensums',
       buttons: [
         { name: 'Unidades', iconSrc: 'assets/icons/icon-subject.svg', action: this.downloadDocument.bind(this) },
-        { name: 'Eliminar de la lista', iconSrc: 'assets/icons/icon-trashs.svg', action: this.updateStudentToFalse.bind(this) },
+        { name: 'Eliminar de la lista',iconClass: 'text-black' , iconSrc: 'assets/icons/icon-trashs.svg', action: this.updateStudentToFalse.bind(this) },
       ],
     },
   ];

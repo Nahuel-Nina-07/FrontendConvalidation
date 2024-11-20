@@ -1,10 +1,12 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AcadeicListStudentsService } from '../../services/homologation/acadeic-list-students.service';
-import { HomologationPensumEstudent, Pensum, Student, UpdatedStudent } from '../../services/homologation/estudent';
+import { HomologationPensumEstudent, MateriasAprobadas, MateriasHomologadas, MateriasHomologadasResponse, Pensum, Student, UpdatedStudent } from '../../services/homologation/estudent';
 import { CommonModule } from '@angular/common';
 import { SuintPageHeaderComponent } from "../../../../shared/components/page-header/page-header.component";
 import { HomologationMateriasService } from '../../services/homologation/homologation-materias.service';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 @Component({
   selector: 'app-subject-aprovates',
@@ -24,6 +26,8 @@ export class SubjectAprovatesComponent implements OnInit {
   isDuplicateHomologationOpen: boolean = false;
   extraStudentData: any; 
 
+  studentName: string = ''; // Inicializa como una cadena vacía
+  studentCareer: string = ''; 
   constructor(
     private route: ActivatedRoute, 
     private academicListStudentsService: AcadeicListStudentsService,
@@ -38,7 +42,8 @@ export class SubjectAprovatesComponent implements OnInit {
       this.academicListStudentsService.getPensumActual(studentId).subscribe(studentResponse => {
         this.studentData = studentResponse;
         console.log("Student Data:", this.studentData); // Imprime los datos del estudiante
-
+        this.studentName = this.studentData?.nombre || 'Nombre no disponible';
+        this.studentCareer = this.studentData?.carrera?.carreraNombre || 'Carrera no disponible';
         // Obtén los datos adicionales del estudiante
         this.homologationMateriasService.getByIdEstudainte(Number(studentId)).subscribe(extraStudentData => {
           console.log('Datos adicionales del estudiante:', extraStudentData);
@@ -107,15 +112,73 @@ export class SubjectAprovatesComponent implements OnInit {
     }
   }
 
-  redirectToHomologation() {
+  redirectToHomologation(id: number) {
     if (this.studentId) {
       this.router.navigate(['/academico/HomologationMaterias'], {
-        queryParams: { id: this.studentId }
+        queryParams: { 
+          id: this.studentId, 
+          homologationId: id
+        }
       });
     } else {
       console.error('El ID del estudiante no está disponible para la redirección');
     }
   }
+  
+
+  // onConfirmHomologationWithTrue() {
+  //   if (this.studentId && this.studentData) {
+  //     const currentPensumId = this.studentData.pensums?.[0]?.pensumId;
+  //     const nextPensum = this.pensums.find(pensum => pensum.id > currentPensumId);
+  
+  //     if (nextPensum) {
+  //       const homologationData: HomologationPensumEstudent = {
+  //         id: this.selectedPensumId || 0,
+  //         estudianteId: parseInt(this.studentId),
+  //         pensumOrigenId: currentPensumId,
+  //         pensumDestinoId: nextPensum.id,
+  //         estado: true
+  //       };
+  
+  //       console.log('Datos enviados al backend (estado true):', homologationData);
+  
+  //       const updatedStudentData: UpdatedStudent = {
+  //         id: this.studentData.id,
+  //         nombre: this.studentData.nombre,
+  //         carreraId: this.studentData.carreraId,
+  //         estado: this.studentData.estado,
+  //         pensumId: nextPensum.id,
+  //         ...this.extraStudentData
+  //       };
+  
+  //       console.log('Datos enviados al backend:', updatedStudentData);
+  
+  //       // Actualizar el estudiante
+  //       this.homologationMateriasService.updateEstudainte(updatedStudentData).subscribe({
+  //         next: response => {
+  //           console.log('Estudiante actualizado:', response);
+  
+  //           // Llamada para crear la homologación
+  //           this.academicListStudentsService.createHomologationSubject(homologationData).subscribe({
+  //             next: response => {
+  //               console.log('Homologación creada con estado true:', response);
+  
+  //                window.location.reload(); // Recarga la página para actualizar el estado
+  //             },
+  //             error: error => {
+  //               console.error('Error al crear la homologación:', error);
+  //             }
+  //           });
+  //         },
+  //         error: error => {
+  //           console.error('Error al actualizar el estudiante:', error);
+  //         }
+  //       });
+  //     } else {
+  //       this.isOpen = false;
+  //     }
+  //   }
+  // }
 
   onConfirmHomologationWithTrue() {
     if (this.studentId && this.studentData) {
@@ -128,7 +191,7 @@ export class SubjectAprovatesComponent implements OnInit {
           estudianteId: parseInt(this.studentId),
           pensumOrigenId: currentPensumId,
           pensumDestinoId: nextPensum.id,
-          estado: true
+          estado: true,
         };
   
         console.log('Datos enviados al backend (estado true):', homologationData);
@@ -139,37 +202,69 @@ export class SubjectAprovatesComponent implements OnInit {
           carreraId: this.studentData.carreraId,
           estado: this.studentData.estado,
           pensumId: nextPensum.id,
-          ...this.extraStudentData
+          ...this.extraStudentData,
         };
   
         console.log('Datos enviados al backend:', updatedStudentData);
   
-        // Actualizar el estudiante
-        this.homologationMateriasService.updateEstudainte(updatedStudentData).subscribe({
-          next: response => {
-            console.log('Estudiante actualizado:', response);
+        // Obtener materias homologadas del estudiante
+        this.homologationMateriasService.getbyhomologationEstudianteId(this.selectedPensumId ?? 0).subscribe({
+          next: (materiasHomologadasResponse) => {
+            const materiasHomologadas = materiasHomologadasResponse[0]?.materiasHomologadas || [];
   
-            // Llamada para crear la homologación
-            this.academicListStudentsService.createHomologationSubject(homologationData).subscribe({
-              next: response => {
-                console.log('Homologación creada con estado true:', response);
+            // Filtrar las materias con estado "true"
+            console.log('Materias homologadas:', materiasHomologadas);
+            const materiasAprobadas = materiasHomologadas.filter(materia => materia.estado === true);
   
-                 window.location.reload(); // Recarga la página para actualizar el estado
+            // Crear materias aprobadas en el backend
+            materiasAprobadas.forEach(materia => {
+              const materiaAprobada: MateriasAprobadas = {
+                id: 0, // Siempre 0
+                estudianteId: parseInt(this.studentId ?? '0'), // ID del estudiante
+                materiaId: materia.idMateriaDestino, // ID de la materia destino
+                calificacion: materia.calificacion, // Calificación
+              };
+
+              console.log('Materia aprobada:', materiaAprobada);
+              this.homologationMateriasService.createMateriaAprobada(materiaAprobada).subscribe({
+                next: (response) => {
+                  console.log('Materia aprobada creada:', response);
+                },
+                error: (error) => {
+                  console.error('Error al crear materia aprobada:', error);
+                },
+              });
+            });
+  
+            this.homologationMateriasService.updateEstudainte(updatedStudentData).subscribe({
+              next: (response) => {
+                console.log('Estudiante actualizado:', response);
+  
+                this.academicListStudentsService.createHomologationSubject(homologationData).subscribe({
+                  next: (response) => {
+                    console.log('Homologación creada con estado true:', response);
+                    window.location.reload(); // Recargar la página
+                  },
+                  error: (error) => {
+                    console.error('Error al crear la homologación:', error);
+                  },
+                });
               },
-              error: error => {
-                console.error('Error al crear la homologación:', error);
-              }
+              error: (error) => {
+                console.error('Error al actualizar el estudiante:', error);
+              },
             });
           },
-          error: error => {
-            console.error('Error al actualizar el estudiante:', error);
-          }
+          error: (error) => {
+            console.error('Error al obtener materias homologadas:', error);
+          },
         });
       } else {
         this.isOpen = false;
       }
     }
   }
+  
   
   private loadUpdatedPensums(): void {
     if (this.studentId) {
@@ -186,8 +281,6 @@ export class SubjectAprovatesComponent implements OnInit {
       });
     }
   }
-  
-
   
   onConfirmHomologation() {
     if (this.studentId && this.studentData) {
@@ -222,9 +315,10 @@ export class SubjectAprovatesComponent implements OnInit {
             next: response => {
               console.log('Homologación creada:', response);
               this.isOpen = false;
-              this.router.navigate(['/academico/HomologationMaterias'], {
-                queryParams: { id: this.studentId }
-              });
+              window.location.reload();
+              // this.router.navigate(['/academico/HomologationMaterias'], {
+              //   queryParams: { id: this.studentId }
+              // });
             }
           });
         }
@@ -244,7 +338,7 @@ export class SubjectAprovatesComponent implements OnInit {
   }
 
   onDelete(id: number) {
-    this.modalMessage = '¿Estás seguro de eliminar este pensum?'; // Establecer el mensaje para eliminar
+    this.modalMessage = '¿Estás seguro de eliminar este pensum? Se eliminaran todos los datos que contenga'; // Establecer el mensaje para eliminar
     this.modalAction = 'Delete'; // Definir que la acción es eliminar
     this.selectedPensumId = id; // Guardar el id del pensum que se eliminará
     this.isOpen = true; // Abrir el modal
@@ -268,6 +362,71 @@ export class SubjectAprovatesComponent implements OnInit {
     } else {
       console.error("Datos de estudiante no disponibles o pensum no encontrado");
     }
+  }
+  
+
+
+  generateReport(): void {
+    const pdf = new jsPDF();
+  
+    pdf.setFontSize(16);
+    pdf.text('Reporte de Homologación de Materias', 10, 10);
+    pdf.setFontSize(12);
+    pdf.text(`Nombre del Estudiante: ${this.studentName}`, 10, 20);
+    pdf.text(`Carrera: ${this.studentCareer}`, 10, 30);
+    pdf.text('Estas materias fueron homologadas según el reglamento de la Universidad Adventista de Bolivia.', 10, 40);
+  
+    let yPosition = 50;
+  
+    // Obtener datos de materias homologadas
+    this.homologationMateriasService.getbyhomologationEstudianteId(this.selectedPensumId ?? 0).subscribe({
+      next: (homologadasResponse: MateriasHomologadasResponse[]) => {  // Cambiar aquí el tipo
+        const homologadas = homologadasResponse.map((response: MateriasHomologadasResponse) => 
+          response.materiasHomologadas.filter((m: MateriasHomologadas) => m.estado)
+        ).flat();
+    
+        // Tabla de materias homologadas
+        if (homologadas.length > 0) {
+          autoTable(pdf, {
+            startY: yPosition,
+            head: [['Código Origen', 'Nombre Origen', 'Código Destino', 'Nombre Destino', 'Calificación']],
+            body: homologadas.map((m: MateriasHomologadas) => [
+              m.codigoMateriaOrigen,
+              m.nombreMateriaOrigen,
+              m.codigoMateriaDestino,
+              m.nombreMateriaDestino,
+              m.calificacion,
+            ]),
+          });
+          yPosition = (pdf as any).lastAutoTable.finalY + 10;  // Alternativa a lastAutoTable.finalY
+        }
+    
+        // Materias no homologadas
+        const noHomologadas = homologadasResponse.map((response: MateriasHomologadasResponse) => 
+          response.materiasHomologadas.filter((m: MateriasHomologadas) => !m.estado)
+        ).flat();
+    
+        if (noHomologadas.length > 0) {
+          pdf.text('Estas materias fueron retiradas debido a justificaciones:', 10, yPosition);
+          yPosition += 10;
+          autoTable(pdf, {
+            startY: yPosition,
+            head: [['Código Origen', 'Nombre Origen', 'Justificación']],
+            body: noHomologadas.map((m: MateriasHomologadas) => [
+              m.codigoMateriaOrigen,
+              m.nombreMateriaOrigen,
+              m.justificacion,
+            ]),
+          });
+          yPosition = (pdf as any).lastAutoTable.finalY + 10;
+        }
+    
+        // Guardar el PDF
+        pdf.save(`Reporte_Homologacion_${this.studentName}.pdf`);
+      },
+      error: (err) => console.error('Error al obtener materias homologadas:', err),
+    });
+    
   }
   
 }

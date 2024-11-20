@@ -16,6 +16,12 @@ export interface Career {
     nombre: string;
   }
   
+  export interface MateriasAprobadas{
+      id: number,
+      estudianteId: number,
+      materiaId: number,
+      calificacion: number
+  }
   export interface Student {
     id: number;
     materiaId: number;
@@ -49,6 +55,7 @@ export interface Career {
     estado: boolean;
     pensumDestinoId: number;
     pensumOrigenId: number;
+    estudiantePensumId:number;
   }
 
   export interface Homologacion{
@@ -77,5 +84,52 @@ export interface Career {
     carreraId: number;
     estado: boolean;
     pensumId: number;
-    // Agrega las propiedades adicionales que necesites, como `materiaId`, `pensum`, etc.
+  }
+
+  export interface MateriaNoHomologada{
+    id  : number,
+    estudiantePensumId  : number,
+    materiaOrigenId : number,
+    calificacion  : number,
+  }
+
+  export interface MateriaHomologada {
+    id: number,
+    estudiantePensumId: number,
+    materiaOrigenId: number,
+    materiaDestinoId: number,
+    calificacion: number,
+    estado: boolean,
+    justificacion: string
+  }  
+
+  export interface MateriasNoHomologadas {
+    materiaOrigenId: number;
+    codigoMateria: string;
+    nombreMateria: string;
+    calificacion: number;
+    idMateria: number;
+  }
+
+  export interface MateriasNoHomologadasResponse {
+    estudiantePensumId: number;
+    materiasNoHomologadas: MateriasNoHomologadas[];
+  }
+
+  export interface MateriasHomologadas {
+    id: number,
+    idMateriaOrigen: number,
+    codigoMateriaOrigen: string,
+    nombreMateriaOrigen: string,
+    calificacion: number,
+    idMateriaDestino: number,
+    codigoMateriaDestino: string,
+    nombreMateriaDestino: string,
+    estado: boolean,
+    justificacion: string
+  }
+
+  export interface MateriasHomologadasResponse {
+    estudiantePensumId: number;
+    materiasHomologadas: MateriasHomologadas[];
   }

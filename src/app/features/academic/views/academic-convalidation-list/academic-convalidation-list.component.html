@@ -35,75 +35,114 @@
     <form [formGroup]="contractGroup" (ngSubmit)="onSubmit()">
       <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <div>
-          <!-- <input-custom
-            name="Organización"
-            formControlName="name"
-            type="text"
-            placeholder="Introduce la organización"
-          ></input-custom> -->
-
           <div>
             <label class="text-sm text-primary">Nombre</label>
             <input
-            formControlName="name"
-            type="text"
-            placeholder="Introduce la nombre"
+              formControlName="name"
+              type="text"
+              placeholder="Introduce la nombre"
               class="block w-full h-9 p-2 bg-white border border-gray-200 rounded-md text-sm outline-none placeholder:text-slate-400 placeholder:text-sm focus:border-primary-focus !ring-offset-0 !ring-0 transition duration-500"
             />
+            <div
+              *ngIf="
+                contractGroup.get('name')?.touched &&
+                contractGroup.get('name')?.invalid
+              "
+            >
+              <small class="text-red-500">El campo Nombre es obligatorio</small>
+            </div>
           </div>
-
-          <!-- <input-custom
-            name="Teléfono"
-            formControlName="phone"
-            type="text"
-            placeholder="Introduce tu teléfono"
-          ></input-custom> -->
-
 
           <div>
             <label class="text-sm text-primary">Teléfono</label>
             <input
-            formControlName="phone"
-            type="text"
-            placeholder="Introduce tu teléfono"
+              formControlName="phone"
+              type="text"
+              placeholder="Introduce tu teléfono"
               class="block w-full h-9 p-2 bg-white border border-gray-200 rounded-md text-sm outline-none placeholder:text-slate-400 placeholder:text-sm focus:border-primary-focus !ring-offset-0 !ring-0 transition duration-500"
             />
+            <div
+              *ngIf="
+                contractGroup.get('phone')?.touched &&
+                contractGroup.get('phone')?.invalid
+              "
+            >
+              <small
+                class="text-red-500"
+                *ngIf="contractGroup.get('phone')?.hasError('required')"
+              >
+                El campo Teléfono es obligatorio
+              </small>
+              <small
+                class="text-red-500"
+                *ngIf="contractGroup.get('phone')?.hasError('invalidNumber')"
+              >
+                El teléfono solo puede contener números
+              </small>
+              <small
+                class="text-red-500"
+                *ngIf="contractGroup.get('phone')?.hasError('invalidLength')"
+              >
+                Número de teléfono no válido.
+              </small>
+            </div>
           </div>
         </div>
         <div>
-          <!-- <input-custom
-            name="Fax"
-            formControlName="fax"
-            type="text"
-            placeholder="Introduce el número de fax"
-          ></input-custom> -->
-
           <div>
             <label class="text-sm text-primary">Fax</label>
             <input
-            formControlName="fax"
-            type="text"
-            placeholder="Introduce el número de fax"
+              formControlName="fax"
+              type="text"
+              placeholder="Introduce el número de fax"
               class="block w-full h-9 p-2 bg-white border border-gray-200 rounded-md text-sm outline-none placeholder:text-slate-400 placeholder:text-sm focus:border-primary-focus !ring-offset-0 !ring-0 transition duration-500"
             />
+            <div
+              *ngIf="
+                contractGroup.get('fax')?.touched &&
+                contractGroup.get('fax')?.invalid
+              "
+            >
+              <small
+                class="text-red-500"
+                *ngIf="contractGroup.get('fax')?.hasError('required')"
+              >
+                El campo Fax es obligatorio
+              </small>
+              <small
+                class="text-red-500"
+                *ngIf="contractGroup.get('fax')?.hasError('invalidNumber')"
+              >
+                El fax solo puede contener números
+              </small>
+              <small
+                class="text-red-500"
+                *ngIf="contractGroup.get('fax')?.hasError('invalidLength')"
+              >
+                Número de fax no válido.
+              </small>
+            </div>
           </div>
-
-          <!-- <input-custom
-            name="Correo"
-            formControlName="email"
-            type="email"
-            placeholder="Introduce el correo"
-            class="w-full"
-          ></input-custom> -->
 
           <div>
             <label class="text-sm text-primary">Correo</label>
             <input
-            formControlName="email"
-            type="email"
-            placeholder="Introduce el correo"
+              formControlName="email"
+              type="email"
+              placeholder="Introduce el correo"
               class="block w-full h-9 p-2 bg-white border border-gray-200 rounded-md text-sm outline-none placeholder:text-slate-400 placeholder:text-sm focus:border-primary-focus !ring-offset-0 !ring-0 transition duration-500"
             />
+            <div
+              *ngIf="
+                contractGroup.get('email')?.touched &&
+                contractGroup.get('email')?.invalid
+              "
+            >
+              <small class="text-red-500"
+                >El campo Correo es obligatorio y debe ser un correo
+                válido</small
+              >
+            </div>
           </div>
         </div>
 
@@ -119,22 +158,22 @@
         </div>
 
         <div class="col-span-2">
-          <!-- <input-custom
-            name="Observaciones"
+          <label class="text-sm text-primary">Observaciones</label>
+          <input
             formControlName="observation"
             type="text"
             placeholder="Introduce tus observaciones"
-            class="w-full"
-          ></input-custom> -->
-
-          <div>
-            <label class="text-sm text-primary">Observaciones</label>
-            <input
-            formControlName="observation"
-            type="text"
-            placeholder="Introduce tus observaciones"
-              class="block w-full h-9 p-2 bg-white border border-gray-200 rounded-md text-sm outline-none placeholder:text-slate-400 placeholder:text-sm focus:border-primary-focus !ring-offset-0 !ring-0 transition duration-500"
-            />
+            class="block w-full h-9 p-2 bg-white border border-gray-200 rounded-md text-sm outline-none placeholder:text-slate-400 placeholder:text-sm focus:border-primary-focus !ring-offset-0 !ring-0 transition duration-500"
+          />
+          <div
+            *ngIf="
+              contractGroup.get('observation')?.touched &&
+              contractGroup.get('observation')?.invalid
+            "
+          >
+            <small class="text-red-500"
+              >El campo Observaciones es obligatorio</small
+            >
           </div>
         </div>
       </div>

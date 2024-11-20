@@ -3,7 +3,7 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, Input, OnInit, ViewChild } f
 import { SuintPageHeaderComponent } from '../../../../shared/components/page-header/page-header.component';
 import { SvgIconComponent } from 'angular-svg-icon';
 import { UniversityOriginService } from '../../services/university-origin.service';
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { InputCustomComponent } from '../../../../shared/components/custom-input/custom-input.component';
 import { ModalFormComponent } from "../../../../shared/components/modals/modal-form/modal-form.component";
 import { SuintButtonComponent } from "../../../../shared/components/suint-button/suint-button.component";
@@ -11,6 +11,7 @@ import { AcademicOriginCareerConvalidationComponent } from "../academic-origin-c
 import { CareerOriginService } from '../../services/career-origin.service';
 import { ListAllComponent } from "../../../../shared/components/list-all/list-all.component";
 import { Router } from '@angular/router';
+import { phoneFaxValidator } from './validator';
 
 @Component({
   selector: 'app-academic-convalidation-list',
@@ -103,16 +104,21 @@ export class AcademicConvalidationListComponent implements OnInit {
   private createFormGroup(): FormGroup {
     return this.#_formBuilder.group({
       id: new FormControl(0),
-      name: new FormControl(''),
-      phone: new FormControl(''),
-      fax: new FormControl(''),
-      cityId: new FormControl(''),
-      email: new FormControl(''),
-      observation: new FormControl(''),
+      name: new FormControl('', [Validators.required]),
+      phone: new FormControl('', [
+        Validators.required, 
+        phoneFaxValidator() // Aplica el validador personalizado
+      ]),
+      fax: new FormControl('', [
+        Validators.required, 
+        phoneFaxValidator() // Aplica el validador personalizado
+      ]),
+      cityId: new FormControl('', [Validators.required]),
+      email: new FormControl('', [Validators.required, Validators.email]),
+      observation: new FormControl('', [Validators.required]),
       search: new FormControl('')
     });
   }
-
 
   private loadInitialData(): void {
     this.loadUniversities();
@@ -135,8 +141,10 @@ export class AcademicConvalidationListComponent implements OnInit {
       });
     } else {
       console.log('El formulario es inválido');
+      this.contractGroup.markAllAsTouched();  // Marca todos los campos como tocados para que los errores se muestren
     }
   }
+  
 
   onDelete(item: any): void {
     const itemId = item.id;
